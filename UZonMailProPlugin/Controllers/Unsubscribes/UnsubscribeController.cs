@@ -2,23 +2,19 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Config;
 using UZonMail.Core.Services.Permission;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Unsubscribes;
 using UZonMail.Managers.Cache;
 using UZonMail.Utils.Json;
-using UZonMail.Utils.Results;
+using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Token;
 using UZonMailProPlugin.Controllers.Base;
 using UZonMailProPlugin.Controllers.Unsubscribes.ResponseModels;
-using UZonMailProPlugin.Services.EmailBodyDecorators;
+using UZonMailProPlugin.Services.EmailDecorators;
 using UZonMailProPlugin.Services.Unsubscribe;
 
 namespace UZonMailProPlugin.Controllers.Unsubscribes
@@ -43,7 +39,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             var userId = tokenService.GetUserDataId();
             // 判断是否是组织管理员
             var hasOrgAdmin = await permissionService.HasOrganizationPermission(userId);
-            if(!hasOrgAdmin)
+            if (!hasOrgAdmin)
             {
                 return ResponseResult<UnsubscribeSetting>.Fail("You are not organization admin");
             }
@@ -169,7 +165,13 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         [HttpPost()]
         public async Task<ResponseResult<bool>> Unsubscribe(string token)
         {
-            var result = await unsubscribeService.Unsubscribe(token);
+            if (string.IsNullOrEmpty(token))
+            {
+                return ResponseResult<bool>.Fail("token is empty");
+            }
+            // 获取退订时的 IP 地址
+            var host = HttpContext.Connection.RemoteIpAddress?.ToString();
+            var result = await unsubscribeService.Unsubscribe(token, host);
             // 开始
             return result.ToSuccessResponse();
         }
@@ -185,6 +187,43 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         {
             var result = await unsubscribeService.IsUnsubscribed(token);
             return result.ToSuccessResponse();
+        }
+
+        /// <summary>
+        /// 获取退订的数量
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("filtered-count")]
+        public async Task<ResponseResult<int>> GetUnsubscribesCount(string filter)
+        {
+            var organizationId = tokenService.GetOrganizationId();
+            var dbSet = db.UnsubscribeEmails.AsNoTracking().Where(x => x.OrganizationId == organizationId);
+            if (!string.IsNullOrEmpty(filter))
+            {
+                dbSet = dbSet.Where(x => x.Email.Contains(filter) || x.Host.Contains(filter));
+            }
+            var count = await dbSet.CountAsync();
+            return count.ToSuccessResponse();
+        }
+
+        /// <summary>
+        /// 获取邮件模板数据
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="pagination"></param>
+        /// <returns></returns>
+        [HttpPost("filtered-data")]
+        public async Task<ResponseResult<List<UnsubscribeEmail>>> GetUnsubscribesData(string filter, Pagination pagination)
+        {
+            var organizationId = tokenService.GetOrganizationId();
+            var dbSet = db.UnsubscribeEmails.AsNoTracking().Where(x => x.OrganizationId == organizationId);
+            if (!string.IsNullOrEmpty(filter))
+            {
+                dbSet = dbSet.Where(x => x.Email.Contains(filter) || x.Host.Contains(filter));
+            }
+
+            var results = await dbSet.Page(pagination).ToListAsync();
+            return results.ToSuccessResponse();
         }
     }
 }

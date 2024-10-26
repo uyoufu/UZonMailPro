@@ -1,17 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Uamazing.Utils.Email;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.ReadingTracker;
+using UZonMail.Utils.Email;
+using UZonMail.Utils.Email.BodyDecorator;
 using UZonMailProPlugin.Services.License;
 
-namespace UZonMailProPlugin.Services.EmailBodyDecorators
+namespace UZonMailProPlugin.Services.EmailDecorators
 {
     public class EmailTrackerDecoractor : IEmailBodyDecroator
     {
         private static string? _baseUrl = string.Empty;
         private static readonly string _apiSettingKey = "baseApiUrl";
 
-        public async Task<string> StartDecorating(EmailBodyDecoratorParams decoratorParams, string originBody)
+        public async Task<string> StartDecorating(EmailDecoratorParams decoratorParams, string originBody)
         {
             if (string.IsNullOrEmpty(originBody)) return originBody;
             // 说明没有设置 API 地址
@@ -40,7 +41,6 @@ namespace UZonMailProPlugin.Services.EmailBodyDecorators
             var licenseManager = decoratorParams.ServiceProvider.GetRequiredService<LicenseManagerService>();
             var licenseInfo = await licenseManager.GetLicenseInfo();
             if (licenseInfo.LicenseType != LicenseType.Enterprise) return originBody;
-
 
             // 新建锚点
             var sendingItem = decoratorParams.SendingItem;

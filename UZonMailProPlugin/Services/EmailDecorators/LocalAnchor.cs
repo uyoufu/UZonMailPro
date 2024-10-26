@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Uamazing.Utils.Email;
 using UZonMail.DB.MySql;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.EmailSending;
 using UZonMail.DB.SQL.ReadingTracker;
+using UZonMail.Utils.Email;
 using UZonMail.Utils.Web.Service;
 
-namespace UZonMailProPlugin.Services.EmailBodyDecorators
+namespace UZonMailProPlugin.Services.EmailDecorators
 {
     public class LocalAnchor(SqlContext sqlContext, HttpClient httpClient) : ITransientService
     {
@@ -17,7 +17,7 @@ namespace UZonMailProPlugin.Services.EmailBodyDecorators
         /// </summary>
         /// <param name="decoratorParams"></param>
         /// <returns></returns>
-        public async Task<EmailAnchor> GetEmailAnchor(EmailBodyDecoratorParams decoratorParams)
+        public async Task<EmailAnchor> GetEmailAnchor(EmailDecoratorParams decoratorParams)
         {
             var sendingItem = decoratorParams.SendingItem;
             var emailAnchor = await sqlContext.EmailAnchors.Where(x => x.SendingItemId == sendingItem.Id).FirstOrDefaultAsync();

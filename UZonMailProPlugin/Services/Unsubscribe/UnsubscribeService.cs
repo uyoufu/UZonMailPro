@@ -16,7 +16,7 @@ namespace UZonMailProPlugin.Services.Unsubscribe
         /// </summary>
         /// <param name="sendingItemId"></param>
         /// <returns></returns>
-        public async Task<bool> Unsubscribe(string sendingItemId)
+        public async Task<bool> Unsubscribe(string sendingItemId,string? host)
         {
             var sendingItem = await db.SendingItems.AsNoTracking().FirstOrDefaultAsync(x => x.ObjectId == sendingItemId);
             if (sendingItem == null)
@@ -28,7 +28,7 @@ namespace UZonMailProPlugin.Services.Unsubscribe
             var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
 
             var toEmails = sendingItem.ToEmails.Split(',');
-            foreach(var toEmail in toEmails)
+            foreach (var toEmail in toEmails)
             {
                 // 添加到退订列表
                 var existOne = await db.UnsubscribeEmails.FirstOrDefaultAsync(x => x.OrganizationId == user.OrganizationId && x.Email == toEmail);
@@ -42,9 +42,10 @@ namespace UZonMailProPlugin.Services.Unsubscribe
                 {
                     Email = toEmail,
                     OrganizationId = user.OrganizationId,
+                    Host = host
                 };
                 db.Add(unsubscribeEmail);
-            }            
+            }
             await db.SaveChangesAsync();
             return true;
         }
@@ -65,8 +66,10 @@ namespace UZonMailProPlugin.Services.Unsubscribe
             }
             var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
             var toEmails = sendingItem.ToEmails.Split(',');
-            var existCount = await db.UnsubscribeEmails.CountAsync(x => x.OrganizationId == user.OrganizationId && toEmails.Contains(x.Email));
-            return existCount == toEmails.Length;
+            if (toEmails.Length != 1) return false;
+
+            var existOne = await db.UnsubscribeEmails.FirstOrDefaultAsync(x => x.OrganizationId == user.OrganizationId && x.Email == toEmails[0]);
+            return existOne != null;
         }
     }
 }

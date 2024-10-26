@@ -213,8 +213,7 @@ namespace UZonMailProPlugin.Services.License
         private static string GetDeviceId()
         {
             // 判断是否有机器码文件，若没有，则新增
-            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var fileTokenPath = Path.Combine(localAppData, "UZonMail/device-token.txt");
+            var fileTokenPath = "data/device/device-token.txt";
             if (!File.Exists(fileTokenPath))
             {
                 // 创建目录

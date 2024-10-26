@@ -2,18 +2,19 @@
 using System.Linq;
 using System.Security.Policy;
 using System.Text.RegularExpressions;
-using Uamazing.Utils.Email;
 using UZonMail.DB.MySql;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Organization;
 using UZonMail.DB.SQL.Settings;
 using UZonMail.Managers.Cache;
+using UZonMail.Utils.Email;
+using UZonMail.Utils.Email.BodyDecorator;
 
-namespace UZonMailProPlugin.Services.EmailBodyDecorators
+namespace UZonMailProPlugin.Services.EmailDecorators
 {
     public class UnsubesribeButtonDecorator : IEmailBodyDecroator
     {
-        public async Task<string> StartDecorating(EmailBodyDecoratorParams decoratorParams, string originBody)
+        public async Task<string> StartDecorating(EmailDecoratorParams decoratorParams, string originBody)
         {
             if (string.IsNullOrEmpty(originBody)) return originBody;
             var db = decoratorParams.ServiceProvider.GetRequiredService<SqlContext>();
