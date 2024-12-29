@@ -21,7 +21,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators
             if (originBody.Contains("api/pro/email-tracker/image")) return originBody;
             // 判断是否设置了追踪
             var enableEmailTracker = decoratorParams.SettingsReader.EnableEmailTracker;
-            if (enableEmailTracker==null || !enableEmailTracker.Value) return originBody;
+            if (!enableEmailTracker) return originBody;
 
             // 添加跟踪锚点
             var sqlContext = decoratorParams.ServiceProvider.GetRequiredService<SqlContext>();

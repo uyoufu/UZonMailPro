@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Permission;
 using UZonMail.Core.Services.Settings;
+using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Unsubscribes;
-using UZonMail.Managers.Cache;
 using UZonMail.Utils.Json;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
@@ -95,7 +95,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             await db.SaveChangesAsync();
 
             // 更新缓存
-            CacheManager.UpdateCache<UnsubscribeSettingsReader>(exist.ObjectId);
+            DBCacher.SetCacheDirty<UnsubscribeSettingsReader>(exist.ObjectId);
 
             return true.ToSuccessResponse();
         }

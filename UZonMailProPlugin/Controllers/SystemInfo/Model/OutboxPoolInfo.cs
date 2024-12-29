@@ -1,4 +1,4 @@
-﻿using UZonMail.Core.Services.EmailSending.OutboxPool;
+﻿using UZonMail.Core.Services.SendCore.Outboxes;
 
 namespace UZonMail.Pro.Controllers.SystemInfo.Model
 {
@@ -7,7 +7,7 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
         public long UserId { get; private set; }
         public int OutboxesCount { get; private set; }
 
-        public OutboxPoolInfo(UserOutboxesPool userOutboxPool)
+        public OutboxPoolInfo(OutboxesPool userOutboxPool)
         {
             UserId = userOutboxPool.UserId;
             OutboxesCount = userOutboxPool.Count;

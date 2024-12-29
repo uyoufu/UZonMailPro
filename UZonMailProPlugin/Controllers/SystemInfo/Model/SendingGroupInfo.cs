@@ -1,4 +1,4 @@
-﻿using UZonMail.Core.Services.EmailSending.WaitList;
+﻿using UZonMail.Core.Services.SendCore.WaitList;
 
 namespace UZonMail.Pro.Controllers.SystemInfo.Model
 {
@@ -7,7 +7,7 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
         public long UserId { get; private set; }
         public int SendingGroupsCount { get; private set; }
 
-        public SendingGroupInfo(UserSendingGroupsPool sendingGroupsPool)
+        public SendingGroupInfo(GroupTasks sendingGroupsPool)
         {
             UserId = sendingGroupsPool.UserId;
             SendingGroupsCount = sendingGroupsPool.Count;

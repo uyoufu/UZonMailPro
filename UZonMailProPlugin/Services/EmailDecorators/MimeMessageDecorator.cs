@@ -1,10 +1,8 @@
 ﻿using MimeKit;
-using System.Text.RegularExpressions;
-using UZonMail.DB.SQL.Organization;
 using UZonMail.DB.SQL;
-using UZonMail.Managers.Cache;
 using UZonMail.Utils.Email;
 using UZonMailProPlugin.Services.EmailDecorators.UnsubscribeHeaders;
+using UZonMail.DB.Managers.Cache;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
@@ -14,8 +12,8 @@ namespace UZonMailProPlugin.Services.EmailDecorators
         {
             var db = decoratorParams.ServiceProvider.GetRequiredService<SqlContext>();
 
-            var userReader = await CacheManager.GetCache<UserReader>(db, decoratorParams.SendingItem.UserId.ToString());
-            var unsubscribeSettings = await CacheManager.GetCache<UnsubscribeSettingsReader>(db, userReader.OrganizationObjectId);
+            var userInfo = await DBCacher.GetCache<UserInfoCache>(db, decoratorParams.SendingItem.UserId);
+            var unsubscribeSettings = await DBCacher.GetCache<UnsubscribeSettingsReader>(db, userInfo.OrganizationId);
 
             // 没有启用退订
             if (unsubscribeSettings == null || !unsubscribeSettings.EnableUnsubscribe) return mimeMessage;

@@ -21,11 +21,11 @@ namespace UZonMailProPlugin.Services.License
     /// </summary>
     public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient) : IScopedService
     {
-        //#if DEBUG
-        //        private const string _licenseAPI = "http://localhost:52443/api/v1/license-machine";
-        //#else
+#if DEBUG
         private const string _licenseAPI = "https://app.223434.xyz:52443/api/v1/license-machine";
-        //#endif
+#else
+        private const string _licenseAPI = "https://app.223434.xyz:52443/api/v1/license-machine";
+#endif
 
         private static LicenseInfo? _licenseInfo;
         private static DateTime _lastUpdateDate = DateTime.MinValue;
@@ -101,10 +101,10 @@ namespace UZonMailProPlugin.Services.License
         /// <returns></returns>
         public async Task<LicenseInfo> GetLicenseInfo()
         {
-#if DEBUG
-            _licenseInfo ??= LicenseInfo.CreateEnterpriseLicense();
-            return _licenseInfo;
-#endif
+//#if DEBUG
+//            _licenseInfo ??= LicenseInfo.CreateEnterpriseLicense();
+//            return _licenseInfo;
+//#endif
 
             // 如果过期了，则从数据库中获取
             // 只有更新日期超过一天才会去请求授权服务器

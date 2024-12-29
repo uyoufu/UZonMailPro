@@ -4,6 +4,9 @@ using UZonMail.DB.SQL.Unsubscribes;
 
 namespace UZonMailProPlugin.Database.Updaters
 {
+    /// <summary>
+    /// 系统默认调用
+    /// </summary>
     public class InitUnsubscribe : IDataUpdater
     {
         public Version Version => new("0.1.1.0");
@@ -28,7 +31,7 @@ namespace UZonMailProPlugin.Database.Updaters
                 // admin 默认组织
                 OrganizationId = 3,
                 Language = "en-US",
-                HtmlContent = "<div class=\"column items-center full-height\">\r\n<h5>Unsubscribe from Emails</h5>\r\n<p>If you no longer wish to receive emails from us, please enter your email address below and click \"Unsubscribe\".</p>\r\n</div>"
+                HtmlContent = "<div class=\"column items-center full-height\">\r\n<h5>Unsubscribe from Emails</h5>\r\n<p>If you no longer wish to receive emails from us, please click \"Unsubscribe\".</p>\r\n</div>"
             };
             db.Add(unsubscribePage);
 

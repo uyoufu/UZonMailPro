@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.EmailSending.OutboxPool;
-using UZonMail.Core.Services.EmailSending.Sender;
-using UZonMail.Core.Services.EmailSending.WaitList;
 using UZonMailProPlugin.Controllers.Base;
 using UZonMail.Pro.Controllers.SystemInfo.Model;
 using Uamazing.Utils.Web.ResponseModel;
+using UZonMail.Core.Services.SendCore.WaitList;
+using UZonMail.Core.Services.SendCore.Outboxes;
+using UZonMail.Core.Services.SendCore;
 
 namespace UZonMail.Pro.Controllers.SystemInfo
 {
-    public class SystemInfoController(UserSendingGroupsManager userSendingGroupsManager
-        , UserOutboxesPoolManager userOutboxesPoolManager
-        , SendingThreadManager sendingThreadManager) : ControllerBasePro
+    public class SystemInfoController(GroupTasksList groupTasksList
+        , OutboxesPoolList outboxesPools
+        , SendingThreadsManager sendingThreadsManager) : ControllerBasePro
     {
         /// <summary>
         /// 仅管理员可访问
@@ -23,7 +23,7 @@ namespace UZonMail.Pro.Controllers.SystemInfo
         public async Task<ResponseResult<SystemUsageInfo>> GetSystemResourceUsage()
         {
             var usageInfo = new SystemUsageInfo();
-            await usageInfo.GatherInfomations(userSendingGroupsManager, userOutboxesPoolManager, sendingThreadManager);
+            await usageInfo.GatherInfomations(groupTasksList, outboxesPools, sendingThreadsManager);
             return usageInfo.ToSuccessResponse();
         }
     }

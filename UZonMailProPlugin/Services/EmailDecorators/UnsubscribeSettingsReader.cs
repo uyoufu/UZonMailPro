@@ -1,40 +1,33 @@
 ﻿using log4net;
 using Microsoft.EntityFrameworkCore;
+using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Settings;
 using UZonMail.DB.SQL.Unsubscribes;
-using UZonMail.Managers.Cache;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
-    public class UnsubscribeSettingsReader : ICacheReader
+    public class UnsubscribeSettingsReader : BaseCache
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(UnsubscribeSettingsReader));
 
         #region 接口实现
-        public string SettingKey { get; private set; }
-
-        private bool _needUpdate = true;
-
         /// <summary>
-        /// key 为 userId
+        /// key 为 organizationId
         /// </summary>
         /// <param name="db"></param>
-        /// <param name="organizationObjectId"></param>
         /// <returns></returns>
-        public async Task Initialize(SqlContext db, string organizationObjectId)
+        public override async Task Update(SqlContext db)
         {
-            if (!_needUpdate) return;
-            _needUpdate = false;
+            if (!NeedUpdate) return;
+            SetDirty();
 
             // 开始添加
-            SettingKey = CacheManager.GetFullKey<UnsubscribeSettingsReader>(organizationObjectId);
-
-            var organization = await db.Departments.FirstOrDefaultAsync(x => x.ObjectId == organizationObjectId);
-            var unsubscribeSetting = await db.UnsubscribeSettings.AsNoTracking().FirstOrDefaultAsync(x => x.OrganizationId == organization.Id);
+            var organizationId = LongValue;
+            var unsubscribeSetting = await db.UnsubscribeSettings.AsNoTracking().FirstOrDefaultAsync(x => x.Id == organizationId);
             if (unsubscribeSetting == null)
             {
-                _logger.Debug($"{organization.Name} has not set unsubscribe setting");
+                _logger.Debug($"department {organizationId} has not set unsubscribe setting");
                 EnableUnsubscribe = false;
                 return;
             }
@@ -72,10 +65,10 @@ namespace UZonMailProPlugin.Services.EmailDecorators
             }
 
             // 判断是否有退订页面
-            var unsubscribePage = await db.UnsubscribePages.FirstOrDefaultAsync(x => x.OrganizationId == organization.Id);
+            var unsubscribePage = await db.UnsubscribePages.FirstOrDefaultAsync(x => x.OrganizationId == organizationId);
             if(unsubscribePage == null)
             {
-                _logger.Error("UnsubscribePage is not set");
+                _logger.Error($"department {organizationId} UnsubscribePage is not set");
                 EnableUnsubscribe = false;
                 return;
             }
@@ -92,9 +85,9 @@ namespace UZonMailProPlugin.Services.EmailDecorators
             EnableUnsubscribe = true;
         }
 
-        public void NeedUpdate()
+        public override void Dispose()
         {
-            _needUpdate = false;
+            SetDirty(true);
         }
         #endregion
 
