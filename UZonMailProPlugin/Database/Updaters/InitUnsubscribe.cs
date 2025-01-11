@@ -7,11 +7,11 @@ namespace UZonMailProPlugin.Database.Updaters
     /// <summary>
     /// 系统默认调用
     /// </summary>
-    public class InitUnsubscribe : IDataUpdater
+    public class InitUnsubscribe(SqlContext db) : IDatabaseUpdater
     {
         public Version Version => new("0.1.1.0");
 
-        public async Task Update(SqlContext db, IConfiguration config)
+        public async Task Update()
         {
             // 增加退订相关的表
             var unsubscribeButton = new UnsubscribeButton()

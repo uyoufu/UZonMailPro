@@ -1,12 +1,12 @@
 ﻿using Uamazing.Utils.Plugin;
+using UZonMail.Core.Database.Updater;
 using UZonMail.Utils.Web;
 namespace UZonMailCrawlerPlugin
 {
     public class PluginSetup : IPlugin
     {
         public void UseApp(WebApplication webApplication)
-        {
-            
+        {            
         }
 
         public void UseServices(WebApplicationBuilder webApplicationBuilder)

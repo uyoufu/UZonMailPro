@@ -1,4 +1,4 @@
-﻿namespace UZonMailCrawlerPlugin.Utils
+﻿namespace UZonMailProPlugin.Utils
 {
     public class UserAgent
     {

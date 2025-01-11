@@ -22,9 +22,9 @@ namespace UZonMailProPlugin.Services.License
     public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient) : IScopedService
     {
 #if DEBUG
-        private const string _licenseAPI = "https://app.223434.xyz:52443/api/v1/license-machine";
+        private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
 #else
-        private const string _licenseAPI = "https://app.223434.xyz:52443/api/v1/license-machine";
+        private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
 #endif
 
         private static LicenseInfo? _licenseInfo;

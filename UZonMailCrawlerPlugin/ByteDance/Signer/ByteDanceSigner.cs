@@ -1,12 +1,13 @@
 ﻿using System.Text;
 using System;
+using UZonMailCrawlerPlugin.ByteDance.Signer;
 
 namespace UZonMailCrawlerPlugin.ByteDance.Utils
 {
     /// <summary>
     /// 生成 Bogous
     /// </summary>
-    public abstract class ByteDanceBogus
+    public abstract class ByteDanceSigner
     {
         /// <summary>
         /// 生成 msToken
@@ -26,9 +27,14 @@ namespace UZonMailCrawlerPlugin.ByteDance.Utils
             return randomStr.ToString();
         }
 
+        /// <summary>
+        /// 获取签名
+        /// 常数即可
+        /// </summary>
+        /// <returns></returns>
         protected string GetSignature()
         {
-            return "";
+            return "_02B4Z6wo000016M20awAAIDAnp.LMKuZmC-jNtUAAI6L17";
         }
 
         /// <summary>
@@ -37,5 +43,12 @@ namespace UZonMailCrawlerPlugin.ByteDance.Utils
         /// <param name="requestUrl"></param>
         /// <returns></returns>
         public abstract string GetBogus(string requestUrl);
+
+        /// <summary>
+        /// 获取登陆凭证
+        /// </summary>
+        /// <param name="requestUrl"></param>
+        /// <returns></returns>
+        public abstract SignResult Sign(string requestUrl);
     }
 }

@@ -2,23 +2,24 @@
 using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Email;
-using UZonMail.Utils.Email.BodyDecorator;
+using UZonMailProPlugin.Services.License;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
-    public partial class UnsubesribeButtonDecorator : IEmailBodyDecroator
+    public partial class UnsubesribeButtonDecorator(SqlContext sqlContext, FunctionAccessService functionAccess) : IEmailBodyDecroator
     {
         public async Task<string> StartDecorating(EmailDecoratorParams decoratorParams, string originBody)
         {
             if (string.IsNullOrEmpty(originBody)) return originBody;
-            var db = decoratorParams.ServiceProvider.GetRequiredService<SqlContext>();
+            // 判断是否有企业版本功能
+            if (!(await functionAccess.HasEmailTrackingAccess())) return originBody;
 
-            var userReader = await DBCacher.GetCache<UserInfoCache>(db, decoratorParams.SendingItem.UserId.ToString());
-            var unsubscribeSettings = await DBCacher.GetCache<UnsubscribeSettingsReader>(db, userReader.OrganizationId);
+            var userReader = await DBCacher.GetCache<UserInfoCache>(sqlContext, decoratorParams.SendingItem.UserId.ToString());
+            var unsubscribeSettings = await DBCacher.GetCache<UnsubscribeSettingsReader>(sqlContext, userReader.OrganizationId);
 
             // 说明没有设置 API 地址
             if (unsubscribeSettings == null || !unsubscribeSettings.EnableUnsubscribe) return originBody;
-            if(string.IsNullOrEmpty(unsubscribeSettings.UnsubscribeUrl)) return originBody;
+            if (string.IsNullOrEmpty(unsubscribeSettings.UnsubscribeUrl)) return originBody;
 
             // 若已经存在追踪锚点则不再添加
             if (originBody.Contains(unsubscribeSettings.UnsubscribeUrl)) return originBody;

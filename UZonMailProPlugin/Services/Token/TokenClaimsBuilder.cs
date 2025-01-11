@@ -7,12 +7,10 @@ using UZonMailProPlugin.Utils;
 
 namespace UZonMailProPlugin.Services.Token
 {
-    public class TokenClaimsBuilder : ITokenClaimBuilder
+    public class TokenClaimsBuilder(HttpClient httpClient,SqlContext sqlContext) : ITokenClaimBuilder
     {
-        public async Task<List<Claim>> Build(IServiceProvider serviceProvider, User userInfo)
+        public async Task<List<Claim>> Build(User userInfo)
         {
-            var httpClient = serviceProvider.GetRequiredService<HttpClient>();
-            var sqlContext = serviceProvider.GetRequiredService<SqlContext>();
             var licenseManager = new LicenseManagerService(sqlContext, httpClient);
             var license = await licenseManager.GetLicenseInfo();
 
