@@ -14,36 +14,6 @@ namespace UZonMail.Pro.Controllers.License
     public class LicenseController(LicenseManagerService licenseManager) : ControllerBasePro
     {
         /// <summary>
-        /// 获取商业的授权的权限码
-        /// </summary>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpGet("access")]
-        public async Task<ResponseResult<List<string>>> GetAccess(string userId)
-        {
-            var licensInfo = await licenseManager.GetLicenseInfo();
-            var access = new HashSet<string>();
-
-            if(licensInfo.LicenseType.HasFlag(LicenseType.Professional)|| licensInfo.LicenseType.HasFlag(LicenseType.Professional))
-            {
-                access.Add("hideSponsor");
-            }
-
-            // 如果是商业版本，返回商业的授权数据
-            if (licensInfo.LicenseType.HasFlag(LicenseType.Professional))
-            {
-                access.Add("professional");
-            }
-
-            if (licensInfo.LicenseType.HasFlag(LicenseType.Enterprise))
-            {
-                access.Add("enterprise");
-            }
-
-            return access.ToList().ToSuccessResponse();
-        }
-
-        /// <summary>
         /// 更新授权
         /// </summary>
         /// <param name="license"></param>

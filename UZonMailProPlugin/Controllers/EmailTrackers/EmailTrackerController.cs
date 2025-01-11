@@ -174,7 +174,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         [HttpGet("filtered-count")]
         public async Task<ResponseResult<int>> GetSendingGroupsCount(string filter)
         {
-            var userId = tokenService.GetUserDataId();
+            var userId = tokenService.GetUserSqlId();
             var dbSet = db.EmailAnchors.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
@@ -193,7 +193,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         [HttpPost("filtered-data")]
         public async Task<ResponseResult<List<EmailAnchor>>> GetSendingGroupsData(string filter, Pagination pagination)
         {
-            var userId = tokenService.GetUserDataId();
+            var userId = tokenService.GetUserSqlId();
             var dbSet = db.EmailAnchors.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {

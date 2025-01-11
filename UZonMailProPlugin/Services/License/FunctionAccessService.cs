@@ -53,7 +53,7 @@ namespace UZonMailProPlugin.Services.License
         /// </summary>
         /// <param name="licenseInfo"></param>
         /// <returns></returns>
-        public async Task<bool> HasTiktokEmailCrawler(LicenseInfo licenseInfo = null)
+        public async Task<bool> HasTiktokEmailCrawlerAccess(LicenseInfo licenseInfo = null)
         {
             return await HasEnterpriseLicense(licenseInfo);
         }

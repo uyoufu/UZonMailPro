@@ -36,7 +36,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         [HttpGet]
         public async Task<ResponseResult<UnsubscribeSetting>> GetUnsubscribeSettings()
         {
-            var userId = tokenService.GetUserDataId();
+            var userId = tokenService.GetUserSqlId();
             // 判断是否是组织管理员
             var hasOrgAdmin = await permissionService.HasOrganizationPermission(userId);
             if (!hasOrgAdmin)
@@ -68,7 +68,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         [HttpPut("{settingId:long}")]
         public async Task<ResponseResult<bool>> UpdateUnsubscribeSettings(long settingId, [FromBody] UnsubscribeSetting data)
         {
-            var userId = tokenService.GetUserDataId();
+            var userId = tokenService.GetUserSqlId();
             // 判断是否是组织管理员
             var hasOrgAdmin = await permissionService.HasOrganizationPermission(userId);
             if (!hasOrgAdmin)
