@@ -7,16 +7,15 @@ using UZonMailProPlugin.Utils;
 
 namespace UZonMailProPlugin.Services.Token
 {
-    public class TokenClaimsBuilder(HttpClient httpClient,SqlContext sqlContext) : ITokenClaimBuilder
+    public class TokenClaimsBuilder(LicenseManagerService licenseManager) : ITokenClaimBuilder
     {
         public async Task<List<Claim>> Build(User userInfo)
         {
-            var licenseManager = new LicenseManagerService(sqlContext, httpClient);
             var license = await licenseManager.GetLicenseInfo();
 
             var results = new List<Claim>();
             // 专业版本
-            if(license.LicenseType == LicenseType.Professional)
+            if (license.LicenseType == LicenseType.Professional)
             {
                 results.Add(new Claim(ClaimTypes.Role, ApiRoles.Professional.ToString()));
 

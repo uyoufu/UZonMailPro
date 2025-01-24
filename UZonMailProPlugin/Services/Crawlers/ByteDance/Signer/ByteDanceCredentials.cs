@@ -5,14 +5,14 @@ namespace UZonMailProPlugin.Modules.ByteDance.Signer
     /// <summary>
     /// 生成 Bogous
     /// </summary>
-    public abstract class ByteDanceSigner
+    public abstract class ByteDanceCredentials
     {
         /// <summary>
         /// 生成 msToken
         /// </summary>
         /// <param name="randomLength"></param>
         /// <returns></returns>
-        public string GetMsToken(int randomLength = 107)
+        public static string GetMsToken(int randomLength = 107)
         {
             const string baseStr = "ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789=";
             int length = baseStr.Length;
@@ -30,7 +30,7 @@ namespace UZonMailProPlugin.Modules.ByteDance.Signer
         /// 常数即可
         /// </summary>
         /// <returns></returns>
-        protected string GetSignature()
+        public static string GetSignature()
         {
             return "_02B4Z6wo000016M20awAAIDAnp.LMKuZmC-jNtUAAI6L17";
         }
@@ -41,12 +41,5 @@ namespace UZonMailProPlugin.Modules.ByteDance.Signer
         /// <param name="requestUrl"></param>
         /// <returns></returns>
         public abstract string GetBogus(string requestUrl);
-
-        /// <summary>
-        /// 获取登陆凭证
-        /// </summary>
-        /// <param name="requestUrl"></param>
-        /// <returns></returns>
-        public abstract SignResult Sign(string requestUrl);
     }
 }

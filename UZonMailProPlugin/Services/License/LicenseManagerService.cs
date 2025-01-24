@@ -6,6 +6,8 @@ using Sigin.ObjectId;
 using System.Reflection;
 using System.Text;
 using Uamazing.Utils.Web.ResponseModel;
+using UZonMail.Core.Services.Cache;
+using UZonMail.Core.Services.Permission;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Settings;
 using UZonMail.Utils.Extensions;
@@ -19,7 +21,7 @@ namespace UZonMailProPlugin.Services.License
     /// <summary>
     /// 授权管理器
     /// </summary>
-    public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient) : IScopedService
+    public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient, PermissionService permissionService) : IScopedService
     {
 #if DEBUG
         private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
@@ -91,6 +93,9 @@ namespace UZonMailProPlugin.Services.License
             }
             await sqlContext.SaveChangesAsync();
 
+            // 清除授权缓存
+            await permissionService.ResetAllUserPermissionsCache();
+
             return license.ToSuccessResponse();
         }
 
@@ -101,10 +106,10 @@ namespace UZonMailProPlugin.Services.License
         /// <returns></returns>
         public async Task<LicenseInfo> GetLicenseInfo()
         {
-//#if DEBUG
-//            _licenseInfo ??= LicenseInfo.CreateEnterpriseLicense();
-//            return _licenseInfo;
-//#endif
+            //#if DEBUG
+            //            _licenseInfo ??= LicenseInfo.CreateEnterpriseLicense();
+            //            return _licenseInfo;
+            //#endif
 
             // 如果过期了，则从数据库中获取
             // 只有更新日期超过一天才会去请求授权服务器

@@ -1,13 +1,15 @@
 ﻿using System.Collections.Concurrent;
+using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.EmailCrawler;
 using UZonMail.Utils.Web.Service;
+using UZonMailProPlugin.Services.Crawlers.TiTok;
 
 namespace UZonMailProPlugin.Services.Crawlers
 {
     /// <summary>
     /// 爬虫管理器
     /// </summary>
-    public class CrawlerManager(IServiceProvider serviceProvider, ILogger<CrawlerManager> logger) : ConcurrentDictionary<long, ClawerTaskService>, ISingletonService
+    public class CrawlerManager(IServiceProvider serviceProvider, ILogger<CrawlerManager> logger) : ConcurrentDictionary<long, CrawlerTaskBase>, ISingletonService
     {
         /// <summary>
         /// 开始 TikTok 邮箱爬虫
@@ -15,19 +17,24 @@ namespace UZonMailProPlugin.Services.Crawlers
         /// 若存在，则直接返回
         /// </summary>
         /// <param name="crawlerTaskInfo"></param>
-        public void StartTikTokEmailCrawler(CrawlerTaskInfo crawlerTaskInfo)
+        public async Task StartTikTokEmailCrawler(CrawlerTaskInfo crawlerTaskInfo)
         {
-            if (ContainsKey(crawlerTaskInfo.Id))
+            if (TryGetValue(crawlerTaskInfo.Id, out var value))
             {
-                logger.LogWarning($"TikTok 邮箱爬虫任务 {crawlerTaskInfo.Id} 已经存在，无需重复创建");
+                logger.LogWarning($"TikTok 邮箱爬虫任务 {crawlerTaskInfo.Id} 已经存在，重新激活");
+                await value.RestartAsync(crawlerTaskInfo.Id);
                 return;
             }
-
-            var scope = serviceProvider.CreateAsyncScope();
-            // 创建爬虫任务
-            var crawlerTaskService = scope.ServiceProvider.GetRequiredService<TikTokEmailCrawler>();
-            crawlerTaskService.SetCrawlerTaskInfo(crawlerTaskInfo);
-            _ = crawlerTaskService.StartAsync(scope,crawlerTaskInfo.Id);
+            else
+            {
+                using var scope = serviceProvider.CreateAsyncScope();
+                var crawlerTaskId = crawlerTaskInfo.Id;
+                // 创建爬虫任务
+                var crawlerTaskService = scope.ServiceProvider.GetRequiredService<TikTokEmailCrawler>();
+                TryAdd(crawlerTaskId, crawlerTaskService);
+                await crawlerTaskService.StartAsync(scope, crawlerTaskId);
+                TryRemove(crawlerTaskId, out _);
+            }
         }
 
         /// <summary>
@@ -35,10 +42,10 @@ namespace UZonMailProPlugin.Services.Crawlers
         /// </summary>
         /// <param name="crawlerTaskId"></param>
         /// <returns></returns>
-        public async Task StopCrawler(long crawlerTaskId)
+        public async Task StopCrawler(long crawlerTaskId, SqlContext db)
         {
             if (!TryGetValue(crawlerTaskId, out var crawler)) return;
-            await crawler.StopAsync();
+            await crawler.StopAsync(crawlerTaskId);
         }
     }
 }
