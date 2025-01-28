@@ -19,21 +19,28 @@ namespace UZonMailProPlugin.Services.Crawlers
         /// <param name="crawlerTaskInfo"></param>
         public async Task StartTikTokEmailCrawler(CrawlerTaskInfo crawlerTaskInfo)
         {
-            if (TryGetValue(crawlerTaskInfo.Id, out var value))
+            try
             {
-                logger.LogWarning($"TikTok 邮箱爬虫任务 {crawlerTaskInfo.Id} 已经存在，重新激活");
-                await value.RestartAsync(crawlerTaskInfo.Id);
-                return;
+                if (TryGetValue(crawlerTaskInfo.Id, out var value))
+                {
+                    logger.LogWarning($"TikTok 邮箱爬虫任务 {crawlerTaskInfo.Id} 已经存在，重新激活");
+                    await value.RestartAsync(crawlerTaskInfo.Id);
+                    return;
+                }
+                else
+                {
+                    using var scope = serviceProvider.CreateAsyncScope();
+                    var crawlerTaskId = crawlerTaskInfo.Id;
+                    // 创建爬虫任务
+                    var crawlerTaskService = scope.ServiceProvider.GetRequiredService<TikTokEmailCrawler>();
+                    TryAdd(crawlerTaskId, crawlerTaskService);
+                    await crawlerTaskService.StartAsync(scope, crawlerTaskId);
+                    TryRemove(crawlerTaskId, out _);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                using var scope = serviceProvider.CreateAsyncScope();
-                var crawlerTaskId = crawlerTaskInfo.Id;
-                // 创建爬虫任务
-                var crawlerTaskService = scope.ServiceProvider.GetRequiredService<TikTokEmailCrawler>();
-                TryAdd(crawlerTaskId, crawlerTaskService);
-                await crawlerTaskService.StartAsync(scope, crawlerTaskId);
-                TryRemove(crawlerTaskId, out _);
+                logger.LogError(ex, $"TikTok 邮箱爬虫任务 {crawlerTaskInfo.Id} 执行失败");
             }
         }
 

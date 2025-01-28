@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
+using UZonMail.Core.Utils.Database;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.EmailCrawler;
 
@@ -158,12 +159,14 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
             var exists = await db.CrawlerTaskResults.AsNoTracking()
                 .Where(x => x.TikTokAuthorId == tiktokAuthor.Id)
                 .Where(x => taskIds.Contains(x.CrawlerTaskInfoId))
+                .Select(x => x.CrawlerTaskInfoId)
+                .Distinct()
                 .ToListAsync();
 
             // 移除已经存在的任务
             foreach (var item in exists)
             {
-                taskIds.Remove(item.CrawlerTaskInfoId);
+                taskIds.Remove(item);
             }
 
             // 保存剩余的任务
@@ -175,6 +178,9 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
                     TikTokAuthorId = tiktokAuthor.Id,
                     ExistExtraInfo = tiktokAuthor.IsParsed
                 });
+
+                // 增加数量
+                await db.CrawlerTaskInfos.UpdateAsync(x => x.Id == taskId, x => x.SetProperty(y => y.Count, y => y.Count + 1));
             }
             await db.SaveChangesAsync();
         }

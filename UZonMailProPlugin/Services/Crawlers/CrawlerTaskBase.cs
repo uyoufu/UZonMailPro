@@ -43,10 +43,10 @@ namespace UZonMailProPlugin.Services.Crawlers
             // 判断是否有权限调用
             var access = scope.ServiceProvider.GetRequiredService<FunctionAccessService>();
             var hasAccess = await access.HasTiktokEmailCrawlerAccess();
-            //if (!hasAccess)
-            //{
-            //    return;
-            //}
+            if (!hasAccess)
+            {
+                return;
+            }
 
             var db = scope.ServiceProvider.GetRequiredService<SqlContext>();
             var crawlerTaskInfo = await db.CrawlerTaskInfos.AsNoTracking().Where(x => x.Id == crawlerTaskId).FirstOrDefaultAsync();
@@ -69,7 +69,7 @@ namespace UZonMailProPlugin.Services.Crawlers
             if (crawlerTaskInfo?.ProxyId > 0)
             {
                 // 开始使用代理
-                var proxyStr = await GetProxyString(db, crawlerTaskId);
+                var proxyStr = await GetProxyString(db, crawlerTaskInfo.ProxyId);
                 if (!string.IsNullOrEmpty(proxyStr))
                 {
                     httpClientHandler.WithProxy(proxyStr);
@@ -120,10 +120,13 @@ namespace UZonMailProPlugin.Services.Crawlers
             }
         }
 
-        public async Task RestartAsync(long crawlerTaskId)
+        public async Task<bool> RestartAsync(long crawlerTaskId)
         {
+            if (RootStep == null) return false;
+
             RootStep.AddCrawlerTaskId(crawlerTaskId);
             _crawlerTaskParams.CrawlerTaskId = crawlerTaskId;
+            return true;
         }
 
         private async Task<string?> GetProxyString(SqlContext db, long proxyId)
