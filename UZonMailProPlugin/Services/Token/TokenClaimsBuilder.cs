@@ -2,6 +2,7 @@
 using Uamazing.Utils.Web.Token;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Organization;
+using UZonMail.Utils.Web.Token;
 using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.Utils;
 
@@ -9,9 +10,10 @@ namespace UZonMailProPlugin.Services.Token
 {
     public class TokenClaimsBuilder(LicenseManagerService licenseManager) : ITokenClaimBuilder
     {
-        public async Task<List<Claim>> Build(User userInfo)
+        public async Task<List<Claim>> Build(ITokenSource tokenSource)
         {
             var license = await licenseManager.GetLicenseInfo();
+            var userInfo = tokenSource as User;
 
             var results = new List<Claim>();
             // 专业版本

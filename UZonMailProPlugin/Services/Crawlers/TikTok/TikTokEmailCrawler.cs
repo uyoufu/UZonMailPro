@@ -79,6 +79,8 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
                 await CopyCrawledResultsRecursively(_db, authorInfo, crawlerTaskParams.CrawlerTaskId);
                 // 判断是爬取的数量与总数是否相等，不相等，则继续爬取粉丝信息
                 // [TODO] 未完成
+                // 由于每个任务获取重复任务的概率太高了，因此若遇到，直接跳过
+                return;
             }
 
             // 2. 等待保存新的结果
@@ -120,6 +122,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
             if (scrawlerResult != null)
             {
                 // 说明已经存在了
+                _logger.Debug($"已复制过 [{authorInfo.Nickname}] 粉丝数据，跳过操作");
                 return;
             }
 

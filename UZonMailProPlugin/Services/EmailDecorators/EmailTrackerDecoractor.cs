@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using UZonMail.Core.PluginBase.Email;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.ReadingTracker;
 using UZonMail.Utils.Email;
@@ -11,8 +12,9 @@ namespace UZonMailProPlugin.Services.EmailDecorators
         private static string? _baseUrl = string.Empty;
         private static readonly string _apiSettingKey = "baseApiUrl";
 
-        public async Task<string> StartDecorating(EmailDecoratorParams decoratorParams, string originBody)
+        public async Task<string> StartDecorating(IEmailDecoratorParams trackerParams, string originBody)
         {
+            var decoratorParams = trackerParams as EmailDecoratorParams;
             if (string.IsNullOrEmpty(originBody)) return originBody;
             // 说明没有设置 API 地址
             if (_baseUrl == null) return originBody;

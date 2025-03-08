@@ -6,10 +6,10 @@
 		<Nullable>enable</Nullable>
 		<Product>UZonMail.Pro</Product>
 		<AssemblyName>$(MSBuildProjectName)</AssemblyName>
-		<PlatformTarget>x64</PlatformTarget>
 		<LangVersion>13.0</LangVersion>
 		<OutputType>Library</OutputType>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<Platforms>x64</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -36,14 +36,13 @@
 	</ItemGroup>
 
 	<ItemGroup>		
-	  <PackageReference Include="DeviceId" Version="6.7.0" />		
+	  <PackageReference Include="DeviceId" Version="6.8.0" />		
 	  <PackageReference Include="Jint" Version="4.1.0" />		
 	  <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\SendMultipleEmails\backend-src\Plugins\UZonMailCorePlugin\UZonMailCorePlugin.csproj" />
-		<ProjectReference Include="..\..\SendMultipleEmails\backend-src\UZonMailUtils\UZonMailUtils.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

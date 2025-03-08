@@ -39,6 +39,8 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
             var existOne = await _db.TiktokAuthors.FirstOrDefaultAsync(x => x.Id == authorInfo.Id);
             if (existOne != null) return;
 
+            _logger.Debug($"保存粉丝 {authorInfo.Nickname}");
+
             // 保存作者信息
             authorInfo.FollowingAuthorId = followingId;
             await _db.TiktokAuthors.AddAsync(authorInfo);

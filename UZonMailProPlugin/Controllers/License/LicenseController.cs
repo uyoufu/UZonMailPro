@@ -6,6 +6,9 @@ using UZonMailProPlugin.Utils;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Services.License;
 
+
+
+
 namespace UZonMail.Pro.Controllers.License
 {
     /// <summary>
@@ -13,6 +16,18 @@ namespace UZonMail.Pro.Controllers.License
     /// </summary>
     public class LicenseController(LicenseManagerService licenseManager) : ControllerBasePro
     {
+        /// <summary>
+        /// 获取设备ID
+        /// </summary>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpGet("device-id")]
+        public async Task<ResponseResult<string>> GetDeiviceId()
+        {
+            var deviceId = licenseManager.GetDeviceId();
+            return deviceId.ToSuccessResponse();
+        }
+
         /// <summary>
         /// 更新授权
         /// </summary>
@@ -33,12 +48,24 @@ namespace UZonMail.Pro.Controllers.License
         }
 
         /// <summary>
+        /// 更新现有授权信息
+        /// </summary>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpPut("exist")]
+        public async Task<ResponseResult<LicenseInfo>> UpdateExistingLicenseInfo()
+        {
+            var result = await licenseManager.UpdateExistingLicense();
+            return result;
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="licenseCode"></param>
         /// <returns></returns>
         [HttpGet()]
-        public async Task<ResponseResult<LicenseInfo>> GetLicenseInfo()
+        public async Task<ResponseResult<LicenseInfo>> GetLicenseInfo(bool updateFirst)
         {
             var result = await licenseManager.GetLicenseInfo();
             return result.ToSuccessResponse();

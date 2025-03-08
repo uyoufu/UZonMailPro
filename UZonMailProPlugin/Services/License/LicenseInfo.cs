@@ -45,5 +45,19 @@ namespace UZonMailProPlugin.Services.License
                 ActiveDate = DateTime.Now
             };
         }
+
+        /// <summary>
+        /// 创建默认的授权
+        /// </summary>
+        /// <returns></returns>
+        public static LicenseInfo CreateDefaultLicense()
+        {
+            return new LicenseInfo()
+            {
+                LicenseType = LicenseType.Community,
+                ExpireDate = DateTime.Now.AddYears(99),
+                ActiveDate = DateTime.Now
+            };
+        }
     }
 }

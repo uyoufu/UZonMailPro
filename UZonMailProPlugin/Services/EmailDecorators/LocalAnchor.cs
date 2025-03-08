@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UZonMail.DB.MySql;
+using UZonMail.Core.PluginBase.Email;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailSending;
 using UZonMail.DB.SQL.ReadingTracker;
-using UZonMail.Utils.Email;
 using UZonMail.Utils.Web.Service;
 
 namespace UZonMailProPlugin.Services.EmailDecorators

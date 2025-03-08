@@ -95,7 +95,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             await db.SaveChangesAsync();
 
             // 更新缓存
-            DBCacher.SetCacheDirty<UnsubscribeSettingsReader>(exist.ObjectId);
+            CacheManager.Global.SetCacheDirty<UnsubscribeSettingsReader>(exist.ObjectId);
 
             return true.ToSuccessResponse();
         }

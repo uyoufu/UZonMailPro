@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using log4net;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using UZonMail.Core.Utils.Database;
 using UZonMail.DB.SQL;
@@ -8,6 +9,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
 {
     public abstract class CrawlStep
     {
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(CrawlStep));
         private readonly HashSet<long> _crawlerTaskIds = [];
         private static readonly object _lock = new();
 
@@ -20,13 +22,11 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
         public CrawlStep(long authorId)
         {
             Key = authorId.ToString();
-            StartAsync();
         }
 
         public CrawlStep()
         {
             Key = Guid.NewGuid().ToString();
-            StartAsync();
         }
 
         private Task _executeTask;
@@ -49,6 +49,10 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
             }
         }
 
+        /// <summary>
+        /// 由外部调用，开始执行任务
+        /// </summary>
+        /// <returns></returns>
         public Task StartAsync()
         {
             _executeTask ??= ExecuteAsync();
@@ -155,8 +159,9 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
         /// <returns></returns>
         public async Task SaveCrawlerTaskResult(SqlContext db, TiktokAuthor tiktokAuthor)
         {
+            _logger.Debug($"保存爬虫任务结果 [{tiktokAuthor.Nickname}]");
             var taskIds = GetAllTaskIds();
-            var exists = await db.CrawlerTaskResults.AsNoTracking()
+            var existIds = await db.CrawlerTaskResults.AsNoTracking()
                 .Where(x => x.TikTokAuthorId == tiktokAuthor.Id)
                 .Where(x => taskIds.Contains(x.CrawlerTaskInfoId))
                 .Select(x => x.CrawlerTaskInfoId)
@@ -164,25 +169,28 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
                 .ToListAsync();
 
             // 移除已经存在的任务
-            foreach (var item in exists)
+            var newTaskIds = taskIds.Except(existIds).ToList();
+            if(newTaskIds.Count == 0)
             {
-                taskIds.Remove(item);
+                _logger.Debug($"已经保存过 [{tiktokAuthor.Nickname}] 的爬虫任务结果，本次跳过");
+                return;
             }
 
-            // 保存剩余的任务
-            foreach (var taskId in taskIds)
+            var newTaskResults = newTaskIds.ConvertAll(x =>
             {
-                await db.CrawlerTaskResults.AddAsync(new CrawlerTaskResult
+                return new CrawlerTaskResult
                 {
-                    CrawlerTaskInfoId = taskId,
+                    CrawlerTaskInfoId = x,
                     TikTokAuthorId = tiktokAuthor.Id,
                     ExistExtraInfo = tiktokAuthor.IsParsed
-                });
+                };
+            });
+            await db.CrawlerTaskResults.AddRangeAsync(newTaskResults);
 
-                // 增加数量
-                await db.CrawlerTaskInfos.UpdateAsync(x => x.Id == taskId, x => x.SetProperty(y => y.Count, y => y.Count + 1));
-            }
+            // 更新数量
+            await db.CrawlerTaskInfos.UpdateAsync(x => newTaskIds.Contains(x.Id), x => x.SetProperty(y => y.Count, y => y.Count + 1));
             await db.SaveChangesAsync();
+            _logger.Debug($"保存爬虫结果 [{tiktokAuthor.Nickname}] 完成");
         }
     }
 }
