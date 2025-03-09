@@ -223,14 +223,7 @@ namespace UZonMailProPlugin.Services.License
         public string GetDeviceId()
         {
             // 判断是否有机器码文件，若没有，则新增
-            var fileTokenPath = "data/device/device-token.txt";
-            if (!File.Exists(fileTokenPath))
-            {
-                // 创建目录
-                Directory.CreateDirectory(Path.GetDirectoryName(fileTokenPath));
-                // 保存内容
-                File.WriteAllText(fileTokenPath, Guid.NewGuid().ToString());
-            }
+            var fileTokenPath = GetDeviceTokenPath();
 
             // 获取机器识别码
             string deviceId = new DeviceIdBuilder()
@@ -242,6 +235,38 @@ namespace UZonMailProPlugin.Services.License
                                 .ToString();
 
             return deviceId;
+        }
+
+        /// <summary>
+        /// 获取设备 Token 路径
+        /// 1. 若有 AppData 中包含，则优先使用 AppData 中的数据
+        /// 2. 若没有，则从 data/device/device-token.txt 复制
+        /// </summary>
+        /// <returns></returns>
+        private string GetDeviceTokenPath()
+        {
+            var fileTokenPath = "data/device/device-token.txt";
+            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var fullTokenPath = Path.Combine(localAppData, "UZonMail/device-token.txt");
+            if (File.Exists(fullTokenPath)) return fullTokenPath;
+
+            // 不存在时，判断用户目录下是否包含
+            if (File.Exists(fileTokenPath))
+            {
+                // 复制到用户配置目录
+                Directory.CreateDirectory(Path.GetDirectoryName(fullTokenPath));
+                File.Copy(fileTokenPath, fullTokenPath);
+                return fullTokenPath;
+            }
+
+            // 若不存在，直接创建一个
+            // 创建目录
+            Directory.CreateDirectory(Path.GetDirectoryName(fileTokenPath));
+            // 保存内容
+            File.WriteAllText(fileTokenPath, Guid.NewGuid().ToString());
+
+            // 重新获取
+            return GetDeviceTokenPath();
         }
     }
 }

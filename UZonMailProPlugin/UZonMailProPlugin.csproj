@@ -9,11 +9,10 @@
 		<LangVersion>13.0</LangVersion>
 		<OutputType>Library</OutputType>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<Platforms>x64</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<BaseOutputPath>..\..\SendMultipleEmails\backend-src\UZonMailService\bin\x64\Debug\net9.0\Plugins\UZonMailPro</BaseOutputPath>
+		<BaseOutputPath>..\..\SendMultipleEmails\backend-src\UZonMailService\bin\Debug\net9.0\Plugins\UZonMailPro</BaseOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
