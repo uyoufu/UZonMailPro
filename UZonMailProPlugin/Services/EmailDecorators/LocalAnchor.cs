@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.PluginBase.Email;
+using UZonMail.Core.Services.Plugin;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.ReadingTracker;
 using UZonMail.Utils.Web.Service;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.ReadingTracker;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
-    public class LocalAnchor(SqlContext sqlContext, HttpClient httpClient) : ITransientService
+    public class LocalAnchor(SqlContextPro sqlContext, HttpClient httpClient) : ITransientService
     {
         private static readonly string _anchorUrl = "api/pro/email-tracker/image";
 

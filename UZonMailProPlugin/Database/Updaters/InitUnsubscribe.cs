@@ -1,6 +1,6 @@
 ﻿using UZonMail.Core.Database.Updater;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Unsubscribes;
+using UZonMailProPlugin.SQL.Unsubscribes;
 
 namespace UZonMailProPlugin.Database.Updaters
 {

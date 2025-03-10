@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using Uamazing.Utils.Web.Token;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Organization;
+using UZonMail.DB.SQL.Core.Organization;
 using UZonMail.Utils.Web.Token;
 using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.Utils;

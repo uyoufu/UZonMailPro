@@ -5,20 +5,21 @@ using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Settings;
 using UZonMail.Core.Utils.Database;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.ReadingTracker;
-using UZonMail.DB.SQL.Unsubscribes;
+using UZonMail.DB.Utils;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Controllers.Base;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.Unsubscribes;
 
 namespace UZonMailProPlugin.Controllers.Unsubscribes
 {
     /// <summary>
     /// 退订页面控制器
     /// </summary>
-    /// <param name="db"></param>
+    /// <param name="dbPro"></param>
     /// <param name="tokenService"></param>
-    public class UnsubscribePageController(SqlContext db, TokenService tokenService) : ControllerBasePro
+    public class UnsubscribePageController(SqlContext db, SqlContextPro dbPro, TokenService tokenService) : ControllerBasePro
     {
         /// <summary>
         /// 添加退订页面
@@ -34,7 +35,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             // 添加当前用户的相关信息
             var organizationId = tokenService.GetOrganizationId();
 
-            var unsubscribe = await db.UnsubscribePages.FirstOrDefaultAsync(x =>
+            var unsubscribe = await dbPro.UnsubscribePages.FirstOrDefaultAsync(x =>
                 x.OrganizationId == organizationId && x.Language == unsubscribePage.Language);
             if (unsubscribe != null)
             {
@@ -42,8 +43,8 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             }
 
             unsubscribePage.OrganizationId = organizationId;
-            db.Add(unsubscribePage);
-            await db.SaveChangesAsync();
+            dbPro.Add(unsubscribePage);
+            await dbPro.SaveChangesAsync();
 
             return unsubscribePage.ToSuccessResponse();
         }
@@ -60,7 +61,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             var organizationId = tokenService.GetOrganizationId();
             var htmlContent = unsubscribePage.HtmlContent;
 
-            await db.UnsubscribePages.UpdateAsync(x => x.OrganizationId == organizationId && x.Id == id, x => x.SetProperty(y => y.HtmlContent, htmlContent));
+            await dbPro.UnsubscribePages.UpdateAsync(x => x.OrganizationId == organizationId && x.Id == id, x => x.SetProperty(y => y.HtmlContent, htmlContent));
             return true.ToSuccessResponse();
         }
 
@@ -74,12 +75,12 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         public async Task<ResponseResult<bool>> DeleteUnsubscribePage(long id)
         {
             var organizationId = tokenService.GetOrganizationId();
-            var exist = await db.UnsubscribePages.FirstOrDefaultAsync(x => x.OrganizationId == organizationId && x.Id == id);
+            var exist = await dbPro.UnsubscribePages.FirstOrDefaultAsync(x => x.OrganizationId == organizationId && x.Id == id);
             if (exist == null) return true.ToSuccessResponse();
 
             // 开始删除
-            db.UnsubscribePages.Remove(exist);
-            await db.SaveChangesAsync();
+            dbPro.UnsubscribePages.Remove(exist);
+            await dbPro.SaveChangesAsync();
             return true.ToSuccessResponse();
         }
 
@@ -114,19 +115,19 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             UnsubscribePage? pageResult = null;
             if (id > 0)
             {
-                pageResult = await db.UnsubscribePages.Where(x => x.Id == id)
+                pageResult = await dbPro.UnsubscribePages.Where(x => x.Id == id)
                     .Where(x => x.OrganizationId == organizationId || x.IsDefault)
                     .FirstOrDefaultAsync();
             }
             if (pageResult == null && !string.IsNullOrEmpty(language))
             {
                 // 从语言中获取
-                pageResult = await db.UnsubscribePages.Where(x => x.Language == language)
+                pageResult = await dbPro.UnsubscribePages.Where(x => x.Language == language)
                     .Where(x => x.OrganizationId == organizationId || x.IsDefault)
                     .FirstOrDefaultAsync();
             }
             // 如果未找到，则从默认的退订页面中获取
-            pageResult ??= await db.UnsubscribePages.Where(x => x.IsDefault || x.OrganizationId == organizationId).FirstOrDefaultAsync();
+            pageResult ??= await dbPro.UnsubscribePages.Where(x => x.IsDefault || x.OrganizationId == organizationId).FirstOrDefaultAsync();
             pageResult ??= new UnsubscribePage()
             {
                 OrganizationId = organizationId,
@@ -145,7 +146,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         public async Task<ResponseResult<int>> GetUnsubscribePagesCount(string filter)
         {
             var organizationId = tokenService.GetOrganizationId();
-            var dbSet = db.UnsubscribePages.AsNoTracking().Where(x => x.OrganizationId == organizationId || x.IsDeleted);
+            var dbSet = dbPro.UnsubscribePages.AsNoTracking().Where(x => x.OrganizationId == organizationId || x.IsDeleted);
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.Language.Contains(filter) || x.HtmlContent.Contains(filter));
@@ -164,7 +165,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         public async Task<ResponseResult<List<UnsubscribePage>>> GetUnsubscribePagesData(string filter, Pagination pagination)
         {
             var organizationId = tokenService.GetOrganizationId();
-            var dbSet = db.UnsubscribePages.AsNoTracking().Where(x => x.OrganizationId == organizationId || x.IsDeleted);
+            var dbSet = dbPro.UnsubscribePages.AsNoTracking().Where(x => x.OrganizationId == organizationId || x.IsDeleted);
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.Language.Contains(filter) || x.HtmlContent.Contains(filter));

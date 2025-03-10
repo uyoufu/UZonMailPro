@@ -4,15 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailCrawler;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Controllers.Base;
 using UZonMailProPlugin.Controllers.EmailCrawler.Validators;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Controllers.EmailCrawler
 {
-    public class TiktokDeviceController(SqlContext db, TokenService tokenService) : ControllerBasePro
+    public class TiktokDeviceController(SqlContextPro db, TokenService tokenService) : ControllerBasePro
     {
         /// <summary>
         /// 创建一个 TikTok 设备

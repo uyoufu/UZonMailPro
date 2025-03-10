@@ -1,13 +1,14 @@
 ﻿using System.Text.RegularExpressions;
-using UZonMail.Core.PluginBase.Email;
+using UZonMail.Core.Services.Plugin;
 using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Email;
 using UZonMailProPlugin.Services.License;
+using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
-    public partial class UnsubesribeButtonDecorator(SqlContext sqlContext, FunctionAccessService functionAccess) : IEmailBodyDecroator
+    public partial class UnsubesribeButtonDecorator(SqlContext db, SqlContextPro dbPro, FunctionAccessService functionAccess) : IEmailBodyDecroator
     {
         public async Task<string> StartDecorating(IEmailDecoratorParams unsubesribeParams, string originBody)
         {
@@ -16,8 +17,8 @@ namespace UZonMailProPlugin.Services.EmailDecorators
             if (!(await functionAccess.HasEmailTrackingAccess())) return originBody;
             var decoratorParams = unsubesribeParams as EmailDecoratorParams;
 
-            var userReader = await CacheManager.Global.GetCache<UserInfoCache>(sqlContext, decoratorParams.SendingItem.UserId.ToString());
-            var unsubscribeSettings = await CacheManager.Global.GetCache<UnsubscribeSettingsReader>(sqlContext, userReader.OrganizationId);
+            var userReader = await CacheManager.Global.GetCache<UserInfoCache>(db, decoratorParams.SendingItem.UserId.ToString());
+            var unsubscribeSettings = await CacheManager.Global.GetCache<UnsubscribeSettingsReader, SqlContextPro>(dbPro, userReader.OrganizationId);
 
             // 说明没有设置 API 地址
             if (unsubscribeSettings == null || !unsubscribeSettings.EnableUnsubscribe) return originBody;

@@ -4,22 +4,24 @@ using UZonMail.Utils.Email;
 using UZonMailProPlugin.Services.EmailDecorators.UnsubscribeHeaders;
 using UZonMail.DB.Managers.Cache;
 using UZonMailProPlugin.Services.License;
-using UZonMail.Core.PluginBase.Email;
+using UZonMail.Core.Services.Plugin;
+using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
     /// <summary>
     /// 在消息体中添加退订链接
     /// </summary>
-    public class MimeMessageDecorator(IServiceProvider serviceProvider,SqlContext sqlContext, FunctionAccessService functionAccess) : IMimeMessageDecroator
+    public class MimeMessageDecorator(IServiceProvider serviceProvider, SqlContext db, SqlContextPro dbPro, FunctionAccessService functionAccess)
+        : IMimeMessageDecroator
     {
         public async Task<MimeMessage> StartDecorating(IEmailDecoratorParams mimeParams, MimeMessage mimeMessage)
-        {            
+        {
             if (!(await functionAccess.HasUnsubscribeAccess())) return mimeMessage;
 
             var decoratorParams = mimeParams as EmailDecoratorParams;
-            var userInfo = await CacheManager.Global.GetCache<UserInfoCache>(sqlContext, decoratorParams.SendingItem.UserId);
-            var unsubscribeSettings = await CacheManager.Global.GetCache<UnsubscribeSettingsReader>(sqlContext, userInfo.OrganizationId);
+            var userInfo = await CacheManager.Global.GetCache<UserInfoCache>(db, decoratorParams.SendingItem.UserId);
+            var unsubscribeSettings = await CacheManager.Global.GetCache<UnsubscribeSettingsReader, SqlContextPro>(dbPro, userInfo.OrganizationId);
 
             // 没有启用退订
             if (unsubscribeSettings == null || !unsubscribeSettings.EnableUnsubscribe) return mimeMessage;

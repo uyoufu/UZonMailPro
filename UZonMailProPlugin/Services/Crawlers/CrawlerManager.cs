@@ -1,8 +1,8 @@
 ﻿using System.Collections.Concurrent;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailCrawler;
 using UZonMail.Utils.Web.Service;
 using UZonMailProPlugin.Services.Crawlers.TiTok;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Services.Crawlers
 {
@@ -49,7 +49,7 @@ namespace UZonMailProPlugin.Services.Crawlers
         /// </summary>
         /// <param name="crawlerTaskId"></param>
         /// <returns></returns>
-        public async Task StopCrawler(long crawlerTaskId, SqlContext db)
+        public async Task StopCrawler(long crawlerTaskId)
         {
             if (!TryGetValue(crawlerTaskId, out var crawler)) return;
             await crawler.StopAsync(crawlerTaskId);

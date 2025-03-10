@@ -1,16 +1,10 @@
 ﻿using log4net;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using UZonMail.Core.Utils.Database;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailCrawler;
-using UZonMail.Utils.Http;
 using UZonMail.Utils.Json;
-using UZonMailProPlugin.Services.Crawlers.ByteDance.APIs;
-using UZonMailProPlugin.Services.Crawlers.ByteDance.Extensions;
 using UZonMailProPlugin.Services.License;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Services.Crawlers.TiTok
 {
@@ -19,14 +13,14 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
     /// </summary>
     public class TikTokEmailCrawler : CrawlerTaskBase
     {
-        private SqlContext _db;
+        private SqlContextPro _db;
         private CrawlerManager _crawlerManager;
         private FunctionAccessService _access;
 
         public TikTokEmailCrawler(IServiceProvider serviceProvider) : base(serviceProvider)
         {
             var provider = Scope.ServiceProvider;
-            _db = provider.GetRequiredService<SqlContext>();
+            _db = provider.GetRequiredService<SqlContextPro>();
             _crawlerManager = provider.GetRequiredService<CrawlerManager>();
             _access = provider.GetRequiredService<FunctionAccessService>();
         }
@@ -108,7 +102,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
             }
         }
 
-        public static async Task CopyCrawledResultsRecursively(SqlContext db, TiktokAuthor authorInfo, long crawlerTaskId)
+        public static async Task CopyCrawledResultsRecursively(SqlContextPro db, TiktokAuthor authorInfo, long crawlerTaskId)
         {
             if (authorInfo == null)
             {

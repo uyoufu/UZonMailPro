@@ -1,7 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailCrawler;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Services.Crawlers
 {
@@ -10,7 +11,7 @@ namespace UZonMailProPlugin.Services.Crawlers
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             using var scope = ssf.CreateAsyncScope();
-            var db = scope.ServiceProvider.GetRequiredService<SqlContext>();
+            var db = scope.ServiceProvider.GetRequiredService<SqlContextPro>();
             // 对爬虫任务进行恢复
             var runnintTasks = await db.CrawlerTaskInfos
                 .Where(x => x.Status == CrawlerStatus.Running)

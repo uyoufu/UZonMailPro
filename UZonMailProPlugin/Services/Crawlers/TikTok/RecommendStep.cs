@@ -1,10 +1,9 @@
 ﻿using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using UZonMail.Core.Utils.Database;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailCrawler;
 using UZonMail.Utils.Json;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Services.Crawlers.TiTok
 {
@@ -17,7 +16,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
     public class RecommendStep(CrawlerTaskParams crawlerTaskParams, JObject recommendVideoInfo, long authorId) : CrawlStep(authorId)
     {
         private readonly static ILog _logger = LogManager.GetLogger(typeof(RecommendStep));
-        private readonly SqlContext _db = crawlerTaskParams.ServiceProvider.GetRequiredService<SqlContext>();
+        private readonly SqlContextPro _db = crawlerTaskParams.ServiceProvider.GetRequiredService<SqlContextPro>();
 
         protected override async Task ExecuteAsync()
         {

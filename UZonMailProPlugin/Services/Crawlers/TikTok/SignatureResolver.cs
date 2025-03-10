@@ -1,6 +1,5 @@
-﻿using Org.BouncyCastle.Bcpg.OpenPgp;
-using System.Text.RegularExpressions;
-using UZonMail.DB.SQL.EmailCrawler;
+﻿using System.Text.RegularExpressions;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Services.Crawlers.TiTok
 {

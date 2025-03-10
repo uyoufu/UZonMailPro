@@ -6,7 +6,7 @@ using System.Reflection;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Permission;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Settings;
+using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Extensions;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Service;

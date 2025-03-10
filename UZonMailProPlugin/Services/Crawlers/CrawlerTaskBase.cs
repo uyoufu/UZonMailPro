@@ -1,14 +1,13 @@
 ﻿using log4net;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using UZonMail.Core.Utils.Database;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailCrawler;
 using UZonMail.Utils.Http;
 using UZonMail.Utils.Web.Service;
 using UZonMailProPlugin.Services.Crawlers.ByteDance.Extensions;
 using UZonMailProPlugin.Services.Crawlers.TiTok;
 using UZonMailProPlugin.Services.License;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Services.Crawlers
 {
@@ -48,8 +47,8 @@ namespace UZonMailProPlugin.Services.Crawlers
                 return;
             }
 
-            var db = scope.ServiceProvider.GetRequiredService<SqlContext>();
-            var crawlerTaskInfo = await db.CrawlerTaskInfos.AsNoTracking().Where(x => x.Id == crawlerTaskId).FirstOrDefaultAsync();
+            var dbPro = scope.ServiceProvider.GetRequiredService<SqlContextPro>();
+            var crawlerTaskInfo = await dbPro.CrawlerTaskInfos.AsNoTracking().Where(x => x.Id == crawlerTaskId).FirstOrDefaultAsync();
 
             if (crawlerTaskInfo?.TikTokDeviceId == 0)
             {
@@ -58,7 +57,7 @@ namespace UZonMailProPlugin.Services.Crawlers
             }
 
             // 查找参数
-            var device = await db.TikTokDevices.AsNoTracking().Where(x => x.Id == crawlerTaskInfo.TikTokDeviceId).FirstOrDefaultAsync();
+            var device = await dbPro.TikTokDevices.AsNoTracking().Where(x => x.Id == crawlerTaskInfo.TikTokDeviceId).FirstOrDefaultAsync();
             if (device == null)
             {
                 _logger.Warn($"设备信息不存在: {crawlerTaskInfo.TikTokDeviceId}");
@@ -68,6 +67,7 @@ namespace UZonMailProPlugin.Services.Crawlers
             var httpClientHandler = new HttpClientHandler();
             if (crawlerTaskInfo?.ProxyId > 0)
             {
+                var db = scope.ServiceProvider.GetRequiredService<SqlContext>();
                 // 开始使用代理
                 var proxyStr = await GetProxyString(db, crawlerTaskInfo.ProxyId);
                 if (!string.IsNullOrEmpty(proxyStr))
@@ -90,7 +90,7 @@ namespace UZonMailProPlugin.Services.Crawlers
             RootStep = new RootStep(crawlerTaskId);
 
             // 标记任务开始
-            await db.CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId).ExecuteUpdateAsync(x => x.SetProperty(y => y.Status, CrawlerStatus.Running)
+            await dbPro.CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId).ExecuteUpdateAsync(x => x.SetProperty(y => y.Status, CrawlerStatus.Running)
                 .SetProperty(y => y.StartDate, DateTime.Now));
 
             try
@@ -106,12 +106,12 @@ namespace UZonMailProPlugin.Services.Crawlers
             {
                 // 任务结束
                 // 计算结果数量
-                var resultCount = await db.CrawlerTaskResults
+                var resultCount = await dbPro.CrawlerTaskResults
                     .Where(x => x.CrawlerTaskInfoId == crawlerTaskId)
                     .CountAsync();
 
                 // 标记任务结束
-                await db.CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId && x.Status == CrawlerStatus.Running)
+                await dbPro.CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId && x.Status == CrawlerStatus.Running)
                     .ExecuteUpdateAsync(x => x.SetProperty(y => y.Status, CrawlerStatus.Stopped)
                         .SetProperty(y => y.EndDate, DateTime.Now)
                         .SetProperty(y => y.Count, resultCount));

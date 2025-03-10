@@ -1,11 +1,11 @@
 ﻿using UZonMail.Core.Database.Updater;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailCrawler;
-using UZonMail.DB.SQL.Organization;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Database.Updaters
 {
-    public class AddDefaultTikTokDevices(SqlContext db) : IDatabaseUpdater
+    public class AddDefaultTikTokDevices(SqlContextPro db) : IDatabaseUpdater
     {
         public Version Version => new(0, 11, 1, 0);
 

@@ -1,14 +1,14 @@
 ﻿using log4net;
 using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Unsubscribes;
 using UZonMail.Utils.Web.Exceptions;
-using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Service;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.Unsubscribes;
 
 namespace UZonMailProPlugin.Services.Unsubscribe
 {
-    public class UnsubscribeService(SqlContext db) : IScopedService
+    public class UnsubscribeService(SqlContext db, SqlContextPro dbPro) : IScopedService
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(UnsubscribeService));
         /// <summary>
@@ -16,7 +16,7 @@ namespace UZonMailProPlugin.Services.Unsubscribe
         /// </summary>
         /// <param name="sendingItemId"></param>
         /// <returns></returns>
-        public async Task<bool> Unsubscribe(string sendingItemId,string? host)
+        public async Task<bool> Unsubscribe(string sendingItemId, string? host)
         {
             var sendingItem = await db.SendingItems.AsNoTracking().FirstOrDefaultAsync(x => x.ObjectId == sendingItemId);
             if (sendingItem == null)
@@ -31,7 +31,7 @@ namespace UZonMailProPlugin.Services.Unsubscribe
             foreach (var toEmail in toEmails)
             {
                 // 添加到退订列表
-                var existOne = await db.UnsubscribeEmails.FirstOrDefaultAsync(x => x.OrganizationId == user.OrganizationId && x.Email == toEmail);
+                var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x => x.OrganizationId == user.OrganizationId && x.Email == toEmail);
                 if (existOne != null)
                 {
                     continue;
@@ -68,7 +68,7 @@ namespace UZonMailProPlugin.Services.Unsubscribe
             var toEmails = sendingItem.ToEmails.Split(',');
             if (toEmails.Length != 1) return false;
 
-            var existOne = await db.UnsubscribeEmails.FirstOrDefaultAsync(x => x.OrganizationId == user.OrganizationId && x.Email == toEmails[0]);
+            var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x => x.OrganizationId == user.OrganizationId && x.Email == toEmails[0]);
             return existOne != null;
         }
     }

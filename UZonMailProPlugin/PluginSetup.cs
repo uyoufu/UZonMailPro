@@ -1,6 +1,8 @@
 ﻿using Uamazing.Utils.Plugin;
+using UZonMail.DB.SQL;
 using UZonMail.Utils.Web;
 using UZonMailProPlugin.Services.EmailDecorators;
+using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin
 {
@@ -12,6 +14,10 @@ namespace UZonMailProPlugin
         public void UseServices(WebApplicationBuilder webApplicationBuilder)
         {
             var services = webApplicationBuilder.Services;
+
+            // 添加数据库上下文
+            services.AddSqlContext<SqlContextPro, MySqlContextPro, SqLiteContextPro>(webApplicationBuilder.Configuration);
+
             // 批量注册服务
             services.AddServices();
         }

@@ -1,20 +1,21 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Settings;
 using UZonMail.Core.Utils.Database;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailSending;
-using UZonMail.DB.SQL.ReadingTracker;
+using UZonMail.DB.SQL.Core.EmailSending;
+using UZonMail.DB.Utils;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Controllers.Base;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.ReadingTracker;
 
 namespace UZonMailProPlugin.Controllers.EmailTracker
 {
-    public class EmailTrackerController(SqlContext db, TokenService tokenService) : ControllerBasePro
+    public class EmailTrackerController(SqlContext db, SqlContextPro dbPro, TokenService tokenService) : ControllerBasePro
     {
         private static byte[] _transparentPngBytes =
         [
@@ -97,7 +98,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         public async Task<IActionResult> GetStream(string trackerId)
         {
             // 查找文件对象
-            var emailAnchor = await db.EmailAnchors.Where(x => x.ObjectId == trackerId).FirstOrDefaultAsync();
+            var emailAnchor = await dbPro.EmailAnchors.Where(x => x.ObjectId == trackerId).FirstOrDefaultAsync();
             if (emailAnchor == null) return NotFound();
 
             // 更新访问次数
@@ -175,7 +176,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         public async Task<ResponseResult<int>> GetSendingGroupsCount(string filter)
         {
             var userId = tokenService.GetUserSqlId();
-            var dbSet = db.EmailAnchors.AsNoTracking().Where(x => x.UserId == userId);
+            var dbSet = dbPro.EmailAnchors.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.InboxEmails.Contains(filter) || x.OutboxEmail.Contains(filter));
@@ -194,7 +195,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         public async Task<ResponseResult<List<EmailAnchor>>> GetSendingGroupsData(string filter, Pagination pagination)
         {
             var userId = tokenService.GetUserSqlId();
-            var dbSet = db.EmailAnchors.AsNoTracking().Where(x => x.UserId == userId);
+            var dbSet = dbPro.EmailAnchors.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.OutboxEmail.Contains(filter) || x.InboxEmails.Contains(filter));

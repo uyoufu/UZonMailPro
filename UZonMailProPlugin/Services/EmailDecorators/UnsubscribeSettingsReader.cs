@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Settings;
-using UZonMail.DB.SQL.Unsubscribes;
+using UZonMail.DB.SQL.Core.Settings;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.Unsubscribes;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
-    public class UnsubscribeSettingsReader : BaseCache
+    public class UnsubscribeSettingsReader : BaseDBCache<SqlContextPro>
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(UnsubscribeSettingsReader));
 
@@ -17,7 +18,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators
         /// </summary>
         /// <param name="db"></param>
         /// <returns></returns>
-        public override async Task Update(SqlContext db)
+        public override async Task Update(SqlContextPro db)
         {
             if (!NeedUpdate) return;
             SetDirty();

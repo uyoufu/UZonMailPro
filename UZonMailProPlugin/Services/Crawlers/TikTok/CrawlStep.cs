@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using UZonMail.Core.Utils.Database;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.EmailCrawler;
+using UZonMail.DB.Utils;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Services.Crawlers.TiTok
 {
@@ -157,7 +159,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
         /// <param name="db"></param>
         /// <param name="authorId"></param>
         /// <returns></returns>
-        public async Task SaveCrawlerTaskResult(SqlContext db, TiktokAuthor tiktokAuthor)
+        public async Task SaveCrawlerTaskResult(SqlContextPro db, TiktokAuthor tiktokAuthor)
         {
             _logger.Debug($"保存爬虫任务结果 [{tiktokAuthor.Nickname}]");
             var taskIds = GetAllTaskIds();

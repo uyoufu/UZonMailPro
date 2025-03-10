@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using UZonMail.DB.SQL.EmailCrawler;
+using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Controllers.EmailCrawler.Validators
 {

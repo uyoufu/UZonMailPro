@@ -7,7 +7,6 @@ using UZonMail.Core.Services.Permission;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Unsubscribes;
 using UZonMail.Utils.Json;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
@@ -16,6 +15,8 @@ using UZonMailProPlugin.Controllers.Base;
 using UZonMailProPlugin.Controllers.Unsubscribes.ResponseModels;
 using UZonMailProPlugin.Services.EmailDecorators;
 using UZonMailProPlugin.Services.Unsubscribe;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.Unsubscribes;
 
 namespace UZonMailProPlugin.Controllers.Unsubscribes
 {
@@ -23,7 +24,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
     /// 退订控制器
     /// 退订默认是组织级别的设置
     /// </summary>
-    public class UnsubscribeController(SqlContext db, TokenService tokenService, IConfiguration configuration, UnsubscribeService unsubscribeService
+    public class UnsubscribeController(SqlContext db, SqlContextPro dbPro, TokenService tokenService, IConfiguration configuration, UnsubscribeService unsubscribeService
         , PermissionService permissionService
         ) : ControllerBasePro
     {
@@ -46,15 +47,15 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
 
             // 获取管理员的组织
             var organizationId = tokenService.GetOrganizationId();
-            var unsubscribeSetting = await db.UnsubscribeSettings.FirstOrDefaultAsync(x => x.OrganizationId == organizationId);
+            var unsubscribeSetting = await dbPro.UnsubscribeSettings.FirstOrDefaultAsync(x => x.OrganizationId == organizationId);
             if (unsubscribeSetting == null)
             {
                 unsubscribeSetting = new UnsubscribeSetting()
                 {
                     OrganizationId = organizationId,
                 };
-                db.Add(unsubscribeSetting);
-                await db.SaveChangesAsync();
+                dbPro.Add(unsubscribeSetting);
+                await dbPro.SaveChangesAsync();
             }
 
             return unsubscribeSetting.ToSuccessResponse();
@@ -79,10 +80,10 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             var organizationId = tokenService.GetOrganizationId();
             data.OrganizationId = organizationId;
 
-            var exist = await db.UnsubscribeSettings.FirstOrDefaultAsync(x => x.Id == settingId && x.OrganizationId == organizationId);
+            var exist = await dbPro.UnsubscribeSettings.FirstOrDefaultAsync(x => x.Id == settingId && x.OrganizationId == organizationId);
             if (exist == null)
             {
-                db.Add(data);
+                dbPro.Add(data);
                 exist = data;
             }
             else
@@ -92,7 +93,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
                 exist.Type = data.Type;
                 exist.ExternalUrl = data.ExternalUrl;
             }
-            await db.SaveChangesAsync();
+            await dbPro.SaveChangesAsync();
 
             // 更新缓存
             CacheManager.Global.SetCacheDirty<UnsubscribeSettingsReader>(exist.ObjectId);
@@ -131,7 +132,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             }
 
             // 添加到退订列表
-            var existOne = await db.UnsubscribeEmails.FirstOrDefaultAsync(x => x.Email == email && x.OrganizationId == longOrganizationId);
+            var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x => x.Email == email && x.OrganizationId == longOrganizationId);
             return (existOne != null).ToSuccessResponse();
         }
 
@@ -197,7 +198,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         public async Task<ResponseResult<int>> GetUnsubscribesCount(string filter)
         {
             var organizationId = tokenService.GetOrganizationId();
-            var dbSet = db.UnsubscribeEmails.AsNoTracking().Where(x => x.OrganizationId == organizationId);
+            var dbSet = dbPro.UnsubscribeEmails.AsNoTracking().Where(x => x.OrganizationId == organizationId);
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.Email.Contains(filter) || x.Host.Contains(filter));
@@ -216,7 +217,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         public async Task<ResponseResult<List<UnsubscribeEmail>>> GetUnsubscribesData(string filter, Pagination pagination)
         {
             var organizationId = tokenService.GetOrganizationId();
-            var dbSet = db.UnsubscribeEmails.AsNoTracking().Where(x => x.OrganizationId == organizationId);
+            var dbSet = dbPro.UnsubscribeEmails.AsNoTracking().Where(x => x.OrganizationId == organizationId);
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.Email.Contains(filter) || x.Host.Contains(filter));

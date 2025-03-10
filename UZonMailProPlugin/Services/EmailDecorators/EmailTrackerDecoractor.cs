@@ -1,13 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.PluginBase.Email;
+using UZonMail.Core.Services.Plugin;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.ReadingTracker;
 using UZonMail.Utils.Email;
 using UZonMailProPlugin.Services.License;
+using UZonMailProPlugin.SQL;
+using UZonMailProPlugin.SQL.ReadingTracker;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
-    public class EmailTrackerDecoractor(SqlContext sqlContext, FunctionAccessService functionAccess) : IEmailBodyDecroator
+    public class EmailTrackerDecoractor(SqlContext db, SqlContextPro dbPro, FunctionAccessService functionAccess) : IEmailBodyDecroator
     {
         private static string? _baseUrl = string.Empty;
         private static readonly string _apiSettingKey = "baseApiUrl";
@@ -33,7 +34,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators
             if (string.IsNullOrEmpty(_baseUrl))
             {
                 // 获取 API 地址
-                var systemSettings = await sqlContext.SystemSettings.FirstOrDefaultAsync(x => x.Key == _apiSettingKey);
+                var systemSettings = await db.SystemSettings.FirstOrDefaultAsync(x => x.Key == _apiSettingKey);
                 if (systemSettings == null)
                 {
                     _baseUrl = null;
@@ -45,7 +46,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators
 
             // 新建锚点
             var sendingItem = decoratorParams.SendingItem;
-            var emailAnchor = await sqlContext.EmailAnchors.Where(x => x.SendingItemId == sendingItem.Id).FirstOrDefaultAsync();
+            var emailAnchor = await dbPro.EmailAnchors.Where(x => x.SendingItemId == sendingItem.Id).FirstOrDefaultAsync();
             if (emailAnchor == null)
             {
                 // 新增
@@ -57,8 +58,8 @@ namespace UZonMailProPlugin.Services.EmailDecorators
                     InboxEmails = string.Join(",", sendingItem.Inboxes.Select(x => x.Email)),
                     OutboxEmail = decoratorParams.OutboxEmail
                 };
-                sqlContext.EmailAnchors.Add(emailAnchor);
-                await sqlContext.SaveChangesAsync();
+                dbPro.EmailAnchors.Add(emailAnchor);
+                await dbPro.SaveChangesAsync();
             }
 
             // 将链接添加到邮件中

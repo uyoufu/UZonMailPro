@@ -1,4 +1,4 @@
-﻿using UZonMail.DB.SQL.EmailSending;
+﻿using UZonMail.DB.SQL.Core.EmailSending;
 
 namespace UZonMailProPlugin.Controllers.Unsubscribes.ResponseModels
 {

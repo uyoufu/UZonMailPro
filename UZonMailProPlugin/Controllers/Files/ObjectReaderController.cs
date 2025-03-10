@@ -1,16 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.Files;
 using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Files;
-using UZonMail.Utils.Web.Exceptions;
+using UZonMail.DB.SQL.Core.Files;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Utils;
 
 namespace UZonMailProPlugin.Controllers.Files
 {
