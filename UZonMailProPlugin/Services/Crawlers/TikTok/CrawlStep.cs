@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using UZonMail.Core.Utils.Database;
+using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
-using UZonMail.DB.Utils;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.EmailCrawler;
 
