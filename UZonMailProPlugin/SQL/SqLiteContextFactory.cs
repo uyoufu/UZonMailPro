@@ -13,7 +13,7 @@ namespace UZonMailProPlugin.SQL
         {
             Batteries.Init();
 
-            var optionsBuilder = new DbContextOptionsBuilder();
+            var optionsBuilder = new DbContextOptionsBuilder<SqlContextPro>();
             optionsBuilder.UseSqlite("Data Source=UZonMail/uzon-mail.db");
 
             return new SqLiteContextPro(optionsBuilder.Options);

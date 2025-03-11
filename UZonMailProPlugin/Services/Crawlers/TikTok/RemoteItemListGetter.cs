@@ -2,7 +2,7 @@
 using System.Net.Http;
 using UZonMailProPlugin.Services.Crawlers.ByteDance.APIs;
 
-namespace UZonMailProPlugin.Services.Crawlers.TiTok
+namespace UZonMailProPlugin.Services.Crawlers.TikTok
 {
     public abstract class RemoteItemListGetter
     {
@@ -46,7 +46,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
         {
             _index = 0;
             _tempValues.Clear();
-            _totalIndex = 0;
+            _totalIndex = -1;
             _total = 0;
         }
 

@@ -4,7 +4,7 @@ using UZonMail.DB.SQL;
 using UZonMail.Utils.Http;
 using UZonMail.Utils.Web.Service;
 using UZonMailProPlugin.Services.Crawlers.ByteDance.Extensions;
-using UZonMailProPlugin.Services.Crawlers.TiTok;
+using UZonMailProPlugin.Services.Crawlers.TikTok;
 using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.EmailCrawler;

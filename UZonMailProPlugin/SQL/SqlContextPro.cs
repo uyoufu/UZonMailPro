@@ -11,13 +11,9 @@ namespace UZonMailProPlugin.SQL
     {
         #region 初始化
         public SqlContextPro() { }
-        public SqlContextPro(DbContextOptions options) : base(options)
+        public SqlContextPro(DbContextOptions<SqlContextPro> options) : base(options)
         {
         }
-        #endregion
-
-        #region 系统相关
-        public DbSet<SystemSetting> SystemSettings { get; set; }
         #endregion
 
         #region 数据表定义

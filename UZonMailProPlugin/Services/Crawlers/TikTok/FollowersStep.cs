@@ -5,7 +5,7 @@ using UZonMail.Utils.Json;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers.TiTok
+namespace UZonMailProPlugin.Services.Crawlers.TikTok
 {
     /// <summary>
     /// 爬取粉丝数量

@@ -27,7 +27,9 @@ namespace UZonMailProPlugin.Services.EmailDecorators
             if (unsubscribeSettings == null || !unsubscribeSettings.EnableUnsubscribe) return mimeMessage;
 
             // 生成退订链接
-            var unsubscribeUrl = unsubscribeSettings.UnsubscribeUrl + $"&token={decoratorParams.SendingItem.ObjectId}";
+            var unsubscribeUrl = await unsubscribeSettings.GetUnsubscribeUrl(db);
+            unsubscribeUrl += $"&token={decoratorParams.SendingItem.ObjectId}";
+
             if (!unsubscribeUrl.Contains('?'))
             {
                 unsubscribeUrl = unsubscribeUrl.Replace("&", "?");

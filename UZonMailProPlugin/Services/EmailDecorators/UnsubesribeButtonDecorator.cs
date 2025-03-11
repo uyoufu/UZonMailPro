@@ -18,23 +18,25 @@ namespace UZonMailProPlugin.Services.EmailDecorators
             var decoratorParams = unsubesribeParams as EmailDecoratorParams;
 
             var userReader = await CacheManager.Global.GetCache<UserInfoCache>(db, decoratorParams.SendingItem.UserId.ToString());
-            var unsubscribeSettings = await CacheManager.Global.GetCache<UnsubscribeSettingsReader, SqlContextPro>(dbPro, userReader.OrganizationId);
+            var unsubscribeSetting = await CacheManager.Global.GetCache<UnsubscribeSettingsReader, SqlContextPro>(dbPro, userReader.OrganizationId);
+
+            var unsubscribeUrl = await unsubscribeSetting.GetUnsubscribeUrl(db);
 
             // 说明没有设置 API 地址
-            if (unsubscribeSettings == null || !unsubscribeSettings.EnableUnsubscribe) return originBody;
-            if (string.IsNullOrEmpty(unsubscribeSettings.UnsubscribeUrl)) return originBody;
+            if (unsubscribeSetting == null || !unsubscribeSetting.EnableUnsubscribe) return originBody;
+            if (string.IsNullOrEmpty(unsubscribeUrl)) return originBody;
 
             // 若已经存在追踪锚点则不再添加
-            if (originBody.Contains(unsubscribeSettings.UnsubscribeUrl)) return originBody;
+            if (originBody.Contains(unsubscribeUrl)) return originBody;
 
             // 生成退订链接
-            var unsubscribeUrl = unsubscribeSettings.UnsubscribeUrl + $"&token={decoratorParams.SendingItem.ObjectId}";
+            unsubscribeUrl += $"&token={decoratorParams.SendingItem.ObjectId}";
             if (!unsubscribeUrl.Contains('?'))
             {
                 unsubscribeUrl = unsubscribeUrl.Replace("&", "?");
             }
 
-            var butotnHtml = unsubscribeSettings.UnsubscribeButtonHtml;
+            var butotnHtml = unsubscribeSetting.UnsubscribeButtonHtml;
             // 将 src="" 替换为退订链接
             var regex = _matchHref();
             var buttonResult = regex.Replace(butotnHtml, $"href=\"{unsubscribeUrl}\"");

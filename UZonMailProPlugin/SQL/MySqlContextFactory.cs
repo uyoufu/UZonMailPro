@@ -24,7 +24,7 @@ namespace UZonMailProPlugin.SQL
                 User = "uzon-mail"
             };
 
-            var optionsBuilder = new DbContextOptionsBuilder();
+            var optionsBuilder = new DbContextOptionsBuilder<SqlContextPro>();
             optionsBuilder.UseMySql(connection.ConnectionString, new MySqlServerVersion(connection.MysqlVersion));
 
             return new MySqlContextPro(optionsBuilder.Options);

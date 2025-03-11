@@ -7,7 +7,7 @@ using UZonMail.DB.Utils;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers.TiTok
+namespace UZonMailProPlugin.Services.Crawlers.TikTok
 {
     public abstract class CrawlStep
     {

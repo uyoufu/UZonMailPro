@@ -60,29 +60,21 @@ namespace UZonMailProPlugin.Services.EmailDecorators
                     return;
                 }
 
-                UnsubscribeUrl = unsubscribeSetting.ExternalUrl;
+                _unsubscribeUrl = unsubscribeSetting.ExternalUrl;
                 EnableUnsubscribe = true;
                 return;
             }
 
             // 判断是否有退订页面
             var unsubscribePage = await db.UnsubscribePages.FirstOrDefaultAsync(x => x.OrganizationId == organizationId);
-            if(unsubscribePage == null)
+            if (unsubscribePage == null)
             {
                 _logger.Error($"department {organizationId} UnsubscribePage is not set");
                 EnableUnsubscribe = false;
                 return;
             }
 
-            // 获取 baseUrl
-            var setting = await db.SystemSettings.FirstOrDefaultAsync(x => x.Key == SystemSetting.BaseApiUrl);
-            if (setting == null || string.IsNullOrEmpty(setting.StringValue) || !setting.StringValue.StartsWith("http"))
-            {
-                _logger.Warn("BaseApiUrl is not set");
-                EnableUnsubscribe = false;
-                return;
-            }
-            UnsubscribeUrl = $"{setting.StringValue.TrimEnd('/')}/pages/unsubscribe/pls-give-me-a-shot";
+
             EnableUnsubscribe = true;
         }
 
@@ -94,8 +86,31 @@ namespace UZonMailProPlugin.Services.EmailDecorators
 
         #region 数据实现
         public bool EnableUnsubscribe { get; private set; }
-        public string? UnsubscribeUrl { get; private set; }
+        private string? _unsubscribeUrl;
         public string? UnsubscribeButtonHtml { get; private set; }
+
+        /// <summary>
+        /// 获取退订链接
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        public async Task<string> GetUnsubscribeUrl(SqlContext db)
+        {
+            if (!EnableUnsubscribe) return string.Empty;
+
+            if (!string.IsNullOrEmpty(_unsubscribeUrl)) return _unsubscribeUrl;
+
+            // 获取 baseUrl
+            var setting = await db.SystemSettings.FirstOrDefaultAsync(x => x.Key == SystemSetting.BaseApiUrl);
+            if (setting == null || string.IsNullOrEmpty(setting.StringValue) || !setting.StringValue.StartsWith("http"))
+            {
+                _logger.Warn("BaseApiUrl is not set");
+                EnableUnsubscribe = false;
+                return string.Empty;
+            }
+            _unsubscribeUrl = $"{setting.StringValue.TrimEnd('/')}/pages/unsubscribe/pls-give-me-a-shot";
+            return _unsubscribeUrl;
+        }
         #endregion
     }
 }

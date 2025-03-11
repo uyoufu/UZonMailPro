@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UZonMail.Utils.Json;
 using UZonMailProPlugin.Services.Crawlers.ByteDance.APIs;
 
-namespace UZonMailProPlugin.Services.Crawlers.TiTok
+namespace UZonMailProPlugin.Services.Crawlers.TikTok
 {
     /// <summary>
     /// 粉丝获取器
@@ -24,6 +24,9 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
 
         protected override async Task PullNextPage()
         {
+            // 重置
+            Reset();
+
             // 获取下一页粉丝数据
             var jsonResult = await new GetFollowers()
                 .WithNeededQueries()
@@ -42,7 +45,6 @@ namespace UZonMailProPlugin.Services.Crawlers.TiTok
             // 若粉丝太少，则不再爬取
             if (total < _minFollowersCount)
             {
-                UpdatePage(0, []);
                 return;
             }
 

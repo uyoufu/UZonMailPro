@@ -6,7 +6,7 @@ using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers.TiTok
+namespace UZonMailProPlugin.Services.Crawlers.TikTok
 {
     /// <summary>
     /// TikTok 邮箱爬虫

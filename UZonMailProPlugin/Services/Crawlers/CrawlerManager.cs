@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.Services.Crawlers.TiTok;
+using UZonMailProPlugin.Services.Crawlers.TikTok;
 using UZonMailProPlugin.SQL.EmailCrawler;
 
 namespace UZonMailProPlugin.Services.Crawlers
