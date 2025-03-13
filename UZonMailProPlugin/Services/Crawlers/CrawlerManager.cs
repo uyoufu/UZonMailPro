@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using UZonMail.Core.Services.Config;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Service;
 using UZonMailProPlugin.Services.Crawlers.TikTok;
@@ -9,7 +10,7 @@ namespace UZonMailProPlugin.Services.Crawlers
     /// <summary>
     /// 爬虫管理器
     /// </summary>
-    public class CrawlerManager(IServiceProvider serviceProvider, ILogger<CrawlerManager> logger) : ConcurrentDictionary<long, CrawlerTaskBase>, ISingletonService
+    public class CrawlerManager(IServiceProvider serviceProvider, ILogger<CrawlerManager> logger, DebugConfig debugConfig) : ConcurrentDictionary<long, CrawlerTaskBase>, ISingletonService
     {
         /// <summary>
         /// 开始 TikTok 邮箱爬虫
@@ -19,6 +20,12 @@ namespace UZonMailProPlugin.Services.Crawlers
         /// <param name="crawlerTaskInfo"></param>
         public async Task StartTikTokEmailCrawler(CrawlerTaskInfo crawlerTaskInfo)
         {
+            if (debugConfig.IsDemo)
+            {
+                logger.LogWarning("当前为演示状态, 爬虫无效");
+                return;
+            }
+
             try
             {
                 if (TryGetValue(crawlerTaskInfo.Id, out var value))

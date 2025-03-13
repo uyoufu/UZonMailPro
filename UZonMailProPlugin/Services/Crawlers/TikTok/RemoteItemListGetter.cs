@@ -42,14 +42,17 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
             return result;
         }
 
-        public virtual void Reset()
+        public virtual void ResetPage()
         {
             _index = 0;
             _tempValues.Clear();
-            _totalIndex = -1;
             _total = 0;
         }
 
+        /// <summary>
+        /// 自动判断是否需要拉取下一页
+        /// </summary>
+        /// <returns></returns>
         private async Task PullNextPageCore()
         {
             if (_index < _tempValues.Count)
@@ -60,6 +63,10 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
             await PullNextPage();
         }
 
+        /// <summary>
+        /// 拉取下一页数据
+        /// </summary>
+        /// <returns></returns>
         protected abstract Task PullNextPage();
 
         protected void UpdatePage(int total, List<JObject> data)

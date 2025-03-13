@@ -33,11 +33,17 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
             crawlerTaskParams.StepManager.TryRemove(authorInfo.Id, out _);
         }
 
-        private async Task SaveAuthor(TiktokAuthor authorInfo)
+        /// <summary>
+        /// 保存作者信息
+        /// 若已经存在，则不再保存
+        /// </summary>
+        /// <param name="authorInfo"></param>
+        /// <returns></returns>
+        private async Task<bool> SaveAuthor(TiktokAuthor authorInfo)
         {
             // 判断是否存在，若存在，则不再保存
             var existOne = await _db.TiktokAuthors.FirstOrDefaultAsync(x => x.Id == authorInfo.Id);
-            if (existOne != null) return;
+            if (existOne != null) return false;
 
             _logger.Debug($"从推荐中发现新的 tiktok [{authorInfo.Nickname}], 开始保存");
 
@@ -68,6 +74,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
 
             // 记录爬取结果
             await SaveCrawlerTaskResult(_db, authorInfo);
+            return true;
         }
 
         /// <summary>
@@ -85,15 +92,22 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
 
             while (followerInfo != null && !ShouldStop())
             {
-                // 判断是否存在
-                var existAuthor = await _db.TiktokAuthors
-                    .Where(x => x.Id == authorInfo.Id)
+                var followerId = followerInfo.SelectTokenOrDefault("user.id", 0L);
+                if (followerId == 0)
+                {
+                    followerInfo = await followersGetter.Next();
+                    continue;
+                }
+
+                // 判断关注者是否存在，若存在，直接递归获取已经存在的项
+                var existFollower = await _db.TiktokAuthors
+                    .Where(x => x.Id == followerId)
                     .FirstOrDefaultAsync();
 
                 // 已经存在
-                if (existAuthor != null)
+                if (existFollower != null)
                 {
-                    _logger.Debug($"用户 [{authorInfo.Nickname}] 的粉丝已经存在，开始复制");
+                    _logger.Debug($"用户 [{authorInfo.Nickname}] 的粉丝 [{followerId}] 已经爬取，开始复制");
                     // 1.递归复制既有结果
                     await TikTokEmailCrawler.CopyCrawledResultsRecursively(_db, authorInfo, crawlerTaskParams.CrawlerTaskId);
                     _logger.Debug($"用户 [{authorInfo.Nickname}] 的粉丝复制结束");
@@ -103,7 +117,6 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
                     continue;
                 }
 
-                var followerId = followerInfo.SelectTokenOrDefault("user.id", 0L);
                 // 已经存在
                 // 1. 若处于爬取中，则等待爬取结束
                 if (stepManager.TryGetValue(followerId, out var crawStep))
@@ -117,7 +130,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
                     }
                 }
                 else
-                {                    
+                {
                     // 保存粉丝信息
                     var followersCrawler = new FollowersStep(crawlerTaskParams, authorInfo.Id, followerInfo, followerId);
                     followersCrawler.AddParent(this);

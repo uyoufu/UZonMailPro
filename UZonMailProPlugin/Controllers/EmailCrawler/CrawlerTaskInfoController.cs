@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
+using UZonMail.Core.Services.Config;
 using UZonMail.Core.Services.Settings;
 using UZonMail.Core.Utils.Database;
 using UZonMail.DB.Extensions;
@@ -19,7 +20,8 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
     /// <summary>
     /// 邮件爬虫控制器
     /// </summary>
-    public class CrawlerTaskInfoController(SqlContext db, SqlContextPro dbPro, TokenService tokenService, CrawlerManager crawlerManager, IHttpClientFactory httpClientFactory) : ControllerBasePro
+    public class CrawlerTaskInfoController(SqlContext db, SqlContextPro dbPro, TokenService tokenService,
+        CrawlerManager crawlerManager, IHttpClientFactory httpClientFactory,DebugConfig debugConfig) : ControllerBasePro
     {
         /// <summary>
         /// 获取所有的爬虫类型
@@ -108,6 +110,12 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
             {
                 return false.ToFailResponse("未找到爬虫任务");
             }
+
+            if (debugConfig.IsDemo)
+            {
+                return false.ToFailResponse("当前为示例状态，爬虫无法执行");
+            }
+
 
             // 根据类型启动不同的爬虫
             if (crawlerTaskInfo.Type == CrawlerType.TikTokEmail)

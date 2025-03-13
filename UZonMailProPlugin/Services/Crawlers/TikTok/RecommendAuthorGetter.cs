@@ -13,7 +13,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
         protected override async Task PullNextPage()
         {
             // 更新推荐列表
-            Reset();
+            ResetPage();
 
             var jsonResult = await new GetRecommendList()
                .WithNeededQueries()

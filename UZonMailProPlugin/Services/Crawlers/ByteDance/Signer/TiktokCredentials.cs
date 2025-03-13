@@ -1,4 +1,5 @@
 ﻿using Jint;
+using log4net;
 using System.Reflection;
 using UZonMailProPlugin.Utils;
 using UZonMailProPlugin.Utils.Browser;
@@ -11,6 +12,7 @@ namespace UZonMailProPlugin.Modules.ByteDance.Signer
     /// </summary>
     public class TiktokCredentials : ByteDanceCredentials
     {
+        private readonly ILog _logger = LogManager.GetLogger(typeof(TiktokCredentials));
         /// <summary>
         /// js 路径
         /// </summary>
@@ -22,6 +24,7 @@ namespace UZonMailProPlugin.Modules.ByteDance.Signer
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
             _xBogusPath = Path.Combine(assemblyDirectory, "Scripts/JS/x_bogus.js");
+            //_logger.Info($"xBogusPath: {_xBogusPath}");
         }
 
         /// <summary>
