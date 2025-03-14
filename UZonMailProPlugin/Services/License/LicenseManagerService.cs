@@ -226,16 +226,45 @@ namespace UZonMailProPlugin.Services.License
             // 判断是否有机器码文件，若没有，则新增
             var fileTokenPath = GetDeviceTokenPath();
 
-            // 获取机器识别码
-            string deviceId = new DeviceIdBuilder()
-                                .AddOsVersion()
-                                .AddMachineName()
-                                .AddUserName()
-                                .AddMacAddress()
-                                .AddFileToken(fileTokenPath)
-                                .ToString();
+            if (IsContainerEnv())
+            {
+                return new DeviceIdBuilder().AddFileToken(fileTokenPath).ToString();
+            }
 
-            return deviceId;
+            // 获取机器识别码
+           return new DeviceIdBuilder()
+                      .AddOsVersion()
+                      .AddMachineName()
+                      .AddUserName()
+                      .AddMacAddress()
+                      .AddFileToken(fileTokenPath)
+                      .ToString();
+        }
+
+        /// <summary>
+        /// 判断是否是容器环境
+        /// </summary>
+        /// <returns></returns>
+        private bool IsContainerEnv()
+        {
+            return IsVirtualEnvByCGroup() || IsVirtualEnvByEnvFile();
+        }
+
+        private bool IsVirtualEnvByCGroup()
+        {
+            if (!File.Exists("/proc/1/cgroup")) return false;
+            string[] lines = File.ReadAllLines("/proc/1/cgroup");
+            var isDocker = lines.Any(line => line.Contains("docker")
+                || line.Contains("kubepods"))
+                || lines.Any(line => line.Contains("lxc"))
+                || lines.Any(line => line.Contains("libvirt"))
+                || lines.Any(line => line.Contains("openvz"));
+            return isDocker;
+        }
+
+        private bool IsVirtualEnvByEnvFile()
+        {
+            return File.Exists("/.dockerenv");
         }
 
         /// <summary>
