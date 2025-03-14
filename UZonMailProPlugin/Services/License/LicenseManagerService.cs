@@ -64,7 +64,7 @@ namespace UZonMailProPlugin.Services.License
             }
 
             // 下载授权信息
-            var license = await DownloadLicense(false);
+            var license = await DownloadLicense();
             if (license == null) return ResponseResult<LicenseInfo>.Fail("授权码无效");
             _licenseInfo = license;
             _lastUpdateDate = DateTime.Now;
@@ -111,7 +111,8 @@ namespace UZonMailProPlugin.Services.License
 
         /// <summary>
         /// 获取授权信息
-        /// 若没有授权信息，会返回一个默认的授权
+        /// 若没有授权信息，会先从服务器验证
+        /// 若验证失败，则会返回一个默认的授权
         /// </summary>
         /// <returns></returns>
         public async Task<LicenseInfo> GetLicenseInfo(bool updateThrottle = true)
@@ -157,14 +158,14 @@ namespace UZonMailProPlugin.Services.License
         /// 下载授权
         /// </summary>
         /// <returns></returns>
-        private async Task<LicenseInfo?> DownloadLicense(bool checkLicenseExist = true)
+        private async Task<LicenseInfo?> DownloadLicense()
         {
             // 判断数据库中是否有 license
-            if (checkLicenseExist)
-            {
-                var systemSettings = await sqlContext.SystemSettings.FirstOrDefaultAsync(x => x.Key == _licenseKey);
-                if (systemSettings == null) return null;
-            }
+            //if (checkLicenseExist)
+            //{
+            //    var systemSettings = await sqlContext.SystemSettings.FirstOrDefaultAsync(x => x.Key == _licenseKey);
+            //    if (systemSettings == null) return null;
+            //}
 
             var deviceId = GetDeviceId();
 
