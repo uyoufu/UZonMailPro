@@ -25,7 +25,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators
 
             // 开始添加
             var organizationId = LongValue;
-            var unsubscribeSetting = await db.UnsubscribeSettings.AsNoTracking().FirstOrDefaultAsync(x => x.Id == organizationId);
+            var unsubscribeSetting = await db.UnsubscribeSettings.AsNoTracking().FirstOrDefaultAsync(x => x.OrganizationId == organizationId);
             if (unsubscribeSetting == null)
             {
                 _logger.Debug($"department {organizationId} has not set unsubscribe setting");

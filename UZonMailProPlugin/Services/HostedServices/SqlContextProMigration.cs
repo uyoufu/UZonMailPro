@@ -6,7 +6,7 @@ using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin.Services.HostedServices
 {
-    public class SqlContextProMigration(SqlContextPro db) : IHostedServiceStart, IScopedService<IHostedServiceStart>
+    public class SqlContextProMigration(SqlContextPro db) : IHostedServiceStart
     {
         public int Order => -10000;
 

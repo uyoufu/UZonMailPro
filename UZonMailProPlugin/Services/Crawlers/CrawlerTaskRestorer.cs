@@ -13,7 +13,7 @@ namespace UZonMailProPlugin.Services.Crawlers
     /// </summary>
     /// <param name="ssf"></param>
     /// <param name="crawlerManager"></param>
-    public class CrawlerTaskRestorer(IServiceScopeFactory ssf, CrawlerManager crawlerManager) : IHostedServiceStart, IScopedService<IHostedServiceStart>
+    public class CrawlerTaskRestorer(IServiceScopeFactory ssf, CrawlerManager crawlerManager) : IHostedServiceStart
     {
         // 靠后启动
         public int Order => 100;

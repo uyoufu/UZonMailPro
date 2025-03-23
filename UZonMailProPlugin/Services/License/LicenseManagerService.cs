@@ -225,20 +225,26 @@ namespace UZonMailProPlugin.Services.License
         {
             // 判断是否有机器码文件，若没有，则新增
             var fileTokenPath = GetDeviceTokenPath();
-
+            string deviceId = string.Empty;
             if (IsContainerEnv())
             {
-                return new DeviceIdBuilder().AddFileToken(fileTokenPath).ToString();
+                _logger.Info("检测到 Docker 环境, 使用自定义识别码");
+                deviceId = new DeviceIdBuilder().AddFileToken(fileTokenPath).ToString();
+            }
+            else
+            {
+                // 获取机器识别码
+                deviceId = new DeviceIdBuilder()
+                          .AddOsVersion()
+                          .AddMachineName()
+                          .AddUserName()
+                          .AddMacAddress()
+                          .AddFileToken(fileTokenPath)
+                          .ToString();
             }
 
-            // 获取机器识别码
-           return new DeviceIdBuilder()
-                      .AddOsVersion()
-                      .AddMachineName()
-                      .AddUserName()
-                      .AddMacAddress()
-                      .AddFileToken(fileTokenPath)
-                      .ToString();
+            _logger.Info($"当前机器码: {deviceId}");
+            return deviceId;
         }
 
         /// <summary>
@@ -289,7 +295,7 @@ namespace UZonMailProPlugin.Services.License
                 return fullTokenPath;
             }
 
-            // 若不存在，直接创建一个
+            // 若都不存在，直接创建一个
             // 创建目录
             Directory.CreateDirectory(Path.GetDirectoryName(fileTokenPath));
             // 保存内容

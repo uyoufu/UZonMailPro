@@ -8,7 +8,7 @@ namespace UZonMailProPlugin.Services.HostedServices
     /// 更新授权信息
     /// </summary>
     /// <param name="licenseManager"></param>
-    public class LicenseUpdater(LicenseManagerService licenseManager) : IHostedServiceStart, IScopedService<IHostedServiceStart>
+    public class LicenseUpdater(LicenseManagerService licenseManager) : IHostedServiceStart
     {
         public int Order => 0;
 

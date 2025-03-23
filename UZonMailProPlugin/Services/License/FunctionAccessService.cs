@@ -57,5 +57,15 @@ namespace UZonMailProPlugin.Services.License
         {
             return await HasEnterpriseLicense(licenseInfo);
         }
+
+        /// <summary>
+        /// 是否有动态代理的权限
+        /// </summary>
+        /// <param name="licenseInfo"></param>
+        /// <returns></returns>
+        public async Task<bool> HasDynamicProxyAccess(LicenseInfo licenseInfo = null)
+        {
+            return await HasProLicense(licenseInfo);
+        }
     }
 }
