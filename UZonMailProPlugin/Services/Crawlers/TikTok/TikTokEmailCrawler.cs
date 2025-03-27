@@ -15,14 +15,14 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
     {
         private SqlContextPro _db;
         private CrawlerManager _crawlerManager;
-        private FunctionAccessService _access;
+        private LicenseAccessService _access;
 
         public TikTokEmailCrawler(IServiceProvider serviceProvider) : base(serviceProvider)
         {
             var provider = Scope.ServiceProvider;
             _db = provider.GetRequiredService<SqlContextPro>();
             _crawlerManager = provider.GetRequiredService<CrawlerManager>();
-            _access = provider.GetRequiredService<FunctionAccessService>();
+            _access = provider.GetRequiredService<LicenseAccessService>();
         }
 
         private static readonly ILog _logger = LogManager.GetLogger(typeof(TikTokEmailCrawler));

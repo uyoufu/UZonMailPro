@@ -5,27 +5,30 @@ namespace UZonMailProPlugin.Services.License
     /// <summary>
     /// 功能权限服务
     /// </summary>
-    public class FunctionAccessService(LicenseManagerService licenseManager) : IScopedService
+    public class LicenseAccessService : ISingletonService
     {
+        /// <summary>
+        /// 授权信息
+        /// </summary>
+        public LicenseInfo LicenseInfo { get; set; } = LicenseInfo.CreateDefaultLicense();
+
         /// <summary>
         /// 是否存在专业授权
         /// 企业版本也包含专业版本
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> HasProLicense(LicenseInfo licenseInfo = null)
+        public async Task<bool> HasProLicense()
         {
-            licenseInfo ??= await licenseManager.GetLicenseInfo();
-            return licenseInfo.LicenseType >= LicenseType.Professional;
+            return LicenseInfo.LicenseType >= LicenseType.Professional;
         }
 
         /// <summary>
         /// 是否存在企业授权
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> HasEnterpriseLicense(LicenseInfo licenseInfo = null)
+        public async Task<bool> HasEnterpriseLicense()
         {
-            licenseInfo ??= await licenseManager.GetLicenseInfo();
-            return licenseInfo.LicenseType.HasFlag(LicenseType.Enterprise);
+            return LicenseInfo.LicenseType.HasFlag(LicenseType.Enterprise);
         }
 
         /// <summary>
@@ -33,9 +36,9 @@ namespace UZonMailProPlugin.Services.License
         /// </summary>
         /// <param name="licenseInfo"></param>
         /// <returns></returns>
-        public async Task<bool> HasEmailTrackingAccess(LicenseInfo licenseInfo = null)
+        public async Task<bool> HasEmailTrackingAccess()
         {
-            return await HasEnterpriseLicense(licenseInfo);
+            return await HasEnterpriseLicense();
         }
 
         /// <summary>
@@ -43,9 +46,9 @@ namespace UZonMailProPlugin.Services.License
         /// </summary>
         /// <param name="licenseInfo"></param>
         /// <returns></returns>
-        public async Task<bool> HasUnsubscribeAccess(LicenseInfo licenseInfo = null)
+        public async Task<bool> HasUnsubscribeAccess()
         {
-            return await HasEnterpriseLicense(licenseInfo);
+            return await HasEnterpriseLicense();
         }
 
         /// <summary>
@@ -53,9 +56,9 @@ namespace UZonMailProPlugin.Services.License
         /// </summary>
         /// <param name="licenseInfo"></param>
         /// <returns></returns>
-        public async Task<bool> HasTiktokEmailCrawlerAccess(LicenseInfo licenseInfo = null)
+        public async Task<bool> HasTiktokEmailCrawlerAccess()
         {
-            return await HasEnterpriseLicense(licenseInfo);
+            return await HasEnterpriseLicense();
         }
 
         /// <summary>
@@ -63,9 +66,9 @@ namespace UZonMailProPlugin.Services.License
         /// </summary>
         /// <param name="licenseInfo"></param>
         /// <returns></returns>
-        public async Task<bool> HasDynamicProxyAccess(LicenseInfo licenseInfo = null)
+        public async Task<bool> HasDynamicProxyAccess()
         {
-            return await HasProLicense(licenseInfo);
+            return await HasProLicense();
         }
     }
 }

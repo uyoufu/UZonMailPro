@@ -40,7 +40,7 @@ namespace UZonMailProPlugin.Services.Crawlers
         {
             // Store the task we're executing
             // 判断是否有权限调用
-            var access = scope.ServiceProvider.GetRequiredService<FunctionAccessService>();
+            var access = scope.ServiceProvider.GetRequiredService<LicenseAccessService>();
             var hasAccess = await access.HasTiktokEmailCrawlerAccess();
             if (!hasAccess)
             {

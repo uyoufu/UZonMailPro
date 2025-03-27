@@ -7,8 +7,7 @@ namespace UZonMailProPlugin.Services.Permission
     /// <summary>
     /// 主系统在需要时，会自动调用此服务，生成用户的 pro 权限码
     /// </summary>
-    /// <param name="licenseManager"></param>
-    public class ProServiceAccess(LicenseManagerService licenseManager,FunctionAccessService functionAccess) : IAccessBuilder
+    public class ProServiceAccess(LicenseAccessService functionAccess) : IAccessBuilder
     {
         /// <summary>
         /// 生成用户的 pro 权限码
@@ -18,18 +17,18 @@ namespace UZonMailProPlugin.Services.Permission
         /// <exception cref="NotImplementedException"></exception>
         public async Task<Dictionary<long, List<string>>> GenerateUserPermissionCodes(List<long> userIds)
         {
-            var licensInfo = await licenseManager.GetLicenseInfo();
+
             var access = new HashSet<string>();
 
             // 隐藏赞助商
-            if (await functionAccess.HasProLicense(licensInfo))
+            if (await functionAccess.HasProLicense())
             {
                 access.Add("hideSponsor");
                 access.Add("professional");
             }
 
             // 企业版本
-            if (licensInfo.LicenseType.HasFlag(LicenseType.Enterprise))
+            if (functionAccess.LicenseInfo.LicenseType.HasFlag(LicenseType.Enterprise))
             {
                 access.Add("enterprise");
             }

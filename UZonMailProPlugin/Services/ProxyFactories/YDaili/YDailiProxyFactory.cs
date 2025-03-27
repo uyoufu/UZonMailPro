@@ -15,7 +15,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
             if (!proxy.Url.Contains("ydaili.cn")) return null;
 
             // 判断是否有授权
-            var functionAccess = serviceProvider.GetRequiredService<FunctionAccessService>();
+            var functionAccess = serviceProvider.GetRequiredService<LicenseAccessService>();
             if (!await functionAccess.HasDynamicProxyAccess()) return null;
 
             var handler = serviceProvider.GetRequiredService<YDailiProxyClient>();

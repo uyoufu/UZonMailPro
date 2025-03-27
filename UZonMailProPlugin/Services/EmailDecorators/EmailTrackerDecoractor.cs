@@ -8,7 +8,7 @@ using UZonMailProPlugin.SQL.ReadingTracker;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
-    public class EmailTrackerDecoractor(SqlContext db, SqlContextPro dbPro, FunctionAccessService functionAccess) : IEmailBodyDecroator
+    public class EmailTrackerDecoractor(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess) : IEmailBodyDecroator
     {
         private static string? _baseUrl = string.Empty;
         private static readonly string _apiSettingKey = "baseApiUrl";

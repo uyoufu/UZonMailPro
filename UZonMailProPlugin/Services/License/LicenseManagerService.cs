@@ -16,17 +16,24 @@ namespace UZonMailProPlugin.Services.License
     /// <summary>
     /// 授权管理器
     /// </summary>
-    public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient, PermissionService permissionService) : IScopedService
+    public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient, PermissionService permissionService, LicenseAccessService licenseAccess) : IScopedService
     {
 #if DEBUG
         private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
 #else
         private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
 #endif
-
-        private static LicenseInfo? _licenseInfo;
         private static DateTime _lastUpdateDate = DateTime.MinValue;
         private static readonly string _licenseKey = "license";
+
+        /// <summary>
+        /// 授权信息
+        /// </summary>
+        private LicenseInfo LicenseInfo
+        {
+            get => licenseAccess.LicenseInfo;
+            set => licenseAccess.LicenseInfo = value;
+        }
 
         /// <summary>
         /// 授权文件路径
@@ -66,7 +73,7 @@ namespace UZonMailProPlugin.Services.License
             // 下载授权信息
             var license = await DownloadLicense();
             if (license == null) return ResponseResult<LicenseInfo>.Fail("授权码无效");
-            _licenseInfo = license;
+            LicenseInfo = license;
             _lastUpdateDate = DateTime.Now;
 
             // 将授权码更新到数据库中
@@ -124,34 +131,34 @@ namespace UZonMailProPlugin.Services.License
 
             // 如果过期了，则从数据库中获取
             // 只有更新日期超过一天才会去请求授权服务器
-            if (updateThrottle && _licenseInfo != null && _licenseInfo.ExpireDate > DateTime.Now && _lastUpdateDate.AddDays(1) > DateTime.Now)
+            if (updateThrottle && LicenseInfo != null && LicenseInfo.ExpireDate > DateTime.Now && _lastUpdateDate.AddDays(1) > DateTime.Now)
             {
-                return _licenseInfo;
+                return LicenseInfo;
             }
 
             var defaultLicenseInfo = LicenseInfo.CreateDefaultLicense();
-            _licenseInfo = defaultLicenseInfo;
+            LicenseInfo = defaultLicenseInfo;
             _lastUpdateDate = DateTime.Now;
 
             // 如果更新的日期大于当前日期，说明系统时间被修改了
             if (_lastUpdateDate > DateTime.Now)
             {
                 _logger.Warn("请勿修改系统日期");
-                return _licenseInfo;
+                return LicenseInfo;
             }
 
             var license = await DownloadLicense();
             if (license == null)
             {
-                _licenseInfo = defaultLicenseInfo;
-                return _licenseInfo;
+                LicenseInfo = defaultLicenseInfo;
+                return LicenseInfo;
             }
 
             // 更新授权信息
-            _licenseInfo = license;
+            LicenseInfo = license;
             _lastUpdateDate = DateTime.Now;
 
-            return _licenseInfo;
+            return LicenseInfo;
         }
 
         /// <summary>

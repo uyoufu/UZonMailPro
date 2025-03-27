@@ -12,7 +12,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators
     /// <summary>
     /// 在消息体中添加退订链接
     /// </summary>
-    public class MimeMessageDecorator(IServiceProvider serviceProvider, SqlContext db, SqlContextPro dbPro, FunctionAccessService functionAccess)
+    public class MimeMessageDecorator(IServiceProvider serviceProvider, SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess)
         : IMimeMessageDecroator
     {
         public async Task<MimeMessage> StartDecorating(IEmailDecoratorParams mimeParams, MimeMessage mimeMessage)

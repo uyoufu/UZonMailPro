@@ -8,7 +8,7 @@ using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin.Services.EmailDecorators
 {
-    public partial class UnsubesribeButtonDecorator(SqlContext db, SqlContextPro dbPro, FunctionAccessService functionAccess) : IEmailBodyDecroator
+    public partial class UnsubesribeButtonDecorator(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess) : IEmailBodyDecroator
     {
         public async Task<string> StartDecorating(IEmailDecoratorParams unsubesribeParams, string originBody)
         {
