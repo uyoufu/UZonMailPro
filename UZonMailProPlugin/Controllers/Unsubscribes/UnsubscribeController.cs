@@ -54,7 +54,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
                 {
                     OrganizationId = organizationId,
                 };
-                dbPro.Add(unsubscribeSetting);
+                dbPro.UnsubscribeSettings.Add(unsubscribeSetting);
                 await dbPro.SaveChangesAsync();
             }
 
@@ -83,7 +83,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             var exist = await dbPro.UnsubscribeSettings.FirstOrDefaultAsync(x => x.Id == settingId && x.OrganizationId == organizationId);
             if (exist == null)
             {
-                dbPro.Add(data);
+                dbPro.UnsubscribeSettings.Add(data);
                 exist = data;
             }
             else

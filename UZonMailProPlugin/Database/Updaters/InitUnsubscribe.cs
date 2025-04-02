@@ -19,10 +19,7 @@ namespace UZonMailProPlugin.Database.Updaters
             {
                 Name = "Unsubscribe",
                 Description = "Unsubscribe button",
-                ButtonHtml = @"<div style=""display: flex;flex-direction: column;align-items: center;"">
-                                 <a href=""unsubscribe/pls-give-me-a-shot"" class=""button"" title=""Click to unsubscribe"" target=""_blank""
-                                   style=""display: inline-block; color: #7367f0; border: none; text-align: center; text-decoration: underline; cursor: pointer;"">Unsubscribe</a>
-                               </div>"
+                ButtonHtml = "<div style=\"display: flex; flex-direction: column; align-items: center;\">\r\n  <a href=\"unsubscribe/pls-give-me-a-shot\" class=\"button\" title=\"Click to unsubscribe\" target=\"_blank\"\r\n    style=\"display: inline-block; color: #7367f0; border: none; text-align: center; text-decoration: underline; cursor: pointer; padding: 2px 4px; border-radius: 3px; font-size: 0.7rem;\">\r\n    UNSUBSCRIBE\r\n  </a>\r\n</div>"
             };
             db.UnsubscribeButtons.Add(unsubscribeButton);
 

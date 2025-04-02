@@ -1,5 +1,5 @@
-﻿using UZonMail.Utils.Http.Request;
-using UZonMailProPlugin.Utils.Browser;
+﻿using UZonMail.Utils.Http;
+using UZonMail.Utils.Http.Request;
 
 namespace UZonMailProPlugin.Services.Crawlers.ByteDance.APIs
 {

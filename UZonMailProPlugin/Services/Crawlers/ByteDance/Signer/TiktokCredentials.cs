@@ -1,8 +1,6 @@
-﻿using Jint;
-using log4net;
+﻿using log4net;
 using System.Reflection;
-using UZonMailProPlugin.Utils;
-using UZonMailProPlugin.Utils.Browser;
+using UZonMail.Utils.Http;
 
 namespace UZonMailProPlugin.Modules.ByteDance.Signer
 {

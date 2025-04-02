@@ -48,6 +48,20 @@ namespace UZonMail.Pro.Controllers.License
         }
 
         /// <summary>
+        /// 删除授权
+        /// </summary>
+        /// <param name="licenseCode"></param>
+        /// <returns></returns>
+        [Authorize(Roles = "Admin")]
+        [HttpDelete()]
+        public async Task<ResponseResult<LicenseInfo>> RemoveLicenseInfo()
+        {            
+            // 从服务器请求授权信息
+            var result = await licenseManager.RemoveLicense();
+            return result.ToSuccessResponse();
+        }
+
+        /// <summary>
         /// 更新现有授权信息
         /// </summary>
         /// <returns></returns>

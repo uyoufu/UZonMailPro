@@ -30,7 +30,7 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         [HttpGet]
         public async Task<ResponseResult<List<CrawlerType>>> GetCrawlerTypes()
         {
-            return Enum.GetValues(typeof(CrawlerType))
+            return Enum.GetValues<CrawlerType>()
                 .Cast<CrawlerType>()
                 .ToList()
                 .ToSuccessResponse();

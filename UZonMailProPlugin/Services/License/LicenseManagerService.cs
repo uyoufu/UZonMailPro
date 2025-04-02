@@ -19,7 +19,7 @@ namespace UZonMailProPlugin.Services.License
     public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient, PermissionService permissionService, LicenseAccessService licenseAccess) : IScopedService
     {
 #if DEBUG
-        private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
+        private const string _licenseAPI = "http://localhost:52443/api/v1/license-machine";
 #else
         private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
 #endif
@@ -310,6 +310,35 @@ namespace UZonMailProPlugin.Services.License
 
             // 重新获取
             return GetDeviceTokenPath();
+        }
+
+
+        /// <summary>
+        /// 移除当前机器上的 License
+        /// </summary>
+        /// <returns></returns>
+        public async Task<LicenseInfo> RemoveLicense()
+        {
+            var deviceId = GetDeviceId();
+
+            try
+            {
+                // 请求删除授权
+                var response = await httpClient.DeleteAsync($"{_licenseAPI}/machines/{deviceId}");
+
+                // 恢复授权
+                licenseAccess.LicenseInfo = LicenseInfo.CreateDefaultLicense();
+                // 重置权限缓存
+                // 清除授权缓存
+                await permissionService.ResetAllUserPermissionsCache();
+            }
+            catch (HttpRequestException e)
+            {
+                _logger.Warn(e.Message);
+                _logger.Warn($"无法连接到授权服务器，操作失败");
+            }
+
+            return licenseAccess.LicenseInfo;
         }
     }
 }

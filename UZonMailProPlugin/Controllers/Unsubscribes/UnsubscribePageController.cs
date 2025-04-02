@@ -43,7 +43,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             }
 
             unsubscribePage.OrganizationId = organizationId;
-            dbPro.Add(unsubscribePage);
+            dbPro.UnsubscribePages.Add(unsubscribePage);
             await dbPro.SaveChangesAsync();
 
             return unsubscribePage.ToSuccessResponse();

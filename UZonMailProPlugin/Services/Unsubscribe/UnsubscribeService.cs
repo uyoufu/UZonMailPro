@@ -44,9 +44,9 @@ namespace UZonMailProPlugin.Services.Unsubscribe
                     OrganizationId = user.OrganizationId,
                     Host = host
                 };
-                db.Add(unsubscribeEmail);
+                dbPro.UnsubscribeEmails.Add(unsubscribeEmail);
             }
-            await db.SaveChangesAsync();
+            await dbPro.SaveChangesAsync();
             return true;
         }
 
