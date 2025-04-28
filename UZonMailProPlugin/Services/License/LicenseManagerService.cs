@@ -4,10 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 using Uamazing.Utils.Web.ResponseModel;
+using UZonMail.Core.Services.Config;
 using UZonMail.Core.Services.Permission;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Extensions;
+using UZonMail.Utils.Web.Exceptions;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Service;
 
@@ -16,10 +18,14 @@ namespace UZonMailProPlugin.Services.License
     /// <summary>
     /// 授权管理器
     /// </summary>
-    public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient, PermissionService permissionService, LicenseAccessService licenseAccess) : IScopedService
+    public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient,
+        PermissionService permissionService, LicenseAccessService licenseAccess,
+        DebugConfig debugConfig
+        ) : IScopedService
     {
 #if DEBUG
-        private const string _licenseAPI = "http://localhost:52443/api/v1/license-machine";
+        private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
+        //private const string _licenseAPI = "http://localhost:52443/api/v1/license-machine";
 #else
         private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
 #endif
@@ -319,8 +325,12 @@ namespace UZonMailProPlugin.Services.License
         /// <returns></returns>
         public async Task<LicenseInfo> RemoveLicense()
         {
-            var deviceId = GetDeviceId();
+            if (debugConfig.IsDemo)
+            {
+                throw new KnownException("演示环境下无法删除授权");
+            }
 
+            var deviceId = GetDeviceId();
             try
             {
                 // 请求删除授权

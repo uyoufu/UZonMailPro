@@ -1,13 +1,13 @@
 ﻿using MimeKit;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Email;
-using UZonMailProPlugin.Services.EmailDecorators.UnsubscribeHeaders;
+using UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders;
 using UZonMail.DB.Managers.Cache;
 using UZonMailProPlugin.Services.License;
 using UZonMail.Core.Services.Plugin;
 using UZonMailProPlugin.SQL;
 
-namespace UZonMailProPlugin.Services.EmailDecorators
+namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
     /// <summary>
     /// 在消息体中添加退订链接

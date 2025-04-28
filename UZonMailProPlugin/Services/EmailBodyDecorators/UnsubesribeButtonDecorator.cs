@@ -6,7 +6,7 @@ using UZonMail.Utils.Email;
 using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.SQL;
 
-namespace UZonMailProPlugin.Services.EmailDecorators
+namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
     public partial class UnsubesribeButtonDecorator(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess) : IEmailBodyDecroator
     {

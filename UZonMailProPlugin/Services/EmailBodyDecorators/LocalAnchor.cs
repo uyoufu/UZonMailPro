@@ -5,7 +5,7 @@ using UZonMail.Utils.Web.Service;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.ReadingTracker;
 
-namespace UZonMailProPlugin.Services.EmailDecorators
+namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
     public class LocalAnchor(SqlContextPro sqlContext, HttpClient httpClient) : ITransientService
     {

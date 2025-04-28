@@ -6,7 +6,7 @@ using UZonMail.DB.SQL.Core.Settings;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.Unsubscribes;
 
-namespace UZonMailProPlugin.Services.EmailDecorators
+namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
     public class UnsubscribeSettingsReader : BaseDBCache<SqlContextPro>
     {

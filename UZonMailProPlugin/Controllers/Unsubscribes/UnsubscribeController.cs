@@ -13,7 +13,7 @@ using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Token;
 using UZonMailProPlugin.Controllers.Base;
 using UZonMailProPlugin.Controllers.Unsubscribes.ResponseModels;
-using UZonMailProPlugin.Services.EmailDecorators;
+using UZonMailProPlugin.Services.EmailBodyDecorators;
 using UZonMailProPlugin.Services.Unsubscribe;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.Unsubscribes;

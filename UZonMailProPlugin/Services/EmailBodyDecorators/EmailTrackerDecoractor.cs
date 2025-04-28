@@ -6,7 +6,7 @@ using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.ReadingTracker;
 
-namespace UZonMailProPlugin.Services.EmailDecorators
+namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
     public class EmailTrackerDecoractor(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess) : IEmailBodyDecroator
     {

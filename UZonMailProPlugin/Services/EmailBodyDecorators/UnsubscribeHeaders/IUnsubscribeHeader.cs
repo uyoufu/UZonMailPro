@@ -1,6 +1,6 @@
 ﻿using MimeKit;
 
-namespace UZonMailProPlugin.Services.EmailDecorators.UnsubscribeHeaders
+namespace UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
 {
     public interface IUnsubscribeHeader
     {
