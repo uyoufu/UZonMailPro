@@ -2,6 +2,7 @@
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using UZonMail.Core.Services.SendCore.DynamicProxy;
 using UZonMail.Core.SignalRHubs;
 using UZonMail.Core.SignalRHubs.Extensions;
 using UZonMail.DB.Extensions;
@@ -15,7 +16,9 @@ namespace UZonMailProPlugin.Services.EmailVerify
     /// <summary>
     /// 收件箱验证
     /// </summary>
-    public class InboxVerifyService(SqlContext db, IHubContext<UzonMailHub, IUzonMailClient> hub, MxManager mxManager) : ITransientService
+    public class InboxVerifyService(SqlContext db, IHubContext<UzonMailHub, IUzonMailClient> hub,
+        MxManager mxManager, ProxyManager proxyManager,
+        IServiceProvider serviceProvider) : IScopedService
     {
         private readonly ILog _logger = LogManager.GetLogger(typeof(InboxVerifyService));
 
@@ -35,6 +38,9 @@ namespace UZonMailProPlugin.Services.EmailVerify
                 return;
             }
 
+            // 更新用户代理
+            await proxyManager.UpdateUserProxies(serviceProvider, userId);
+
             var client = hub.GetUserClient(userId);
             List<Task> tasks = [];
 
@@ -51,7 +57,8 @@ namespace UZonMailProPlugin.Services.EmailVerify
                 var task = Task.Run(async () =>
                 {
                     // 创建 scope
-                    await ValidateInboxes(fromDomains, inboxes, client);
+                    using var scope = serviceProvider.CreateAsyncScope();
+                    await ValidateInboxes(fromDomains, inboxes, client, userId, scope.ServiceProvider);
                 });
                 tasks.Add(task);
             }
@@ -59,7 +66,7 @@ namespace UZonMailProPlugin.Services.EmailVerify
             await Task.WhenAll(tasks);
         }
 
-        private async Task ValidateInboxes(List<string> fromDomains, List<Inbox> inboxes, IUzonMailClient hubClient)
+        private async Task ValidateInboxes(List<string> fromDomains, List<Inbox> inboxes, IUzonMailClient hubClient, long userId, IServiceProvider provider)
         {
             Dictionary<string, VerifySmtpClient> smtpClients = [];
 
@@ -79,6 +86,11 @@ namespace UZonMailProPlugin.Services.EmailVerify
                 }
 
                 var client = new VerifySmtpClient();
+                // 匹配代理
+                var proxyHander = await proxyManager.GetProxyHander(provider, userId, toDomain);
+                if (proxyHander != null)
+                    client.ProxyClient = await proxyHander.GetProxyClientAsync(provider, toDomain);
+
                 var connectionOk = await client.ConnectToMx(mxRecord);
                 if (!connectionOk)
                 {
@@ -92,6 +104,25 @@ namespace UZonMailProPlugin.Services.EmailVerify
                 var response = await client.CheckExist(inbox.Email, fromDomains);
 
                 _logger.Debug($"验证邮箱 {inbox.Email} 的结果: {response.StatusCode} - {response.Response}");
+                InboxStatus inboxStatus = InboxStatus.None;
+                if (response.StatusCode == SmtpStatusCode.Ok)
+                {
+                    inboxStatus = InboxStatus.Valid;
+                }
+                else if (response.StatusCode == SmtpStatusCode.MailboxUnavailable)
+                {
+                    var responseMsg = response.Response;
+                    if (responseMsg.Contains("5.7.1"))
+                        inboxStatus = InboxStatus.Unkown;
+                    if (responseMsg.Contains("SPF"))
+                        inboxStatus = InboxStatus.Unkown;
+                    else
+                        inboxStatus = InboxStatus.Invalid;
+                }
+                else
+                {
+                    inboxStatus = InboxStatus.Unkown;
+                }
 
                 // 保存到数据库中
                 await db.Inboxes.UpdateAsync(x => x.Id == inbox.Id, x => x.SetProperty(y => y.Status, response.StatusCode == SmtpStatusCode.Ok ? InboxStatus.Valid : InboxStatus.Invalid)
