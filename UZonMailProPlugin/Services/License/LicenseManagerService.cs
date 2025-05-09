@@ -83,16 +83,16 @@ namespace UZonMailProPlugin.Services.License
             _lastUpdateDate = DateTime.Now;
 
             // 将授权码更新到数据库中
-            var systemSettings = await sqlContext.SystemSettings.FirstOrDefaultAsync(x => x.Key == _licenseKey);
+            var systemSettings = await sqlContext.AppSettings.FirstOrDefaultAsync(x => x.Key == _licenseKey);
             if (systemSettings == null)
             {
-                systemSettings = new SystemSetting()
+                systemSettings = new AppSetting()
                 {
                     Key = _licenseKey,
                     StringValue = licenseCode,
                     DateTime = license.ExpireDate
                 };
-                sqlContext.SystemSettings.Add(systemSettings);
+                sqlContext.AppSettings.Add(systemSettings);
             }
             else
             {

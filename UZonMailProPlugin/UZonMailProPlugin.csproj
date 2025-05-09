@@ -54,7 +54,6 @@
 
 	<ItemGroup>
 	  <Folder Include="Controllers\EmailCrawler\Model\" />
-	  <Folder Include="Controllers\Settings\" />
 	  <Folder Include="Migrations\SqLite\" />
 	</ItemGroup>
 

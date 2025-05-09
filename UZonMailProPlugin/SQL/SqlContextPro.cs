@@ -22,7 +22,6 @@ namespace UZonMailProPlugin.SQL
         public DbSet<IPInfo> IPInfos { get; set; }
 
         // 退定相关
-        public DbSet<UnsubscribeSetting> UnsubscribeSettings { get; set; }
         public DbSet<UnsubscribePage> UnsubscribePages { get; set; }
         public DbSet<UnsubscribeEmail> UnsubscribeEmails { get; set; }
         public DbSet<UnsubscribeButton> UnsubscribeButtons { get; set; }

@@ -2,20 +2,26 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
+using UZonMail.Core.Controllers.Settings.Validators;
 using UZonMail.Core.Services.Settings;
+using UZonMail.Core.Services.Settings.Model;
 using UZonMail.Core.Utils.Database;
+using UZonMail.Core.Utils.Extensions;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.EmailSending;
+using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Controllers.Base;
+using UZonMailProPlugin.Services.Settings.Model;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.ReadingTracker;
 
 namespace UZonMailProPlugin.Controllers.EmailTracker
 {
-    public class EmailTrackerController(SqlContext db, SqlContextPro dbPro, TokenService tokenService) : ControllerBasePro
+    public class EmailTrackerController(SqlContext db, SqlContextPro dbPro, TokenService tokenService,
+        AppSettingService settingService,AppSettingsManager settingsManager) : ControllerBasePro
     {
         private static byte[] _transparentPngBytes =
         [
@@ -204,5 +210,45 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
             var results = await dbSet.Page(pagination).ToListAsync();
             return results.ToSuccessResponse();
         }
+
+        #region 发送设置
+        /// <summary>
+        /// 获取设置
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("setting")]
+        public async Task<ResponseResult<EmailTrackingSetting>> GetEmailTrackingSetting(AppSettingType type = AppSettingType.System)
+        {
+            // 获取设置
+            var key = nameof(EmailTrackingSetting);
+            var settings = await settingService.GetAppSetting(key, type);
+            if (settings == null)
+            {
+                return new EmailTrackingSetting().ToSuccessResponse();
+            }
+
+            return settings.Json!.ToObject<EmailTrackingSetting>()!.ToSuccessResponse();
+        }
+
+        /// <summary>
+        /// 更新设置
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut("setting")]
+        public async Task<ResponseResult<bool>> UpserEmailTrackingSetting([FromBody] EmailTrackingSetting trackingSetting, AppSettingType type = AppSettingType.System)
+        {
+            var userId = tokenService.GetUserSqlId();
+            // 判断权限
+            await settingService.CheckUpdatePermission(userId, type);
+
+            var key = nameof(EmailTrackingSetting);
+            var appSetting = await settingService.UpdateAppSetting(trackingSetting, key, type);
+
+            // 更新缓存
+            settingsManager.ResetSetting<EmailTrackingSetting>(appSetting.Id);
+
+            return true.ToSuccessResponse();
+        }
+        #endregion
     }
 }

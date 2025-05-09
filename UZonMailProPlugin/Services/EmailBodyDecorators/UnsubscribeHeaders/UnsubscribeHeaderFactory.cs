@@ -14,7 +14,7 @@
         /// <returns></returns>
         public static IUnsubscribeHeader GetUnsubscribeHeader(IServiceProvider serviceProvider, string email)
         {
-            var unsubscribeConfig = new UnsubscribeSettings();
+            var unsubscribeConfig = new UnsubscribeConfig();
             // 获取配置
             var config = serviceProvider.GetRequiredService<IConfiguration>();
             config.GetSection("Unsubscribe")?.Bind(unsubscribeConfig);

@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UZonMail.Core.Services.Plugin;
+using UZonMail.Core.Services.Settings;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Email;
 using UZonMailProPlugin.Services.License;
+using UZonMailProPlugin.Services.Settings.Model;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.ReadingTracker;
 
 namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
-    public class EmailTrackerDecoractor(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess) : IEmailBodyDecroator
+    public class EmailTrackerDecoractor(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess,
+        AppSettingsManager settingsManager) : IEmailBodyDecroator
     {
         private static string? _baseUrl = string.Empty;
         private static readonly string _apiSettingKey = "baseApiUrl";
@@ -23,18 +26,17 @@ namespace UZonMailProPlugin.Services.EmailBodyDecorators
             // 判断是否有企业版本功能
             if (!(await functionAccess.HasEmailTrackingAccess())) return originBody;
 
-
             // 若已经存在追踪锚点则不再添加
             if (originBody.Contains("api/pro/email-tracker/image")) return originBody;
             // 判断是否设置了追踪
-            var enableEmailTracker = decoratorParams.SettingsReader.EnableEmailTracker;
-            if (!enableEmailTracker) return originBody;
+            var trackingSetting = await settingsManager.GetSetting<EmailTrackingSetting>(db, decoratorParams.SendingItem.UserId);
+            if (!trackingSetting.IsEnableTracker()) return originBody;
 
             // 添加跟踪锚点
             if (string.IsNullOrEmpty(_baseUrl))
             {
                 // 获取 API 地址
-                var systemSettings = await db.SystemSettings.FirstOrDefaultAsync(x => x.Key == _apiSettingKey);
+                var systemSettings = await db.AppSettings.FirstOrDefaultAsync(x => x.Key == _apiSettingKey);
                 if (systemSettings == null)
                 {
                     _baseUrl = null;

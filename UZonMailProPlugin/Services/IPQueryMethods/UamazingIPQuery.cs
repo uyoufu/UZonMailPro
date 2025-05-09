@@ -5,11 +5,11 @@ using UZonMailProPlugin.Services.License;
 namespace UZonMailProPlugin.Services.IPQueryMethods
 {
     /// <summary>
-    /// 基于 http://httpbin.org/ip 实现的 IP 查询
+    /// 基于 https://www.223434.xyz:2234/inspection/ip 实现的 IP 查询
     /// </summary>
     public class UamazingIPQuery(HttpClient httpClient, LicenseAccessService licenseAccess) : JsonParser(httpClient)
     {
-        private readonly string _apiUrl = "http://httpbin.org/ip";
+        private readonly string _apiUrl = "https://www.223434.xyz:2234/inspection/ip?accessToken=60331df07090662a84c8be1a";
 
         /// <summary>
         /// 最优先

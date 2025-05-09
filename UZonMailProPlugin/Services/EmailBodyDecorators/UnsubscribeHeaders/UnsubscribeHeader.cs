@@ -1,14 +1,14 @@
 ﻿namespace UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
 {
-    public class UnsubscribeSettings
+    public class UnsubscribeConfig
     {
-        public List<UnsubscribeHeaderConfig> Headers { get; set; } = [];
+        public List<UnsubscribeHeader> Headers { get; set; } = [];
     }
 
     /// <summary>
     /// Header 配置
     /// </summary>
-    public class UnsubscribeHeaderConfig
+    public class UnsubscribeHeader
     {
         public string Domain { get; set; }
         public string Header { get; set; }
