@@ -604,46 +604,6 @@ namespace UZonMailProPlugin.Migrations.SqLite
                     b.ToTable("UnsubscribePages");
                 });
 
-            modelBuilder.Entity("UZonMailProPlugin.SQL.Unsubscribes.UnsubscribeSetting", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("Enable")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ExternalUrl")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsHidden")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ObjectId")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("_id");
-
-                    b.Property<long>("OrganizationId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<long>("UnsubscribeButtonId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UnsubscribeSettings");
-                });
-
             modelBuilder.Entity("UZonMailProPlugin.SQL.EmailCrawler.CrawlerTaskResult", b =>
                 {
                     b.HasOne("UZonMailProPlugin.SQL.EmailCrawler.TiktokAuthor", "TiktokAuthor")

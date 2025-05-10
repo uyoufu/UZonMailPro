@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UZonMailProPlugin.SQL;
 
@@ -11,9 +12,11 @@ using UZonMailProPlugin.SQL;
 namespace UZonMailProPlugin.Migrations.Mysql
 {
     [DbContext(typeof(MySqlContextPro))]
-    partial class MySqlContextProModelSnapshot : ModelSnapshot
+    [Migration("20250510023158_fixManyToMany")]
+    partial class fixManyToMany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

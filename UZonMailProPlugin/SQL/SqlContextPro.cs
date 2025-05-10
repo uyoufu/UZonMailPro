@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
+using UZonMail.DB.SQL.EntityConfigs;
 using UZonMailProPlugin.SQL.EmailCrawler;
 using UZonMailProPlugin.SQL.ReadingTracker;
 using UZonMailProPlugin.SQL.Unsubscribes;
@@ -13,6 +14,14 @@ namespace UZonMailProPlugin.SQL
         public SqlContextPro() { }
         public SqlContextPro(DbContextOptions<SqlContextPro> options) : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // 调用配置
+            new EntityTypeConfig().Configure(modelBuilder);
         }
         #endregion
 
