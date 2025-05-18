@@ -188,7 +188,7 @@ namespace UZonMailProPlugin.Services.License
             {
                 response = await httpClient.GetAsync($"{_licenseAPI}?machineId={deviceId}");
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
                 _logger.Warn(e.Message);
                 _logger.Warn($"无法连接到授权服务器，无法提供授权功能");
