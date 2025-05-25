@@ -1,18 +1,19 @@
 ﻿using System.Text.RegularExpressions;
-using UZonMail.Core.Services.Plugin;
+using UZonMail.Core.Services.EmailDecorator.Interfaces;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
-using UZonMail.Utils.Email;
 using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.Services.Settings.Model;
 using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
-    public partial class UnsubesribeButtonDecorator(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess,AppSettingsManager settingsManager) : IEmailBodyDecroator
+    public partial class UnsubesribeButtonDecorator(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess,AppSettingsManager settingsManager) : IContentDecroator
     {
-        public async Task<string> StartDecorating(IEmailDecoratorParams unsubesribeParams, string originBody)
+        public int Order { get; }
+
+        public async Task<string> StartDecorating(IContentDecoratorParams unsubesribeParams, string originBody)
         {
             if (string.IsNullOrEmpty(originBody)) return originBody;
             // 判断是否有企业版本功能

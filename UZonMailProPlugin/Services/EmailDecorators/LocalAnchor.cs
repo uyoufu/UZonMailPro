@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.Plugin;
+using UZonMail.Core.Services.EmailDecorator.Interfaces;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Service;
 using UZonMailProPlugin.SQL;

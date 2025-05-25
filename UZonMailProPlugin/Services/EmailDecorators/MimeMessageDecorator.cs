@@ -1,13 +1,12 @@
 ﻿using MimeKit;
-using UZonMail.DB.SQL;
-using UZonMail.Utils.Email;
-using UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders;
-using UZonMail.DB.Managers.Cache;
-using UZonMailProPlugin.Services.License;
-using UZonMail.Core.Services.Plugin;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.Services.Settings.Model;
+using UZonMail.Core.Services.EmailDecorator.Interfaces;
 using UZonMail.Core.Services.Settings;
+using UZonMail.DB.Managers.Cache;
+using UZonMail.DB.SQL;
+using UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders;
+using UZonMailProPlugin.Services.License;
+using UZonMailProPlugin.Services.Settings.Model;
+using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
@@ -17,7 +16,7 @@ namespace UZonMailProPlugin.Services.EmailBodyDecorators
     public class MimeMessageDecorator(IServiceProvider serviceProvider, SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess)
         : IMimeMessageDecroator
     {
-        public async Task<MimeMessage> StartDecorating(IEmailDecoratorParams mimeParams, MimeMessage mimeMessage)
+        public async Task<MimeMessage> StartDecorating(IContentDecoratorParams mimeParams, MimeMessage mimeMessage)
         {
             if (!(await functionAccess.HasUnsubscribeAccess())) return mimeMessage;
 

@@ -70,5 +70,15 @@ namespace UZonMailProPlugin.Services.License
         {
             return await HasProLicense();
         }
+
+        /// <summary>
+        /// 是否有 js 变量替换的权限
+        /// </summary>
+        /// <param name="licenseInfo"></param>
+        /// <returns></returns>
+        public async Task<bool> HasJsVariableAccess()
+        {
+            return await HasProLicense();
+        }
     }
 }

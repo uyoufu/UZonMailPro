@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.Plugin;
+using UZonMail.Core.Services.EmailDecorator.Interfaces;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.SQL;
-using UZonMail.Utils.Email;
 using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.Services.Settings.Model;
 using UZonMailProPlugin.SQL;
@@ -11,12 +10,14 @@ using UZonMailProPlugin.SQL.ReadingTracker;
 namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
     public class EmailTrackerDecoractor(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess,
-        AppSettingsManager settingsManager) : IEmailBodyDecroator
+        AppSettingsManager settingsManager) : IContentDecroator
     {
+        public int Order { get; }
+
         private static string? _baseUrl = string.Empty;
         private static readonly string _apiSettingKey = "baseApiUrl";
 
-        public async Task<string> StartDecorating(IEmailDecoratorParams trackerParams, string originBody)
+        public async Task<string> StartDecorating(IContentDecoratorParams trackerParams, string originBody)
         {
             var decoratorParams = trackerParams as EmailDecoratorParams;
             if (string.IsNullOrEmpty(originBody)) return originBody;

@@ -3,6 +3,7 @@ using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.DB.SQL.EntityConfigs;
 using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMailProPlugin.SQL.JsVariable;
 using UZonMailProPlugin.SQL.ReadingTracker;
 using UZonMailProPlugin.SQL.Unsubscribes;
 
@@ -41,6 +42,10 @@ namespace UZonMailProPlugin.SQL
         public DbSet<TikTokAuthorDiversification> TikTokAuthorDiversifications { get; set; } // TikTok 作者视频分类信息
         public DbSet<CrawlerTaskResult> CrawlerTaskResults { get; set; }
         public DbSet<TikTokDevice> TikTokDevices { get; set; }
+
+        // js 变量相关
+        public DbSet<JsVariableSource> JsVariableSources { get; set; } // js 变量数据源
+        public DbSet<JsFunctionDefinition> JsFunctionDefinitions { get; set; } // js 函数定义
         #endregion
     }
 }
