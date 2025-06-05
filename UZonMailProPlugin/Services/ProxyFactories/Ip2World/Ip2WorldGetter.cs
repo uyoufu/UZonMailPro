@@ -7,7 +7,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
     {
         public Ip2WorldGetter WithIPNumber(int number = 10)
         {
-            AddQuery("num", number.ToString());
+            AddQuery("num", number.ToString());           
             return this;
         }
 

@@ -55,8 +55,8 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
                 .Select(x => new Proxy()
                 {
                     // ip 当做 Id
-                    Id = long.Parse(x.Replace(".", "").Split(":").First()),
-                    Url = $"http://{x}",
+                    ObjectId = x,
+                    Url = $"socks5://{x}",
                 })
                 .Select(x =>
                 {

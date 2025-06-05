@@ -1,10 +1,11 @@
 ﻿namespace UZonMailProPlugin.Utils
 {
-    public enum ApiRoles
+    public class ApiRoles
     {
-        Professional,
-        Enterprise,
-        ProfessionalAdmin,
-        EnterpriseAdmin,
+        public const string Professional = "Professional";
+        public const string Enterprise = "Enterprise";
+        public const string ProfessionalAdmin = "ProfessionalAdmin";
+        public const string EnterpriseAdmin = "EnterpriseAdmin";
+        public const string ApiUser = "ApiUser";
     }
 }

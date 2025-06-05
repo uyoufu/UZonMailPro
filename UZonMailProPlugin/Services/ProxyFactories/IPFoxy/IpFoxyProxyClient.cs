@@ -1,19 +1,18 @@
 ﻿using log4net;
 using Newtonsoft.Json.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
 using UZonMail.Core.Services.SendCore.DynamicProxy.Clients;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
+using UZonMailProPlugin.Services.ProxyFactories.YDaili;
 
-namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
+namespace UZonMailProPlugin.Services.ProxyFactories.IPFoxy
 {
-    public class YDailiProxyClient: ProxyHandlerCluster
+    public class IpFoxyProxyClient : ProxyHandlerCluster
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(YDailiProxyClient));
 
         private int _ipNumber = 5;
-        private int _maxNumber = 100;
 
         private bool _isAvailable = true;
         public override bool IsEnable()
@@ -29,50 +28,43 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
         {
             var httpClient = serviceProvider.GetRequiredService<HttpClient>();
 
-            var (json, response) = await new YDailiGetter(ProxyInfo.Url)
-                .WithFormat(YDailiFormat.Json)
+            var (json, response) = await new IpFoxyGetter(ProxyInfo.Url)
+                .WithJsonReturnType()
+                .WithPeriod()
                 .WithIPNumber(_ipNumber)
                 .WithHttpClient(httpClient)
                 .GetJsonAsync2();
 
-            var status = json.SelectTokenOrDefault("status", "success");
-            switch (status)
+            var code = json.SelectTokenOrDefault("code", 500);
+            if (code!=0)
             {
-                case "206":
-                    _isAvailable = false;
-                    _logger.Error($"代理 {Id} IP 数量已用完");
-                    return [];
-
-                case "210":
-                    _isAvailable = false;
-                    _logger.Error($"代理 {Id} 需要添加白名单");
-                    return [];
-
-                case "406":
-                    _logger.Warn($"代理 {Id} 提取间隔太快");
-                    // 增加单次提取数量
-                    _ipNumber = Math.Min(_ipNumber + 10, _maxNumber);
-                    await Task.Delay(2000);
-                    return await GetProxyHandlersAsync(serviceProvider);
-
-                case "215":
-                    _logger.Warn($"代理 {Id} 单次提取数量超过上限");
-                    // 减少单次提取数量
-                    _ipNumber = Math.Max(_ipNumber - 10, 10);
-                    return await GetProxyHandlersAsync(serviceProvider);
-
-                default:
-                    break;
+                _isAvailable = false;
+                _logger.Error($"代理 {Id} 请求错误: {json.SelectTokenOrDefault("msg", "无法获取代理 ip")}");
             }
 
             var ipList = json!.SelectTokenOrDefault<List<JObject>>("data", []);
             // 将 IP 转换成代理客户端
-            var handlers = ipList!.Select(x => x.SelectTokenOrDefault("IP", ""))
-                .Where(x => !string.IsNullOrEmpty(x))
+            var handlers = ipList!.Select(x =>
+            {
+                var host = x.SelectTokenOrDefault("host", string.Empty);
+                var port = x.SelectTokenOrDefault("port", string.Empty);
+                var user = x.SelectTokenOrDefault("user", string.Empty);
+                var password = x.SelectTokenOrDefault("password", string.Empty);
+
+                return new
+               {
+                    host,
+                    port,
+                    user,
+                    password
+               };
+            })
+                .Where(x => !string.IsNullOrEmpty(x.host))
                 .Select(x => new Proxy()
                 {
-                    ObjectId = x,
-                    Url = $"socks5://{x}",
+                    // ip 当做 Id
+                    ObjectId = x.host,
+                    Url = $"socks5://{x.user}:{x.password}@{x.host}:{x.port}",
                 })
                 .Select(x =>
                 {
@@ -88,7 +80,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
         }
 
         /// <summary>
-        /// 默认为 3 分钟
+        /// 默认为 5 分钟
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
@@ -96,7 +88,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
         {
             var match = Regex.Match(url, "expireMinutes=(\\d+)");
             if (!match.Success)
-                return 3;
+                return 15;
             return int.Parse(match.Groups[1].Value);
         }
     }

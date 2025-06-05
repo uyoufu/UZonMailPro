@@ -2,6 +2,7 @@
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.DB.SQL.EntityConfigs;
+using UZonMailProPlugin.SQL.ApiAccess;
 using UZonMailProPlugin.SQL.EmailCrawler;
 using UZonMailProPlugin.SQL.JsVariable;
 using UZonMailProPlugin.SQL.ReadingTracker;
@@ -46,6 +47,9 @@ namespace UZonMailProPlugin.SQL
         // js 变量相关
         public DbSet<JsVariableSource> JsVariableSources { get; set; } // js 变量数据源
         public DbSet<JsFunctionDefinition> JsFunctionDefinitions { get; set; } // js 函数定义
+
+        // 访问令牌控制
+        public DbSet<AccessToken> AccessTokens { get; set; } // 访问令牌
         #endregion
     }
 }
