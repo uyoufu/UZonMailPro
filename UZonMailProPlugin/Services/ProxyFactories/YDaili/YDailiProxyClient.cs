@@ -3,12 +3,13 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using UZonMail.Core.Services.SendCore.DynamicProxy.Clients;
+using UZonMail.Core.Services.SendCore.DynamicProxy.ProxyTesters;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
 
 namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
 {
-    public class YDailiProxyClient: ProxyHandlerCluster
+    public class YDailiProxyClient : ProxyHandlerCluster
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(YDailiProxyClient));
 
@@ -79,7 +80,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
                     var handler = serviceProvider.GetRequiredService<ProxyHandler>();
                     // 提取 url 中的 expireMinutes 参数
                     var expireSeconds = GetExpireMinutes(x.Url) * 60;
-                    handler.Update(x, expireSeconds);
+                    handler.Update(x, ProxyTesterType.Baidu, expireSeconds);
                     return handler;
                 })
                 .ToList();

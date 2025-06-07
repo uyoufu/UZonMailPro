@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using UZonMail.Core.Services.SendCore.DynamicProxy.Clients;
+using UZonMail.Core.Services.SendCore.DynamicProxy.ProxyTesters;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
 using UZonMailProPlugin.Services.ProxyFactories.YDaili;
@@ -32,7 +33,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
                 .WithJsonReturnType()
                 .WithDelimiter()
                 .WithHttpsProtocol()
-                .WithIPNumber(_ipNumber)                
+                .WithIPNumber(_ipNumber)
                 .WithHttpClient(httpClient)
                 .GetJsonAsync2();
 
@@ -63,7 +64,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
                     var handler = serviceProvider.GetRequiredService<ProxyHandler>();
                     // 提取 url 中的 expireMinutes 参数
                     var expireSeconds = GetExpireMinutes(x.Url) * 60;
-                    handler.Update(x, expireSeconds);
+                    handler.Update(x, ProxyTesterType.Google, expireSeconds);
                     return handler;
                 })
                 .ToList();

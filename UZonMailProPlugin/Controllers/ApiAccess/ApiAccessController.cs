@@ -4,7 +4,6 @@ using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Cache;
 using UZonMail.Core.Services.Config;
 using UZonMail.Core.Services.Settings;
-using UZonMail.Core.Services.UserInfos;
 using UZonMail.Utils.Web.Exceptions;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;

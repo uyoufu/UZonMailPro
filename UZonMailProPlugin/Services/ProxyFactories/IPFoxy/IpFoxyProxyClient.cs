@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
 using UZonMail.Core.Services.SendCore.DynamicProxy.Clients;
+using UZonMail.Core.Services.SendCore.DynamicProxy.ProxyTesters;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
 using UZonMailProPlugin.Services.ProxyFactories.YDaili;
@@ -36,7 +37,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.IPFoxy
                 .GetJsonAsync2();
 
             var code = json.SelectTokenOrDefault("code", 500);
-            if (code!=0)
+            if (code != 0)
             {
                 _isAvailable = false;
                 _logger.Error($"代理 {Id} 请求错误: {json.SelectTokenOrDefault("msg", "无法获取代理 ip")}");
@@ -52,12 +53,12 @@ namespace UZonMailProPlugin.Services.ProxyFactories.IPFoxy
                 var password = x.SelectTokenOrDefault("password", string.Empty);
 
                 return new
-               {
+                {
                     host,
                     port,
                     user,
                     password
-               };
+                };
             })
                 .Where(x => !string.IsNullOrEmpty(x.host))
                 .Select(x => new Proxy()
@@ -71,7 +72,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.IPFoxy
                     var handler = serviceProvider.GetRequiredService<ProxyHandler>();
                     // 提取 url 中的 expireMinutes 参数
                     var expireSeconds = GetExpireMinutes(x.Url) * 60;
-                    handler.Update(x, expireSeconds);
+                    handler.Update(x, ProxyTesterType.Google, expireSeconds);
                     return handler;
                 })
                 .ToList();
