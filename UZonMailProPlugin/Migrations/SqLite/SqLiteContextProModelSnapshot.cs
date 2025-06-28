@@ -17,6 +17,21 @@ namespace UZonMailProPlugin.Migrations.SqLite
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.13");
 
+            modelBuilder.Entity("EmailAnchorEmailVisitHistory", b =>
+                {
+                    b.Property<long>("EmailAnchorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("VisitedHistoriesId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("EmailAnchorId", "VisitedHistoriesId");
+
+                    b.HasIndex("VisitedHistoriesId");
+
+                    b.ToTable("EmailAnchorEmailVisitHistory");
+                });
+
             modelBuilder.Entity("UZonMailProPlugin.SQL.ApiAccess.AccessToken", b =>
                 {
                     b.Property<long>("Id")
@@ -535,9 +550,6 @@ namespace UZonMailProPlugin.Migrations.SqLite
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("TEXT");
 
-                    b.Property<long?>("EmailAnchorId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("IP")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -554,8 +566,6 @@ namespace UZonMailProPlugin.Migrations.SqLite
                         .HasColumnName("_id");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("EmailAnchorId");
 
                     b.ToTable("EmailVisitHistories");
                 });
@@ -736,6 +746,21 @@ namespace UZonMailProPlugin.Migrations.SqLite
                     b.ToTable("UnsubscribePages");
                 });
 
+            modelBuilder.Entity("EmailAnchorEmailVisitHistory", b =>
+                {
+                    b.HasOne("UZonMailProPlugin.SQL.ReadingTracker.EmailAnchor", null)
+                        .WithMany()
+                        .HasForeignKey("EmailAnchorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UZonMailProPlugin.SQL.ReadingTracker.EmailVisitHistory", null)
+                        .WithMany()
+                        .HasForeignKey("VisitedHistoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("UZonMailProPlugin.SQL.EmailCrawler.CrawlerTaskResult", b =>
                 {
                     b.HasOne("UZonMailProPlugin.SQL.EmailCrawler.TiktokAuthor", "TiktokAuthor")
@@ -745,19 +770,6 @@ namespace UZonMailProPlugin.Migrations.SqLite
                         .IsRequired();
 
                     b.Navigation("TiktokAuthor");
-                });
-
-            modelBuilder.Entity("UZonMailProPlugin.SQL.ReadingTracker.EmailVisitHistory", b =>
-                {
-                    b.HasOne("UZonMailProPlugin.SQL.ReadingTracker.EmailAnchor", null)
-                        .WithMany("VisitedHistories")
-                        .HasForeignKey("EmailAnchorId")
-                        .OnDelete(DeleteBehavior.NoAction);
-                });
-
-            modelBuilder.Entity("UZonMailProPlugin.SQL.ReadingTracker.EmailAnchor", b =>
-                {
-                    b.Navigation("VisitedHistories");
                 });
 #pragma warning restore 612, 618
         }

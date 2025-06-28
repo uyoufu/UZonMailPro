@@ -1,4 +1,7 @@
-﻿using UZonMail.DB.SQL.Base;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using UZonMail.DB.SQL.Base;
+using UZonMail.DB.SQL.Core.EmailSending;
 using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin.SQL.ReadingTracker
@@ -6,7 +9,7 @@ namespace UZonMailProPlugin.SQL.ReadingTracker
     /// <summary>
     /// 邮箱锚点
     /// </summary>
-    public class EmailAnchor : SqlId
+    public class EmailAnchor : SqlId, IEntityTypeConfiguration<EmailAnchor>
     {
         /// <summary>
         /// 所属用户
@@ -52,5 +55,14 @@ namespace UZonMailProPlugin.SQL.ReadingTracker
         /// 访问历史
         /// </summary>
         public List<EmailVisitHistory> VisitedHistories { get; set; } = [];
+
+        /// <summary>
+        /// 添加 ef 配置
+        /// </summary>
+        /// <param name="builder"></param>
+        public void Configure(EntityTypeBuilder<EmailAnchor> builder)
+        {
+            builder.HasMany(x => x.VisitedHistories).WithMany();
+        }
     }
 }

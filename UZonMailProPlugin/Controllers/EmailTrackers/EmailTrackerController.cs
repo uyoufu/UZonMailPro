@@ -2,11 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Controllers.Settings.Validators;
 using UZonMail.Core.Services.Settings;
-using UZonMail.Core.Services.Settings.Model;
-using UZonMail.Core.Utils.Database;
-using UZonMail.Core.Utils.Extensions;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.EmailSending;
@@ -21,7 +17,7 @@ using UZonMailProPlugin.SQL.ReadingTracker;
 namespace UZonMailProPlugin.Controllers.EmailTracker
 {
     public class EmailTrackerController(SqlContext db, SqlContextPro dbPro, TokenService tokenService,
-        AppSettingService settingService,AppSettingsManager settingsManager) : ControllerBasePro
+        AppSettingService settingService, AppSettingsManager settingsManager) : ControllerBasePro
     {
         private static byte[] _transparentPngBytes =
         [
@@ -104,7 +100,9 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         public async Task<IActionResult> GetStream(string trackerId)
         {
             // 查找文件对象
-            var emailAnchor = await dbPro.EmailAnchors.Where(x => x.ObjectId == trackerId).FirstOrDefaultAsync();
+            var emailAnchor = await dbPro.EmailAnchors.Where(x => x.ObjectId == trackerId)
+                .Include(x => x.VisitedHistories)
+                .FirstOrDefaultAsync();
             if (emailAnchor == null) return NotFound();
 
             // 更新访问次数
@@ -126,6 +124,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
                 };
                 emailAnchor.VisitedHistories.Add(visitHistory);
             }
+            await dbPro.SaveChangesAsync();
 
             // 更新发送的邮件的状态
             // 判断是否是 cdn 在请求
@@ -135,8 +134,6 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
                 await db.SendingItems.UpdateAsync(x => x.Id == emailAnchor.SendingItemId, x => x.SetProperty(p => p.Status, SendingItemStatus.Read)
                 .SetProperty(p => p.ReadDate, DateTime.Now));
             }
-
-            await db.SaveChangesAsync();
 
             // 返回一个像素的透明 png 图片流
             Response.Headers.Append("Content-Disposition", "inline");
