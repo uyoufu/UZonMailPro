@@ -12,6 +12,10 @@ dotnet ef migrations add fixAnchorCallbackFail --context MysqlContextPro --outpu
 
 dotnet ef migrations add fixAnchorCallbackFail --context SqLiteContextPro --output-dir Migrations/SqLite -v
 
+3. PostgreSQL
+
+dotnet ef migrations add fixAnchorCallbackFail --context PostgreSqlContextPro --output-dir Migrations/PostgreSql -v
+
 ## 取消数据迁移
 
 1. Mysql

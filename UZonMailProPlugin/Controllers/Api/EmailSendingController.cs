@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.EmailSending;
+using UZonMail.Core.Services.SendCore;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.EmailSending;

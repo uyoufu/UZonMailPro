@@ -60,7 +60,6 @@ namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
                 var jintEngin = new Engine().SetValue("uzonData", uzonData);
                 jintEngin = jintEngin.Execute(functionDefinition.GetFunctionDefinition());
 
-
                 // 开始测试
                 try
                 {
