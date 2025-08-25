@@ -80,7 +80,7 @@ namespace UZonMailProPlugin.Services.License
             var license = await DownloadLicense();
             if (license == null) return ResponseResult<LicenseInfo>.Fail("授权码无效");
             LicenseInfo = license;
-            _lastUpdateDate = DateTime.Now;
+            _lastUpdateDate = DateTime.UtcNow;
 
             // 将授权码更新到数据库中
             var systemSettings = await sqlContext.AppSettings.FirstOrDefaultAsync(x => x.Key == _licenseKey);
@@ -137,17 +137,17 @@ namespace UZonMailProPlugin.Services.License
 
             // 如果过期了，则从数据库中获取
             // 只有更新日期超过一天才会去请求授权服务器
-            if (updateThrottle && LicenseInfo != null && LicenseInfo.ExpireDate > DateTime.Now && _lastUpdateDate.AddDays(1) > DateTime.Now)
+            if (updateThrottle && LicenseInfo != null && LicenseInfo.ExpireDate > DateTime.UtcNow && _lastUpdateDate.AddDays(1) > DateTime.UtcNow)
             {
                 return LicenseInfo;
             }
 
             var defaultLicenseInfo = LicenseInfo.CreateDefaultLicense();
             LicenseInfo = defaultLicenseInfo;
-            _lastUpdateDate = DateTime.Now;
+            _lastUpdateDate = DateTime.UtcNow;
 
             // 如果更新的日期大于当前日期，说明系统时间被修改了
-            if (_lastUpdateDate > DateTime.Now)
+            if (_lastUpdateDate > DateTime.UtcNow)
             {
                 _logger.Warn("请勿修改系统日期");
                 return LicenseInfo;
@@ -162,7 +162,7 @@ namespace UZonMailProPlugin.Services.License
 
             // 更新授权信息
             LicenseInfo = license;
-            _lastUpdateDate = DateTime.Now;
+            _lastUpdateDate = DateTime.UtcNow;
 
             return LicenseInfo;
         }

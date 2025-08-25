@@ -32,7 +32,7 @@ namespace UZonMailProPlugin.Controllers.Files
                 db.FileReaders.Add(existReader);
             }
 
-            existReader.ExpireDate = DateTime.Now.AddYears(100);
+            existReader.ExpireDate = DateTime.UtcNow.AddYears(100);
             await db.SaveChangesAsync();
 
             return existReader.ObjectId.ToSuccessResponse();
@@ -53,15 +53,15 @@ namespace UZonMailProPlugin.Controllers.Files
 
             // 保存访问次数
             fileReader.VisitedCount += 1;
-            if(fileReader.FirstDate>DateTime.Now)
+            if(fileReader.FirstDate>DateTime.UtcNow)
             {
-                fileReader.FirstDate = DateTime.Now;
+                fileReader.FirstDate = DateTime.UtcNow;
             }
-            fileReader.LastDate = DateTime.Now;
+            fileReader.LastDate = DateTime.UtcNow;
             await db.SaveChangesAsync();
 
             // 判断是否过期
-            if (fileReader.ExpireDate < DateTime.Now)
+            if (fileReader.ExpireDate < DateTime.UtcNow)
             {
                 db.FileReaders.Remove(fileReader);
                 await db.SaveChangesAsync();

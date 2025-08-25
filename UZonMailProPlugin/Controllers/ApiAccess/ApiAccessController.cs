@@ -32,7 +32,7 @@ namespace UZonMailProPlugin.Controllers.ApiAccess
                 return ResponseResult<AccessToken>.Fail("令牌名称不能为空");
             }
 
-            if (data.ExpireDate <= DateTime.Now)
+            if (data.ExpireDate <= DateTime.UtcNow)
             {
                 return ResponseResult<AccessToken>.Fail("令牌过期时间必须大于当前时间");
             }
@@ -67,7 +67,7 @@ namespace UZonMailProPlugin.Controllers.ApiAccess
                 }
                 else
                 {
-                    var expireTimeSpan = existOne.ExpireDate - DateTime.Now;
+                    var expireTimeSpan = existOne.ExpireDate - DateTime.UtcNow;
                     if (expireTimeSpan.TotalSeconds > 10)
                         // 添加到黑名单中
                         await cacheService.SetAsync(blacklistKey, existOne.Id, expireTimeSpan);
@@ -141,7 +141,7 @@ namespace UZonMailProPlugin.Controllers.ApiAccess
             }
 
             // 添加到黑名单
-            var expireTimeSpan = existOne.ExpireDate - DateTime.Now;
+            var expireTimeSpan = existOne.ExpireDate - DateTime.UtcNow;
             if (expireTimeSpan.TotalSeconds > 10)
                 // 添加到黑名单中
                 await cacheService.SetAsync(existOne.GetBlacklistKey(), existOne.Id, expireTimeSpan);

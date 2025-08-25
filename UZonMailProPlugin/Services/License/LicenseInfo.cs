@@ -25,7 +25,7 @@ namespace UZonMailProPlugin.Services.License
         /// <summary>
         /// 最近一次更新授权的日期
         /// </summary>
-        public DateTime LastUpdateDate { get; set; } = DateTime.Now;
+        public DateTime LastUpdateDate { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// 授权类型
@@ -41,8 +41,8 @@ namespace UZonMailProPlugin.Services.License
             return new LicenseInfo()
             {
                 LicenseType = LicenseType.Enterprise,
-                ExpireDate = DateTime.Now.AddYears(99),
-                ActiveDate = DateTime.Now
+                ExpireDate = DateTime.UtcNow.AddYears(99),
+                ActiveDate = DateTime.UtcNow
             };
         }
 
@@ -55,8 +55,8 @@ namespace UZonMailProPlugin.Services.License
             return new LicenseInfo()
             {
                 LicenseType = LicenseType.Community,
-                ExpireDate = DateTime.Now.AddYears(99),
-                ActiveDate = DateTime.Now
+                ExpireDate = DateTime.UtcNow.AddYears(99),
+                ActiveDate = DateTime.UtcNow
             };
         }
     }

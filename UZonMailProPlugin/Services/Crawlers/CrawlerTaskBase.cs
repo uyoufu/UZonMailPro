@@ -91,7 +91,7 @@ namespace UZonMailProPlugin.Services.Crawlers
 
             // 标记任务开始
             await dbPro.CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId).ExecuteUpdateAsync(x => x.SetProperty(y => y.Status, CrawlerStatus.Running)
-                .SetProperty(y => y.StartDate, DateTime.Now));
+                .SetProperty(y => y.StartDate, DateTime.UtcNow));
 
             try
             {
@@ -113,7 +113,7 @@ namespace UZonMailProPlugin.Services.Crawlers
                 // 标记任务结束
                 await dbPro.CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId && x.Status == CrawlerStatus.Running)
                     .ExecuteUpdateAsync(x => x.SetProperty(y => y.Status, CrawlerStatus.Stopped)
-                        .SetProperty(y => y.EndDate, DateTime.Now)
+                        .SetProperty(y => y.EndDate, DateTime.UtcNow)
                         .SetProperty(y => y.Count, resultCount));
 
                 httpClient.Dispose();

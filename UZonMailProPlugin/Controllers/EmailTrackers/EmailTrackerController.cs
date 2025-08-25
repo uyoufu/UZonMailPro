@@ -106,11 +106,11 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
             if (emailAnchor == null) return NotFound();
 
             // 更新访问次数
-            if (emailAnchor.FirstVisitDate > DateTime.Now)
+            if (emailAnchor.FirstVisitDate > DateTime.UtcNow)
             {
-                emailAnchor.FirstVisitDate = DateTime.Now;
+                emailAnchor.FirstVisitDate = DateTime.UtcNow;
             }
-            emailAnchor.LastVisitDate = DateTime.Now;
+            emailAnchor.LastVisitDate = DateTime.UtcNow;
             emailAnchor.VisitedCount += 1;
 
             // 添加具体的访问历史记录
@@ -132,7 +132,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
             {
                 // 更新发送的邮件的状态
                 await db.SendingItems.UpdateAsync(x => x.Id == emailAnchor.SendingItemId, x => x.SetProperty(p => p.Status, SendingItemStatus.Read)
-                .SetProperty(p => p.ReadDate, DateTime.Now));
+                .SetProperty(p => p.ReadDate, DateTime.UtcNow));
             }
 
             // 返回一个像素的透明 png 图片流

@@ -29,7 +29,7 @@ namespace UZonMailProPlugin.Services.Token
             };
 
             var userInfo = db.Users.Where(x => x.Id == userId).First();
-            var expireTimeSpan = expireDate - DateTime.Now;
+            var expireTimeSpan = expireDate - DateTime.UtcNow;
             var apiToken = await userService.GenerateToken(userInfo, expireDate, payloads);
             return apiToken;
         }

@@ -28,7 +28,7 @@ namespace UZonMailProPlugin.Services.Unsubscribe
                 // 更新邮件状态
                 await sqlContext.SendingItems.UpdateAsync(x => unsubscribedSendingItemIds.Contains(x.Id),
                                            x => x.SetProperty(y => y.Status, SendingItemStatus.Unsubscribed)
-                                                 .SetProperty(y => y.SendDate, DateTime.Now)
+                                                 .SetProperty(y => y.SendDate, DateTime.UtcNow)
                                                  .SetProperty(y => y.SendResult, "收件人已取消订阅"));
             }
 

@@ -42,7 +42,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
         /// <summary>
         /// 当前日期
         /// </summary>
-        public DateTime DateNow { get; set; } = DateTime.Now;
+        public DateTime DateNow { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// 获取测试数据
