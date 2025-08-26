@@ -19,7 +19,7 @@ namespace UZonMailProPlugin.Services.License
         /// <returns></returns>
         public async Task<bool> HasProLicense()
         {
-            return LicenseInfo.LicenseType >= LicenseType.Professional;
+            return LicenseInfo.ExpireDate > DateTime.UtcNow && LicenseInfo.LicenseType >= LicenseType.Professional;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace UZonMailProPlugin.Services.License
         /// <returns></returns>
         public async Task<bool> HasEnterpriseLicense()
         {
-            return LicenseInfo.LicenseType.HasFlag(LicenseType.Enterprise);
+            return LicenseInfo.ExpireDate > DateTime.UtcNow && LicenseInfo.LicenseType.HasFlag(LicenseType.Enterprise);
         }
 
         /// <summary>

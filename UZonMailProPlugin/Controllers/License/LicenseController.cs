@@ -74,7 +74,7 @@ namespace UZonMail.Pro.Controllers.License
         }
 
         /// <summary>
-        /// 
+        /// 获取 license 信息
         /// </summary>
         /// <param name="licenseCode"></param>
         /// <returns></returns>

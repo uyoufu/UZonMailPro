@@ -14,7 +14,7 @@ namespace UZonMailProPlugin.Services.HostedServices
 
         public async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await licenseManager.GetLicenseInfo();
+            await licenseManager.UpdateExistingLicense();
         }
     }
 }

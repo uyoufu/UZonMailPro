@@ -24,10 +24,10 @@ namespace UZonMailProPlugin.Services.License
         ) : IScopedService
     {
 #if DEBUG
-        private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
-        //private const string _licenseAPI = "http://localhost:52443/api/v1/license-machine";
+        //private const string _licenseAPI = "https://app.uzoncloud.com:2234/api/v1/license-machine";
+        private const string _licenseAPI = "http://localhost:22443/api/v1/license-machine";
 #else
-        private const string _licenseAPI = "https://app.223434.xyz:2234/api/v1/license-machine";
+        private const string _licenseAPI = "https://app.uzoncloud.com:2234/api/v1/license-machine";
 #endif
         private static DateTime _lastUpdateDate = DateTime.MinValue;
         private static readonly string _licenseKey = "license";
@@ -45,6 +45,21 @@ namespace UZonMailProPlugin.Services.License
         /// 授权文件路径
         /// </summary>
         private static readonly ILog _logger = LogManager.GetLogger(typeof(LicenseManagerService));
+
+        /// <summary>
+        /// 从数据库中判断是否存在专业版及以上的授权码
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> ExistValidLicenseCode()
+        {
+            var licenseSetting = await sqlContext.AppSettings.Where(x => x.Key == _licenseKey)
+                .OrderByDescending(x => x.DateTime)
+                .FirstOrDefaultAsync();
+
+            if (licenseSetting == null) return false;
+            if (licenseSetting.DateTime < DateTime.UtcNow) return false;
+            return true;
+        }
 
         /// <summary>
         /// 更新 License
@@ -113,6 +128,13 @@ namespace UZonMailProPlugin.Services.License
         /// <returns></returns>
         public async Task<ResponseResult<LicenseInfo>> UpdateExistingLicense()
         {
+            // 判断是否存在授权码
+            var existLicenseCode = await ExistValidLicenseCode();
+            if (!existLicenseCode)
+            {
+                return ResponseResult<LicenseInfo>.Success(LicenseInfo.CreateDefaultLicense());
+            }
+
             // 下载授权信息
             var licenseInfo = await GetLicenseInfo(false);
 
@@ -127,8 +149,9 @@ namespace UZonMailProPlugin.Services.License
         /// 若没有授权信息，会先从服务器验证
         /// 若验证失败，则会返回一个默认的授权
         /// </summary>
+        /// <param name="forceUpdate">强制更新</param>
         /// <returns></returns>
-        public async Task<LicenseInfo> GetLicenseInfo(bool updateThrottle = true)
+        public async Task<LicenseInfo> GetLicenseInfo(bool forceUpdate = true)
         {
             //#if DEBUG
             //            _licenseInfo ??= LicenseInfo.CreateEnterpriseLicense();
@@ -137,7 +160,7 @@ namespace UZonMailProPlugin.Services.License
 
             // 如果过期了，则从数据库中获取
             // 只有更新日期超过一天才会去请求授权服务器
-            if (updateThrottle && LicenseInfo != null && LicenseInfo.ExpireDate > DateTime.UtcNow && _lastUpdateDate.AddDays(1) > DateTime.UtcNow)
+            if (forceUpdate && LicenseInfo != null && LicenseInfo.ExpireDate > DateTime.UtcNow && _lastUpdateDate.AddDays(1) > DateTime.UtcNow)
             {
                 return LicenseInfo;
             }
@@ -163,6 +186,13 @@ namespace UZonMailProPlugin.Services.License
             // 更新授权信息
             LicenseInfo = license;
             _lastUpdateDate = DateTime.UtcNow;
+
+            // 判断是否已经过期
+            if(LicenseInfo.ExpireDate <= DateTime.UtcNow)
+            {
+                _logger.Warn("当前授权已过期，请联系 260827400@qq.com 续费");
+                LicenseInfo = defaultLicenseInfo;               
+            }
 
             return LicenseInfo;
         }

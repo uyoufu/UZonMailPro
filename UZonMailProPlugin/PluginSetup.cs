@@ -1,7 +1,6 @@
 ﻿using Uamazing.Utils.Plugin;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web;
-using UZonMailProPlugin.Services.EmailBodyDecorators;
 using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin
