@@ -54,7 +54,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
                 }
 
                 var jintEngin = new Engine(options =>
-                {                
+                {
                     options.TimeoutInterval(TimeSpan.FromMilliseconds(500)); // 限制最大执行时间
                     options.LimitMemory(4_000_000); // 限制最大内存（字节）
                     options.LimitRecursion(16); // 限制最大递归深度 
@@ -66,6 +66,12 @@ namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
                     var jsValue = jintEngin.Invoke(functionDefinition.Name);
                     var serializer = new Jint.Native.Json.JsonSerializer(jintEngin);
                     string result = serializer.Serialize(jsValue).ToString();
+                    // 去掉两端的双引号
+                    if (result.Length > 2 && result.StartsWith('"') && result.EndsWith('"'))
+                    {
+                        result = result.Substring(1, result.Length - 2);
+                    }
+
 
                     // 进行替换
                     // 使用正则进行替换
