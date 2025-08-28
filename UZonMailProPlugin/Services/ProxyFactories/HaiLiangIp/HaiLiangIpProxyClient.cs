@@ -5,15 +5,12 @@ using UZonMail.Core.Services.SendCore.DynamicProxy.Clients;
 using UZonMail.Core.Services.SendCore.DynamicProxy.ProxyTesters;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
-using UZonMailProPlugin.Services.ProxyFactories.YDaili;
 
-namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
+namespace UZonMailProPlugin.Services.ProxyFactories.HaiLiangIp
 {
-    public class Ip2WorldProxyClient : ProxyHandlerCluster
+    public class HaiLiangIpProxyClient : ProxyHandlerCluster
     {
-        private static readonly ILog _logger = LogManager.GetLogger(typeof(YDailiProxyClient));
-
-        private int _ipNumber = 5;
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(HaiLiangIpProxyClient));
 
         private bool _isAvailable = true;
         public override bool IsEnable()
@@ -29,11 +26,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
         {
             var httpClient = serviceProvider.GetRequiredService<HttpClient>();
 
-            var (json, response) = await new Ip2WorldGetter(ProxyInfo.Url)
-                .WithJsonReturnType()
-                .WithDelimiter()
-                .WithHttpsProtocol()
-                .WithIPNumber(_ipNumber)
+            var (json, response) = await new HaiLiangIpGetter(ProxyInfo.Url)
                 .WithHttpClient(httpClient)
                 .GetJsonAsync2();
 
@@ -47,11 +40,11 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
             var ipList = json!.SelectTokenOrDefault<List<JObject>>("data", []);
             // 将 IP 转换成代理客户端
             var handlers = ipList!.Select(x =>
-                {
-                    var ip = x.SelectTokenOrDefault("ip", string.Empty);
-                    var port = x.SelectTokenOrDefault("port", string.Empty);
-                    return $"{ip}:{port}";
-                })
+            {
+                var ip = x.SelectTokenOrDefault("ip", string.Empty);
+                var port = x.SelectTokenOrDefault("port", string.Empty);
+                return $"{ip}:{port}";
+            })
                 .Where(x => !string.IsNullOrEmpty(x))
                 .Select(x => new Proxy()
                 {
@@ -64,7 +57,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
                     var handler = serviceProvider.GetRequiredService<ProxyHandler>();
                     // 提取 url 中的 expireMinutes 参数
                     var expireSeconds = GetExpireMinutes(x.Url) * 60;
-                    handler.Update(x, ProxyTesterType.Google, expireSeconds);
+                    handler.Update(x, ProxyTesterType.Baidu, expireSeconds);
                     return handler;
                 })
                 .ToList();

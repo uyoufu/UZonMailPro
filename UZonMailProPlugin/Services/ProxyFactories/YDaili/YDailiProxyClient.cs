@@ -87,18 +87,5 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
 
             return handlers;
         }
-
-        /// <summary>
-        /// 默认为 3 分钟
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        private static int GetExpireMinutes(string url)
-        {
-            var match = Regex.Match(url, "expireMinutes=(\\d+)");
-            if (!match.Success)
-                return 3;
-            return int.Parse(match.Groups[1].Value);
-        }
     }
 }

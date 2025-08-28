@@ -24,8 +24,8 @@ namespace UZonMailProPlugin.Services.License
         ) : IScopedService
     {
 #if DEBUG
-        //private const string _licenseAPI = "https://app.uzoncloud.com:2234/api/v1/license-machine";
-        private const string _licenseAPI = "http://localhost:22443/api/v1/license-machine";
+        private const string _licenseAPI = "https://app.uzoncloud.com:2234/api/v1/license-machine";
+        //private const string _licenseAPI = "http://localhost:22443/api/v1/license-machine";
 #else
         private const string _licenseAPI = "https://app.uzoncloud.com:2234/api/v1/license-machine";
 #endif
