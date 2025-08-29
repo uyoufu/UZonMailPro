@@ -27,16 +27,18 @@ namespace UZonMailProPlugin.Services.ProxyFactories.HaiLiangIp
             var httpClient = serviceProvider.GetRequiredService<HttpClient>();
 
             var (json, response) = await new HaiLiangIpGetter(ProxyInfo.Url)
+                .WithSocks5()
                 .WithHttpClient(httpClient)
                 .GetJsonAsync2();
 
-            var status = json.SelectTokenOrDefault("success", false);
-            if (!status)
+            var code = json.SelectTokenOrDefault("code", 500);
+            if (code != 0)
             {
                 _isAvailable = false;
                 _logger.Error($"代理 {Id} 请求错误: {json.SelectTokenOrDefault("msg", "无法获取代理 ip")}");
             }
 
+            var protocol = GetProtocol(ProxyInfo.Url);
             var ipList = json!.SelectTokenOrDefault<List<JObject>>("data", []);
             // 将 IP 转换成代理客户端
             var handlers = ipList!.Select(x =>
@@ -50,7 +52,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.HaiLiangIp
                 {
                     // ip 当做 Id
                     ObjectId = x,
-                    Url = $"socks5://{x}",
+                    Url = $"{protocol}://{x}",
                 })
                 .Select(x =>
                 {

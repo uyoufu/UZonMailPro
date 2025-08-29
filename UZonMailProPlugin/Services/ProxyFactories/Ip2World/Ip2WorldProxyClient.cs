@@ -32,7 +32,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
             var (json, response) = await new Ip2WorldGetter(ProxyInfo.Url)
                 .WithJsonReturnType()
                 .WithDelimiter()
-                .WithHttpsProtocol()
+                .WithSocks5()
                 .WithIPNumber(_ipNumber)
                 .WithHttpClient(httpClient)
                 .GetJsonAsync2();

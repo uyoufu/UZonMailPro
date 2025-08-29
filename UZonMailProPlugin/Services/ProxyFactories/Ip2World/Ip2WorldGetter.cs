@@ -18,9 +18,9 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
             return this;
         }
 
-        public Ip2WorldGetter WithHttpsProtocol()
+        public Ip2WorldGetter WithSocks5()
         {
-            AddQuery("protocol", "https");
+            AddQuery("protocol", "socks5");
             return this;
         }
 
