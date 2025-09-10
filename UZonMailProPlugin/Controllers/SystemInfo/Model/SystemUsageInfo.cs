@@ -16,18 +16,17 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
         public List<OutboxPoolInfo> OutboxPoolInfos { get; set; }
         public List<SendingGroupInfo> SendingGroupsPoolInfos { get; set; }
 
-        public async Task GatherInfomations(GroupTasksList groupTasksList
-        , OutboxesPoolList outboxesPools
-        , SendingThreadsManager sendingThreadsManager)
+        public async Task GatherInfomations(GroupTasksList groupTasksList, OutboxesManager outboxesManager, OutboxTasksManager sendingTasksManager)
         {
             CpuUsage = await GetCpuUsageForProcess();
             MemoryUsage = Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024;
 
-            OutboxPoolInfos = outboxesPools.Values
-                .Select(x => new OutboxPoolInfo(x))
+            OutboxPoolInfos = outboxesManager.Values
+                .GroupBy(x => x.UserId)
+                .Select(x => new OutboxPoolInfo(x.Key, x.Count()))
                 .ToList();
 
-            RunningTasksCount = sendingThreadsManager.RunningTasksCount;
+            RunningTasksCount = sendingTasksManager.RunningTasksCount;
             SendingGroupsPoolInfos = groupTasksList.Values
                 .Select(x => new SendingGroupInfo(x))
                 .ToList();

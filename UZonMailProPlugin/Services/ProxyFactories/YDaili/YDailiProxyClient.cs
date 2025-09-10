@@ -2,18 +2,18 @@
 using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using UZonMail.Core.Services.SendCore.DynamicProxy.Clients;
-using UZonMail.Core.Services.SendCore.DynamicProxy.ProxyTesters;
+using UZonMail.Core.Services.SendCore.Proxies.Clients;
+using UZonMail.Core.Services.SendCore.Proxies.ProxyTesters;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
 
 namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
 {
-    public class YDailiProxyClient : ProxyHandlerCluster
+    public class YDailiProxyClient : ProxyHandlersCluster
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(YDailiProxyClient));
 
-        private int _ipNumber = 5;
+        private int _ipNumber = 1;
         private int _maxNumber = 100;
 
         private bool _isAvailable = true;
@@ -59,7 +59,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
                 case "215":
                     _logger.Warn($"代理 {Id} 单次提取数量超过上限");
                     // 减少单次提取数量
-                    _ipNumber = Math.Max(_ipNumber - 10, 10);
+                    _ipNumber = Math.Max(_ipNumber - 10, 5);
                     return await GetProxyHandlersAsync(serviceProvider);
 
                 default:
@@ -80,7 +80,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
                     var handler = serviceProvider.GetRequiredService<ProxyHandler>();
                     // 提取 url 中的 expireMinutes 参数
                     var expireSeconds = GetExpireMinutes(x.Url) * 60;
-                    handler.Update(x, ProxyTesterType.Baidu, expireSeconds);
+                    handler.Update(x, ProxyZoneType.Baidu, expireSeconds);
                     return handler;
                 })
                 .ToList();

@@ -1,4 +1,4 @@
-﻿using UZonMail.Core.Services.SendCore.DynamicProxy.ProxyTesters;
+﻿using UZonMail.Core.Services.SendCore.Proxies.ProxyTesters;
 using UZonMail.Utils.Http.Request;
 using UZonMailProPlugin.Services.License;
 
@@ -7,7 +7,7 @@ namespace UZonMailProPlugin.Services.ProxyTesters
     /// <summary>
     /// 基于 https://www.223434.xyz:2234/inspection/ip 实现的 IP 查询
     /// </summary>
-    public class UamazingProxyTester(HttpClient httpClient, LicenseAccessService licenseAccess) : JsonParser(httpClient,ProxyTesterType.All)
+    public class UamazingProxyTester(HttpClient httpClient, LicenseAccessService licenseAccess) : JsonParser(httpClient,ProxyZoneType.Default)
     {
         private readonly string _apiUrl = "https://www.223434.xyz:2234/inspection/ip?accessToken=60331df07090662a84c8be1a";
 

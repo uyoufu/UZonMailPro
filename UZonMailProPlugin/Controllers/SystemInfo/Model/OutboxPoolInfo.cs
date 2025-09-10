@@ -7,10 +7,10 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
         public long UserId { get; private set; }
         public int OutboxesCount { get; private set; }
 
-        public OutboxPoolInfo(OutboxesPool userOutboxPool)
+        public OutboxPoolInfo(long userId,int userOutboxesCount)
         {
-            UserId = userOutboxPool.UserId;
-            OutboxesCount = userOutboxPool.Count;
+            UserId = userId;
+            OutboxesCount = userOutboxesCount;
         }
     }
 }

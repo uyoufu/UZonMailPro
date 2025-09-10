@@ -2,7 +2,7 @@
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.SendCore.DynamicProxy;
+using UZonMail.Core.Services.SendCore.Proxies;
 using UZonMail.Core.SignalRHubs;
 using UZonMail.Core.SignalRHubs.Extensions;
 using UZonMail.DB.Extensions;
@@ -17,7 +17,7 @@ namespace UZonMailProPlugin.Services.EmailVerify
     /// 收件箱验证
     /// </summary>
     public class InboxVerifyService(SqlContext db, IHubContext<UzonMailHub, IUzonMailClient> hub,
-        MxManager mxManager, ProxyManager proxyManager,
+        MxManager mxManager, ProxiesManager proxyManager,
         IServiceProvider serviceProvider) : IScopedService
     {
         private readonly ILog _logger = LogManager.GetLogger(typeof(InboxVerifyService));

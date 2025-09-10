@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMail.Pro.Controllers.SystemInfo.Model;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.SendCore.WaitList;
-using UZonMail.Core.Services.SendCore.Outboxes;
 using UZonMail.Core.Services.SendCore;
-using UZonMailProPlugin.Services.License;
+using UZonMail.Core.Services.SendCore.Outboxes;
+using UZonMail.Core.Services.SendCore.WaitList;
+using UZonMail.Pro.Controllers.SystemInfo.Model;
+using UZonMail.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Config;
+using UZonMailProPlugin.Controllers.Base;
+using UZonMailProPlugin.Services.License;
 
 namespace UZonMail.Pro.Controllers.SystemInfo
 {
     public class SystemInfoController(GroupTasksList groupTasksList
-        , OutboxesPoolList outboxesPools
-        , SendingThreadsManager sendingThreadsManager
+        , OutboxesManager outboxesPools
+        , OutboxTasksManager sendingThreadsManager
         , LicenseAccessService licenseAccess
         , IConfiguration configuration
         ) : ControllerBasePro

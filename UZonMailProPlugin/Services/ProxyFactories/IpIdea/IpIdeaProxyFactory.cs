@@ -1,8 +1,8 @@
-﻿using UZonMail.Core.Services.SendCore.DynamicProxy.Clients;
-using UZonMail.Core.Services.SendCore.DynamicProxy;
+﻿using UZonMail.Core.Services.SendCore.Proxies;
 using UZonMailProPlugin.Services.License;
 using UZonMailProPlugin.Services.ProxyFactories.IPFoxy;
 using UZonMail.DB.SQL.Core.Settings;
+using UZonMail.Core.Services.SendCore.Proxies.Clients;
 
 namespace UZonMailProPlugin.Services.ProxyFactories.IpIdea
 {

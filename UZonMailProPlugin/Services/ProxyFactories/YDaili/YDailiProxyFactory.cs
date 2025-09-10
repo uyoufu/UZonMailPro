@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using UZonMail.Core.Services.SendCore.DynamicProxy;
-using UZonMail.Core.Services.SendCore.DynamicProxy.Clients;
+using UZonMail.Core.Services.SendCore.Proxies;
+using UZonMail.Core.Services.SendCore.Proxies.Clients;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMailProPlugin.Services.License;
 
