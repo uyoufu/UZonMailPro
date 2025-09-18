@@ -4,6 +4,7 @@ using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.DB.SQL.EntityConfigs;
 using UZonMailProPlugin.SQL.ApiAccess;
 using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMailProPlugin.SQL.IPWarmUp;
 using UZonMailProPlugin.SQL.JsVariable;
 using UZonMailProPlugin.SQL.ReadingTracker;
 using UZonMailProPlugin.SQL.Unsubscribes;
@@ -50,6 +51,10 @@ namespace UZonMailProPlugin.SQL
 
         // 访问令牌控制
         public DbSet<AccessToken> AccessTokens { get; set; } // 访问令牌
+
+        // ip 预热
+        public DbSet<IpWarmUpUpPlan> IpWarmUpUpPlans { get; set; } // 预热计划
+        public DbSet<IpWarmUpUpTask> IpWarmUpUpTasks { get; set; } // 预热具体的任务
         #endregion
     }
 }
