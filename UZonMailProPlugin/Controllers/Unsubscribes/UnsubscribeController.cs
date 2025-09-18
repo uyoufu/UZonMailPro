@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Permission;
 using UZonMail.Core.Services.Settings;
-using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
@@ -14,7 +13,6 @@ using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Token;
 using UZonMailProPlugin.Controllers.Base;
 using UZonMailProPlugin.Controllers.Unsubscribes.ResponseModels;
-using UZonMailProPlugin.Services.EmailBodyDecorators;
 using UZonMailProPlugin.Services.Settings.Model;
 using UZonMailProPlugin.Services.Unsubscribe;
 using UZonMailProPlugin.SQL;
@@ -90,7 +88,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             }
 
             // 从 token 中解析出 email 和 organizationId
-            var tokenPayloads = tokenParams.GetTokenPayloads(token);
+            var tokenPayloads = JWTToken.GetTokenPayloads(token);
             // 获取 email
             var email = tokenPayloads.SelectTokenOrDefault("email", string.Empty);
             var organizationId = tokenPayloads.SelectTokenOrDefault("organizationId", "0");
