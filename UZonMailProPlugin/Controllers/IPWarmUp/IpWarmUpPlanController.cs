@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Settings;
+using UZonMail.DB.SQL.Core.EmailSending;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Controllers.Base;
@@ -22,7 +23,7 @@ namespace UZonMailProPlugin.Controllers.IPWarmUp
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseResult<IpWarmUpUpPlan>> AddIpWarmUpPlan([FromBody] IpWarmUpUpPlan data)
+        public async Task<ResponseResult<IpWarmUpUpPlan>> AddIpWarmUpPlan([FromBody] SendingGroup sendingData)
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
             data.UserId = tokenPayloads.UserId;

@@ -1,4 +1,5 @@
 ﻿using Innofactor.EfCoreJsonValueConverter;
+using Newtonsoft.Json.Linq;
 using UZonMail.DB.SQL.Base;
 
 namespace UZonMailProPlugin.SQL.IPWarmUp
@@ -15,8 +16,7 @@ namespace UZonMailProPlugin.SQL.IPWarmUp
         /// <summary>
         /// 主题
         /// </summary>
-        [JsonField]
-        public List<string> Subjects { get; set; } = [];
+        public string Subjects { get; set; } = string.Empty;
 
         /// <summary>
         /// 模板列表
@@ -26,6 +26,7 @@ namespace UZonMailProPlugin.SQL.IPWarmUp
 
         /// <summary>
         /// 发件箱列表
+        /// 数据中的发件箱不应添加到此处，系统会自动从数据中提取
         /// </summary>
         [JsonField]
         public List<long> OutboxIds { get; set; } = [];
@@ -37,6 +38,35 @@ namespace UZonMailProPlugin.SQL.IPWarmUp
         public List<long> InboxIds { get; set; } = [];
 
         /// <summary>
+        /// 抄送 ids
+        /// </summary>
+        [JsonField]
+        public List<long> CcIds { get; set; } = [];
+
+        /// <summary>
+        /// 密送 ids
+        /// </summary>
+        [JsonField]
+        public List<long> BccIds { get; set; } = [];
+
+        /// <summary>
+        /// 附件 ids
+        /// </summary>
+        [JsonField]
+        public List<long> AttachmentIds { get; set; } = [];
+
+        /// <summary>
+        /// 用户数据
+        /// </summary>
+        [JsonField]
+        public JArray? Data { get; set; }
+
+        /// <summary>
+        /// 正文内容
+        /// </summary>
+        public string Body { get; set; }
+         
+        /// <summary>
         /// 开始时间
         /// </summary>
         public DateTime StartDate { get; set; }
@@ -47,14 +77,14 @@ namespace UZonMailProPlugin.SQL.IPWarmUp
         public DateTime EndDate { get; set; }
 
         /// <summary>
-        /// 计划任务数量
+        /// 成功的任务数
         /// </summary>
-        public int ScheduleTasksCount { get; set; }
+        public int SuccessTasksCount { get; set; }
 
         /// <summary>
-        /// 当前任务索引
+        /// 当前收件箱的索引
         /// </summary>
-        public int CurrentTaskIndex { get; set; }
+        public long CurrentInboxIndex { get; set; } = 0;
 
         /// <summary>
         /// 状态
