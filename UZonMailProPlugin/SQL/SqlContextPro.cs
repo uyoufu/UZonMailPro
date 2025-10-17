@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.DB.SQL.EntityConfigs;
@@ -24,7 +25,7 @@ namespace UZonMailProPlugin.SQL
             base.OnModelCreating(modelBuilder);
 
             // 调用配置
-            new EntityTypeConfig().Configure(modelBuilder);
+            new EntityTypeConfig(Assembly.GetAssembly(typeof(SqlContextPro))).Configure(modelBuilder);
         }
         #endregion
 

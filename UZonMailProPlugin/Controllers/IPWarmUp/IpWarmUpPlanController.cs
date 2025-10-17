@@ -15,37 +15,26 @@ namespace UZonMailProPlugin.Controllers.IPWarmUp
     /// <summary>
     /// IP 预热计划控制器
     /// </summary>
-    public class IpWarmUpPlanController(TokenService tokenService,SqlContextPro dbPro, IpWarmUpTaskService ipWarmUpTaskService) : ControllerBasePro
+    public class IpWarmUpPlanController(TokenService tokenService, SqlContextPro dbPro, IpWarmUpTaskService ipWarmUpTaskService) : ControllerBasePro
     {
         /// <summary>
         /// 添加 IP 预热计划
+        /// 使用 SendStartDate 和 SendEndDate 接收预热周期
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseResult<IpWarmUpUpPlan>> AddIpWarmUpPlan([FromBody] SendingGroup sendingData)
+        public async Task<ResponseResult<IpWarmUpUpPlan>> AddIpWarmUpPlan([FromBody] SendingGroup data)
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
             data.UserId = tokenPayloads.UserId;
 
-            // 判断是否存在
-            var existSource = await dbPro.IpWarmUpUpPlans
-                .Where(x => x.UserId == data.UserId && x.Name == data.Name && x.Id != data.Id)
-                .FirstOrDefaultAsync();
-            if (existSource != null)
-                return existSource.ToFailResponse("名称已存在");
-
-            dbPro.IpWarmUpUpPlans.Add(data);
-            await dbPro.SaveChangesAsync();
-
-            // 添加完成后，制定具体任务
-            await ipWarmUpTaskService.PlanTasks(data);
-
-            return data.ToSuccessResponse();
+            var plan = await ipWarmUpTaskService.CreatePlan(data);
+            return plan.ToSuccessResponse();
         }
 
         /// <summary>
-        /// 获取变量数据数量
+        /// 获取数据数量
         /// </summary>
         /// <returns></returns>
         [HttpGet("filtered-count")]
@@ -62,7 +51,7 @@ namespace UZonMailProPlugin.Controllers.IPWarmUp
         }
 
         /// <summary>
-        /// 获取变量数据数据
+        /// 获取数据数据
         /// </summary>
         /// <param name="filter"></param>
         /// <param name="pagination"></param>
@@ -82,7 +71,7 @@ namespace UZonMailProPlugin.Controllers.IPWarmUp
         }
 
         /// <summary>
-        /// 通过 ids 来删除 js 变量数据
+        /// 通过 ids 来删除数据
         /// </summary>
         /// <param name="Ids"></param>
         /// <returns></returns>

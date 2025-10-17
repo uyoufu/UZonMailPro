@@ -22,7 +22,7 @@ namespace UZonMailProPlugin.Services.IpWarmUp
         /// </summary>
         /// <param name="sendingGroup"></param>
         /// <returns></returns>
-        public async Task CreatePlan(SendingGroup sendingGroup)
+        public async Task<IpWarmUpUpPlan> CreatePlan(SendingGroup sendingGroup)
         {
             if ((sendingGroup.SmtpPasswordSecretKeys == null || sendingGroup.SmtpPasswordSecretKeys.Count != 2))
             {
@@ -111,6 +111,8 @@ namespace UZonMailProPlugin.Services.IpWarmUp
             await dbPro.SaveChangesAsync();
 
             await CreatePlanSchedule(plan.Id, [.. sendingGroup.SmtpPasswordSecretKeys], new DateTimeOffset(DateTime.UtcNow.AddSeconds(10)), 0);
+
+            return plan;
         }
 
         public async Task CreatePlanSchedule(long planId, string[] smtpPasswordSecretKeys, DateTimeOffset dateTimeOffset, int index)

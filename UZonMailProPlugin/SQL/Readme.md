@@ -2,6 +2,16 @@
 
 ## 数据迁移
 
+### 脚本迁移
+
+``` powershell
+z D:\Develop\Personal\UZonMailProPlugins\UZonMailProPlugin\Scripts
+./add-migrations.ps1 -Name xxx
+```
+
+### 手动执行
+
+
 z D:\Develop\Personal\UZonMailProPlugins\UZonMailProPlugin
 
 1. Mysql
@@ -25,3 +35,7 @@ dotnet ef migrations remove --context MysqlContextPro -v
 2. SqLite
 
 dotnet ef migrations remove --context SqLiteContextPro -v
+
+3. PostgreSQL
+
+dotnet ef migrations remove --context PostgreSqlContextPro -v
