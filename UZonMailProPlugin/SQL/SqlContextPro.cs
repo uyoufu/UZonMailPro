@@ -25,7 +25,7 @@ namespace UZonMailProPlugin.SQL
             base.OnModelCreating(modelBuilder);
 
             // 调用配置
-            new EntityTypeConfig(Assembly.GetAssembly(typeof(SqlContextPro))).Configure(modelBuilder);
+            new EntityTypeConfig().Configure(modelBuilder);
         }
         #endregion
 

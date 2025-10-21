@@ -18,7 +18,6 @@ namespace UZonMailProPlugin.SQL.IPWarmUp
         /// 实际发送组的 Id
         /// </summary>
         public long SendingGroupId { get; set; }
-        public SendingGroup SendingGroup { get; set; }
 
         /// <summary>
         /// 实际开始时间

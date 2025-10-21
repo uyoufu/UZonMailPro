@@ -16,7 +16,7 @@ namespace UZonMailProPlugin.SQL.IPWarmUp
         /// <summary>
         /// 主题
         /// </summary>
-        public string Subjects { get; set; } = string.Empty;
+        public List<string> Subjects { get; set; } = [];
 
         /// <summary>
         /// 模板列表
@@ -62,9 +62,16 @@ namespace UZonMailProPlugin.SQL.IPWarmUp
         public JArray? Data { get; set; }
 
         /// <summary>
-        /// 正文内容
+        /// 每日发送数量表
         /// </summary>
-        public string Body { get; set; }
+        [JsonField]
+        public List<double[]> SendCountChartPoints { get; set; } = [];
+
+        /// <summary>
+        /// 正文内容
+        /// 若非空，则覆盖模板
+        /// </summary>
+        public string? Body { get; set; }
          
         /// <summary>
         /// 开始时间
@@ -77,14 +84,9 @@ namespace UZonMailProPlugin.SQL.IPWarmUp
         public DateTime EndDate { get; set; }
 
         /// <summary>
-        /// 成功的任务数
+        /// 截止当前的任务数量
         /// </summary>
-        public int SuccessTasksCount { get; set; }
-
-        /// <summary>
-        /// 当前收件箱的索引
-        /// </summary>
-        public long CurrentInboxIndex { get; set; } = 0;
+        public int TasksCount { get; set; }
 
         /// <summary>
         /// 状态

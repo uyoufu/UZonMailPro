@@ -1,5 +1,4 @@
-﻿using Innofactor.EfCoreJsonValueConverter;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Base;
@@ -98,10 +97,11 @@ namespace UZonMailProPlugin.Controllers.Api.Model
 
         public async Task<SendingGroup> ConvertToSendingGroup(SqlContext db)
         {
-            var sendingGroup = new SendingGroup();
-
-            // 主题
-            sendingGroup.Subjects = string.Join("\n", Subjects);
+            var sendingGroup = new SendingGroup
+            {
+                // 主题
+                Subjects = string.Join("\n", Subjects)
+            };
 
             // 模板
             if (TemplateIds != null && TemplateIds.Count > 0)

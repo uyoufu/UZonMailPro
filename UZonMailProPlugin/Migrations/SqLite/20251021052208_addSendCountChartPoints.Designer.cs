@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UZonMailProPlugin.SQL;
 
@@ -10,9 +11,11 @@ using UZonMailProPlugin.SQL;
 namespace UZonMailProPlugin.Migrations.SqLite
 {
     [DbContext(typeof(SqLiteContextPro))]
-    partial class SqLiteContextProModelSnapshot : ModelSnapshot
+    [Migration("20251021052208_addSendCountChartPoints")]
+    partial class addSendCountChartPoints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.13");

@@ -38,8 +38,9 @@ namespace UZonMailProPlugin.Services.IpWarmUp
             var plan = new IpWarmUpUpPlan()
             {
                 UserId = userId,
-                Subjects = sendingGroup.Subjects,
-                StartDate = DateTime.UtcNow,
+                Subjects = sendingGroup.SplitSubjects(),
+                StartDate = sendingGroup.SendStartDate.ToUniversalTime(),
+                EndDate = sendingGroup.SendEndDate.ToUniversalTime(),
                 Name = sendingGroup.Subjects,
                 Status = IpWarmUpUpStatus.Created,
                 CreateDate = DateTime.UtcNow,
@@ -110,7 +111,7 @@ namespace UZonMailProPlugin.Services.IpWarmUp
             await dbPro.IpWarmUpUpPlans.AddAsync(plan);
             await dbPro.SaveChangesAsync();
 
-            await CreatePlanSchedule(plan.Id, [.. sendingGroup.SmtpPasswordSecretKeys], new DateTimeOffset(DateTime.UtcNow.AddSeconds(10)), 0);
+            await CreatePlanSchedule(plan.Id, [.. sendingGroup.SmtpPasswordSecretKeys], new DateTimeOffset(plan.StartDate.AddSeconds(10)), 0);
 
             return plan;
         }
@@ -119,7 +120,7 @@ namespace UZonMailProPlugin.Services.IpWarmUp
         {
             // 添加定时任务, 让定时任务去执行具体的发送任务
             var scheduler = await schedulerFactory.GetScheduler();
-            var jobKey = new JobKey($"IpWarmUpPlan_{planId}", "IpWarmUpPlan");
+            var jobKey = new JobKey($"IpWarmUpPlan_{planId}_{index}", "IpWarmUpPlan");
 
             var job = JobBuilder.Create<IpWarmUpTaskJob>()
                         .WithIdentity(jobKey)

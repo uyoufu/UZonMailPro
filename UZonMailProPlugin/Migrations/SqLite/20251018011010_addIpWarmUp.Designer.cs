@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UZonMailProPlugin.SQL;
 
@@ -10,9 +11,11 @@ using UZonMailProPlugin.SQL;
 namespace UZonMailProPlugin.Migrations.SqLite
 {
     [DbContext(typeof(SqLiteContextPro))]
-    partial class SqLiteContextProModelSnapshot : ModelSnapshot
+    [Migration("20251018011010_addIpWarmUp")]
+    partial class addIpWarmUp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.13");
@@ -454,10 +457,6 @@ namespace UZonMailProPlugin.Migrations.SqLite
                         .HasColumnName("_id");
 
                     b.Property<string>("OutboxIds")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("SendCountChartPoints")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

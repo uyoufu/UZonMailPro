@@ -421,6 +421,144 @@ namespace UZonMailProPlugin.Migrations.Mysql
                     b.ToTable("TiktokAuthors");
                 });
 
+            modelBuilder.Entity("UZonMailProPlugin.SQL.IPWarmUp.IpWarmUpUpPlan", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AttachmentIds")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("BccIds")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Body")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CcIds")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("InboxIds")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("_id");
+
+                    b.Property<string>("OutboxIds")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SendCountChartPoints")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Subjects")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("TasksCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TemplateIds")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("IpWarmUpUpPlans");
+                });
+
+            modelBuilder.Entity("UZonMailProPlugin.SQL.IPWarmUp.IpWarmUpUpTask", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<long>("IPWarmUpPlanId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("InboxesCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("longtext")
+                        .HasColumnName("_id");
+
+                    b.Property<int>("OutboxesCount")
+                        .HasColumnType("int");
+
+                    b.Property<long>("SendingGroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("SuccessCount")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IPWarmUpPlanId");
+
+                    b.ToTable("IpWarmUpUpTasks");
+                });
+
             modelBuilder.Entity("UZonMailProPlugin.SQL.JsVariable.JsFunctionDefinition", b =>
                 {
                     b.Property<long>("Id")
@@ -803,6 +941,17 @@ namespace UZonMailProPlugin.Migrations.Mysql
                         .IsRequired();
 
                     b.Navigation("TiktokAuthor");
+                });
+
+            modelBuilder.Entity("UZonMailProPlugin.SQL.IPWarmUp.IpWarmUpUpTask", b =>
+                {
+                    b.HasOne("UZonMailProPlugin.SQL.IPWarmUp.IpWarmUpUpPlan", "IPWarmUpPlan")
+                        .WithMany()
+                        .HasForeignKey("IPWarmUpPlanId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("IPWarmUpPlan");
                 });
 #pragma warning restore 612, 618
         }

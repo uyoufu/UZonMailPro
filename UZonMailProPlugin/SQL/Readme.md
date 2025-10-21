@@ -39,3 +39,7 @@ dotnet ef migrations remove --context SqLiteContextPro -v
 3. PostgreSQL
 
 dotnet ef migrations remove --context PostgreSqlContextPro -v
+
+## 使用注意
+
+1. 在当前项目的数据库表 model 中，不要添加非当前项目的导航属性，否则会导致迁移报错
