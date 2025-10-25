@@ -6,6 +6,7 @@ using UZonMail.DB.SQL.Core.Emails;
 using UZonMail.DB.SQL.Core.EmailSending;
 using UZonMail.Utils.Web.Exceptions;
 using UZonMail.Utils.Web.Service;
+using UZonMailProPlugin.Controllers.IPWarmUp.DTOs;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.IPWarmUp;
 
@@ -15,72 +16,87 @@ namespace UZonMailProPlugin.Services.IpWarmUp
     /// IP 预热任务
     /// </summary>
     /// <param name="dbPro"></param>
-    public class IpWarmUpTaskService(SqlContext db, SqlContextPro dbPro, TokenService tokenService, ISchedulerFactory schedulerFactory) : IScopedService
+    public class IpWarmUpTaskService(
+        SqlContext db,
+        SqlContextPro dbPro,
+        TokenService tokenService,
+        ISchedulerFactory schedulerFactory
+    ) : IScopedService
     {
         /// <summary>
         /// 创建预热计划
         /// </summary>
-        /// <param name="sendingGroup"></param>
+        /// <param name="plandData"></param>
         /// <returns></returns>
-        public async Task<IpWarmUpUpPlan> CreatePlan(SendingGroup sendingGroup)
+        public async Task<IpWarmUpUpPlan> CreatePlan(WarmUpPlanData plandData)
         {
-            if ((sendingGroup.SmtpPasswordSecretKeys == null || sendingGroup.SmtpPasswordSecretKeys.Count != 2))
+            if (
+                (
+                    plandData.SmtpPasswordSecretKeys == null
+                    || plandData.SmtpPasswordSecretKeys.Count != 2
+                )
+            )
             {
                 throw new KnownException("请提供两个 SMTP 密钥，用于不同阶段的发送");
             }
 
             var userId = tokenService.GetUserSqlId();
 
-            var outboxSet = new HashSet<long>(sendingGroup.Outboxes!.Select(x => x.Id));
-            var inboxSet = new HashSet<long>(sendingGroup.Inboxes!.Select(x => x.Id));
+            var outboxSet = new HashSet<long>(plandData.Outboxes!.Select(x => x.Id));
+            var inboxSet = new HashSet<long>(plandData.Inboxes!.Select(x => x.Id));
 
             // 将 sendingGroup 转换成 IpWarmUpPlan 保存
             var plan = new IpWarmUpUpPlan()
             {
                 UserId = userId,
-                Subjects = sendingGroup.SplitSubjects(),
-                StartDate = sendingGroup.SendStartDate.ToUniversalTime(),
-                EndDate = sendingGroup.SendEndDate.ToUniversalTime(),
-                Name = sendingGroup.Subjects,
+                Body = plandData.Body,
+                Subjects = plandData.SplitSubjects(),
+                StartDate = plandData.SendStartDate.ToUniversalTime(),
+                EndDate = plandData.SendEndDate.ToUniversalTime(),
+                Name = string.IsNullOrEmpty(plandData.Name) ? plandData.Subjects : plandData.Name,
                 Status = IpWarmUpUpStatus.Created,
                 CreateDate = DateTime.UtcNow,
-                Data = sendingGroup.Data,
-                TemplateIds = [.. sendingGroup.Templates!.Select(x => x.Id)],
-                CcIds = [.. sendingGroup.CcBoxes!.Select(x => x.Id)],
-                BccIds = [.. sendingGroup.BccBoxes!.Select(x => x.Id)],
+                Data = plandData.Data,
+                TemplateIds = [.. plandData.Templates!.Select(x => x.Id)],
+                CcIds = [.. plandData.CcBoxes!.Select(x => x.Id)],
+                BccIds = [.. plandData.BccBoxes!.Select(x => x.Id)],
+                AttachmentIds = [.. plandData.Attachments!.Select(x => x.Id)],
             };
 
             // 获取组中的发件箱
-            if (sendingGroup.OutboxGroups != null && sendingGroup.OutboxGroups.Count > 0)
+            if (plandData.OutboxGroups != null && plandData.OutboxGroups.Count > 0)
             {
-                var outboxes = await db.Outboxes.AsNoTracking()
-                    .Where(x => sendingGroup.OutboxGroups.Select(x => x.Id).Contains(x.Id))
+                var outboxes = await db
+                    .Outboxes.AsNoTracking()
+                    .Where(x => plandData.OutboxGroups.Select(x => x.Id).Contains(x.Id))
                     .Select(x => new { x.Id })
                     .ToListAsync();
                 outboxes.ForEach(x => outboxSet.Add(x.Id));
             }
 
             // 获取组中的收件箱
-            if (sendingGroup.InboxGroups != null && sendingGroup.InboxGroups.Count > 0)
+            if (plandData.InboxGroups != null && plandData.InboxGroups.Count > 0)
             {
-                var inboxes = await db.Inboxes.AsNoTracking()
-                    .Where(x => sendingGroup.InboxGroups.Select(x => x.Id).Contains(x.Id))
+                var inboxes = await db
+                    .Inboxes.AsNoTracking()
+                    .Where(x => plandData.InboxGroups.Select(x => x.Id).Contains(x.Id))
                     .Select(x => new { x.Id })
                     .ToListAsync();
                 inboxes.ForEach(x => inboxSet.Add(x.Id));
             }
 
             // 添加数据中的发件箱和收件箱
-            if (sendingGroup.Data != null)
+            if (plandData.Data != null)
             {
-                var excelData = new ExcelDataInfo(sendingGroup.Data);
+                var excelData = new ExcelDataInfo(plandData.Data);
                 // 数据中的发件箱为特定发件箱，不添加到全局
 
                 // 获取数据中的收件箱
                 // 若不存在，则创建
                 foreach (var inbox in excelData.InboxSet)
                 {
-                    var existInbox = await db.Inboxes.AsNoTracking()
+                    var existInbox = await db
+                        .Inboxes.AsNoTracking()
                         .Where(x => x.UserId == userId && x.Email == inbox)
                         .Select(x => new { x.Id })
                         .FirstOrDefaultAsync();
@@ -107,37 +123,118 @@ namespace UZonMailProPlugin.Services.IpWarmUp
             plan.OutboxIds = [.. outboxSet];
             plan.InboxIds = [.. inboxSet];
 
+            // 添加发送图表
+            plan.SendCountChartPoints = plandData.SendCountChartPoints;
+
             // 保存预热计划
             await dbPro.IpWarmUpUpPlans.AddAsync(plan);
             await dbPro.SaveChangesAsync();
 
-            await CreatePlanSchedule(plan.Id, [.. sendingGroup.SmtpPasswordSecretKeys], new DateTimeOffset(plan.StartDate.AddSeconds(10)), 0);
+            // 创建循环任务，每天都执行发送任务
+            await CreatePlanSchedule(
+                plan.Id,
+                [.. plandData.SmtpPasswordSecretKeys],
+                plan.StartDate,
+                plan.EndDate
+            );
 
             return plan;
         }
 
-        public async Task CreatePlanSchedule(long planId, string[] smtpPasswordSecretKeys, DateTimeOffset dateTimeOffset, int index)
+        /// <summary>
+        /// 创建预热计划的定时任务 Key
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public JobKey CreateWarmUpPlanScheduleJobKey(long planId)
+        {
+            return new JobKey($"IpWarmUpPlan_{planId}", "IpWarmUpPlan");
+        }
+
+        /// <summary>
+        /// 创建预热计划的定时任务
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <param name="smtpPasswordSecretKeys"></param>
+        /// <param name="startDateUtc"></param>
+        /// <param name="endDateUtc"></param>
+        /// <returns></returns>
+        public async Task CreatePlanSchedule(
+            long planId,
+            string[] smtpPasswordSecretKeys,
+            DateTime startDateUtc,
+            DateTime endDateUtc
+        )
         {
             // 添加定时任务, 让定时任务去执行具体的发送任务
             var scheduler = await schedulerFactory.GetScheduler();
-            var jobKey = new JobKey($"IpWarmUpPlan_{planId}_{index}", "IpWarmUpPlan");
+            var jobKey = CreateWarmUpPlanScheduleJobKey(planId);
 
-            var job = JobBuilder.Create<IpWarmUpTaskJob>()
-                        .WithIdentity(jobKey)
-                        .SetJobData(new JobDataMap
-                        {
-                            { "id",planId },
-                            { "index",index},
-                            { "smtpPasswordSecretKeys", string.Join(',',smtpPasswordSecretKeys) }
-                        })
-                        .Build();
+            var job = JobBuilder
+                .Create<IpWarmUpTaskJob>()
+                .WithIdentity(jobKey)
+                .SetJobData(
+                    new JobDataMap
+                    {
+                        { "id", planId },
+                        { "smtpPasswordSecretKeys", string.Join(',', smtpPasswordSecretKeys) }
+                    }
+                )
+                .Build();
 
-            // 先指定为 Unspecified，再转为本地时间
-            var trigger = TriggerBuilder.Create()
+            if (startDateUtc < DateTime.UtcNow.AddSeconds(10))
+                startDateUtc = DateTime.UtcNow.AddSeconds(10);
+
+            // 创建触发器，每天执行一次
+            var trigger = TriggerBuilder
+                .Create()
                 .ForJob(jobKey)
-                .StartAt(dateTimeOffset)
+                .StartAt(new DateTimeOffset(startDateUtc))
+                .EndAt(new DateTimeOffset(endDateUtc))
+                .WithCalendarIntervalSchedule(x =>
+                    x.WithIntervalInDays(1)
+                        // 保留每日触发的小时（在夏时制切换时更稳定）
+                        .PreserveHourOfDayAcrossDaylightSavings(true)
+                )
                 .Build();
             await scheduler.ScheduleJob(job, trigger);
+        }
+
+        /// <summary>
+        /// 删除预热计划的定时任务
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public async Task<bool> DeletePlanSchedule(long planId)
+        {
+            // 删除定时任务
+            var scheduler = schedulerFactory.GetScheduler().Result;
+            var jobKey = CreateWarmUpPlanScheduleJobKey(planId);
+            return await scheduler.DeleteJob(jobKey);
+        }
+
+        /// <summary>
+        /// 暂停预热计划的定时任务
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public async Task PausePlanSchedule(long planId)
+        {
+            var scheduler = schedulerFactory.GetScheduler().Result;
+            var jobKey = CreateWarmUpPlanScheduleJobKey(planId);
+            await scheduler.PauseJob(jobKey);
+        }
+
+        /// <summary>
+        /// 重新启动预热计划的定时任务
+        /// </summary>
+        /// <param name="planId"></param>
+        /// <returns></returns>
+        public async Task ResumePlanSchedule(long planId)
+        {
+            var scheduler = schedulerFactory.GetScheduler().Result;
+            var jobKey = CreateWarmUpPlanScheduleJobKey(planId);
+            await scheduler.ResumeJob(jobKey);
         }
     }
 }

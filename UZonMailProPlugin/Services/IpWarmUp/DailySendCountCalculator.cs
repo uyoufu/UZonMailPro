@@ -25,7 +25,7 @@
             var percent = chartPoints.Count == 0 ? CalculateArctanPercent(percentToday) : InterpolatePercent(percentToday);
 
             var countForToday = (int)Math.Round(percent * (totalInboxes - _minCountForToday));
-            return Math.Max(countForToday, totalInboxes);
+            return Math.Min(countForToday, totalInboxes);
         }
 
         private double CalculateArctanPercent(double percentX)

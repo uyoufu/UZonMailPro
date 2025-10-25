@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
+using UZonMail.Core.Services.SendCore;
 using UZonMail.Core.Services.Settings;
-using UZonMail.DB.SQL.Core.EmailSending;
+using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMailProPlugin.Controllers.Base;
+using UZonMailProPlugin.Controllers.IPWarmUp.DTOs;
 using UZonMailProPlugin.Services.IpWarmUp;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.IPWarmUp;
@@ -15,7 +17,13 @@ namespace UZonMailProPlugin.Controllers.IPWarmUp
     /// <summary>
     /// IP 预热计划控制器
     /// </summary>
-    public class IpWarmUpPlanController(TokenService tokenService, SqlContextPro dbPro, IpWarmUpTaskService ipWarmUpTaskService) : ControllerBasePro
+    public class IpWarmUpPlanController(
+        TokenService tokenService,
+        SqlContextPro dbPro,
+        SqlContext db,
+        IpWarmUpTaskService ipWarmUpTaskService,
+        SendingGroupService sendingGroupService
+    ) : ControllerBasePro
     {
         /// <summary>
         /// 添加 IP 预热计划
@@ -24,7 +32,9 @@ namespace UZonMailProPlugin.Controllers.IPWarmUp
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseResult<IpWarmUpUpPlan>> AddIpWarmUpPlan([FromBody] SendingGroup data)
+        public async Task<ResponseResult<IpWarmUpUpPlan>> AddIpWarmUpPlan(
+            [FromBody] WarmUpPlanData data
+        )
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
             data.UserId = tokenPayloads.UserId;
@@ -57,7 +67,10 @@ namespace UZonMailProPlugin.Controllers.IPWarmUp
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpPost("filtered-data")]
-        public async Task<ResponseResult<List<IpWarmUpUpPlan>>> GetIpWarmUpPlanData(string filter, Pagination pagination)
+        public async Task<ResponseResult<List<IpWarmUpUpPlan>>> GetIpWarmUpPlanData(
+            string filter,
+            Pagination pagination
+        )
         {
             var userId = tokenService.GetUserSqlId();
             var dbSet = dbPro.IpWarmUpUpPlans.AsNoTracking().Where(x => x.UserId == userId);
@@ -79,8 +92,67 @@ namespace UZonMailProPlugin.Controllers.IPWarmUp
         public async Task<ResponseResult<bool>> DeleteIpWarmUpPlanDatas([FromBody] List<long> Ids)
         {
             var userId = tokenService.GetUserSqlId();
-            await dbPro.IpWarmUpUpPlans.Where(x => x.UserId == userId && Ids.Contains(x.Id)).ExecuteDeleteAsync();
+
+            // 查找属于自己的计划
+            var selfPlans = await dbPro
+                .IpWarmUpUpPlans.Where(x => x.UserId == userId && Ids.Contains(x.Id))
+                .ToListAsync();
+
+            // 停止对应的发件任务
+            var sendingGroupIds = await dbPro
+                .IpWarmUpUpTasks.Where(x => selfPlans.Select(x => x.Id).Contains(x.IPWarmUpPlanId))
+                .Select(x => x.SendingGroupId)
+                .ToListAsync();
+            var sendingGroups = await db
+                .SendingGroups.AsNoTracking()
+                .Where(x => sendingGroupIds.Contains(x.Id))
+                .ToListAsync();
+            foreach (var sendingGroup in sendingGroups)
+            {
+                await sendingGroupService.RemoveSendingGroupTask(sendingGroup);
+            }
+
+            // 删除计划
+            await dbPro
+                .IpWarmUpUpPlans.Where(x => x.UserId == userId && Ids.Contains(x.Id))
+                .ExecuteDeleteAsync();
+
+            // 删除关联的定时任务
+            foreach (var planId in Ids)
+            {
+                await ipWarmUpTaskService.DeletePlanSchedule(planId);
+            }
+
             return true.ToSuccessResponse();
+        }
+
+        /// <summary>
+        /// 获取指定预热计划的最新发送组 ID
+        /// </summary>
+        /// <param name="planObjectId"></param>
+        /// <returns></returns>
+        [HttpGet("sendingGroupIds/latest")]
+        public async Task<ResponseResult<long>> GetLatestSendingGroupOfSchedulePlan(
+            string planObjectId
+        )
+        {
+            var userId = tokenService.GetUserSqlId();
+
+            var plan = await dbPro
+                .IpWarmUpUpPlans.AsNoTracking()
+                .Where(x => x.UserId == userId && x.ObjectId == planObjectId)
+                .FirstOrDefaultAsync();
+            if (plan == null)
+                return 0L.ToSuccessResponse();
+
+            var planTask = await dbPro
+                .IpWarmUpUpTasks.Where(x => x.IPWarmUpPlanId == plan.Id)
+                .OrderByDescending(x => x.Id)
+                .FirstOrDefaultAsync();
+            if (planTask == null)
+                return 0L.ToSuccessResponse();
+
+            return planTask.SendingGroupId.ToSuccessResponse();
         }
     }
 }
