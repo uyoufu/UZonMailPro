@@ -67,11 +67,17 @@ namespace UZonMailProPlugin.Services.IpWarmUp
                     .SendingGroups.AsNoTracking()
                     .Where(x => x.Id == lastPlanTask.SendingGroupId)
                     .Select(x => new SendingGroup { Status = x.Status })
-                    .FirstAsync();
-
-                isSending =
-                    sendingGroup.Status != SendingGroupStatus.Cancel
-                    && sendingGroup.Status != SendingGroupStatus.Finish;
+                    .FirstOrDefaultAsync();
+                if (sendingGroup == null)
+                {
+                    isSending = false;
+                }
+                else
+                {
+                    isSending =
+                        sendingGroup.Status != SendingGroupStatus.Cancel
+                        && sendingGroup.Status != SendingGroupStatus.Finish;
+                }
             }
 
             // 获取密钥
