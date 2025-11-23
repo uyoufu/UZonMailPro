@@ -1,8 +1,8 @@
-﻿using DeviceId;
+using System.Reflection;
+using DeviceId;
 using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Config;
 using UZonMail.Core.Services.Permission;
@@ -18,10 +18,13 @@ namespace UZonMailProPlugin.Services.License
     /// <summary>
     /// 授权管理器
     /// </summary>
-    public class LicenseManagerService(SqlContext sqlContext, HttpClient httpClient,
-        PermissionService permissionService, LicenseAccessService licenseAccess,
+    public class LicenseManagerService(
+        SqlContext sqlContext,
+        HttpClient httpClient,
+        PermissionService permissionService,
+        LicenseAccessService licenseAccess,
         DebugConfig debugConfig
-        ) : IScopedService
+    ) : IScopedService
     {
 #if DEBUG
         private const string _licenseAPI = "https://app.uzoncloud.com:2234/api/v1/license-machine";
@@ -31,6 +34,8 @@ namespace UZonMailProPlugin.Services.License
 #endif
         private static DateTime _lastUpdateDate = DateTime.MinValue;
         private static readonly string _licenseKey = "license";
+
+        private static readonly string _licenseCodeFilePath = "data/license/license-code.txt";
 
         /// <summary>
         /// 授权信息
@@ -50,15 +55,32 @@ namespace UZonMailProPlugin.Services.License
         /// 从数据库中判断是否存在专业版及以上的授权码
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> ExistValidLicenseCode()
+        public async Task<bool> IsExistValidLicenseCode()
         {
-            var licenseSetting = await sqlContext.AppSettings.Where(x => x.Key == _licenseKey)
+            var licenseSetting = await sqlContext
+                .AppSettings.Where(x => x.Key == _licenseKey)
                 .OrderByDescending(x => x.DateTime)
                 .FirstOrDefaultAsync();
 
-            if (licenseSetting == null) return false;
-            if (licenseSetting.DateTime < DateTime.UtcNow) return false;
-            return true;
+            if (licenseSetting != null)
+            {
+                return licenseSetting.DateTime >= DateTime.UtcNow;
+            }
+
+            // 其它情况
+            // 如何授权存在，则返回 true
+            if (LicenseInfo.LicenseType > LicenseType.Community)
+                return true;
+
+            // 若存在本地授权码文件，则认为授权存在
+            return File.Exists(_licenseCodeFilePath);
+        }
+
+        private static async Task SaveLicenseCode(string licenseCode)
+        {
+            // 创建目录
+            Directory.CreateDirectory(Path.GetDirectoryName(_licenseCodeFilePath)!);
+            await File.WriteAllTextAsync(_licenseCodeFilePath, licenseCode);
         }
 
         /// <summary>
@@ -93,12 +115,15 @@ namespace UZonMailProPlugin.Services.License
 
             // 下载授权信息
             var license = await DownloadLicense();
-            if (license == null) return ResponseResult<LicenseInfo>.Fail("授权码无效");
+            if (license == null)
+                return ResponseResult<LicenseInfo>.Fail("授权码无效");
             LicenseInfo = license;
             _lastUpdateDate = DateTime.UtcNow;
 
             // 将授权码更新到数据库中
-            var systemSettings = await sqlContext.AppSettings.FirstOrDefaultAsync(x => x.Key == _licenseKey);
+            var systemSettings = await sqlContext.AppSettings.FirstOrDefaultAsync(x =>
+                x.Key == _licenseKey
+            );
             if (systemSettings == null)
             {
                 systemSettings = new AppSetting()
@@ -116,6 +141,9 @@ namespace UZonMailProPlugin.Services.License
             }
             await sqlContext.SaveChangesAsync();
 
+            // 将授权码缓存到本机磁盘中，防止数据库删除后，授权无效
+            await SaveLicenseCode(licenseCode);
+
             // 清除授权缓存
             await permissionService.ResetAllUserPermissionsCache();
 
@@ -129,7 +157,7 @@ namespace UZonMailProPlugin.Services.License
         public async Task<ResponseResult<LicenseInfo>> UpdateExistingLicense()
         {
             // 判断是否存在授权码
-            var existLicenseCode = await ExistValidLicenseCode();
+            var existLicenseCode = await IsExistValidLicenseCode();
             if (!existLicenseCode)
             {
                 return ResponseResult<LicenseInfo>.Success(LicenseInfo.CreateDefaultLicense());
@@ -142,7 +170,6 @@ namespace UZonMailProPlugin.Services.License
             await permissionService.ResetAllUserPermissionsCache();
             return licenseInfo.ToSuccessResponse();
         }
-
 
         /// <summary>
         /// 获取授权信息
@@ -160,7 +187,12 @@ namespace UZonMailProPlugin.Services.License
 
             // 如果过期了，则从数据库中获取
             // 只有更新日期超过一天才会去请求授权服务器
-            if (forceUpdate && LicenseInfo != null && LicenseInfo.ExpireDate > DateTime.UtcNow && _lastUpdateDate.AddDays(1) > DateTime.UtcNow)
+            if (
+                forceUpdate
+                && LicenseInfo != null
+                && LicenseInfo.ExpireDate > DateTime.UtcNow
+                && _lastUpdateDate.AddDays(1) > DateTime.UtcNow
+            )
             {
                 return LicenseInfo;
             }
@@ -188,10 +220,10 @@ namespace UZonMailProPlugin.Services.License
             _lastUpdateDate = DateTime.UtcNow;
 
             // 判断是否已经过期
-            if(LicenseInfo.ExpireDate <= DateTime.UtcNow)
+            if (LicenseInfo.ExpireDate <= DateTime.UtcNow)
             {
                 _logger.Warn("当前授权已过期，请联系 260827400@qq.com 续费");
-                LicenseInfo = defaultLicenseInfo;               
+                LicenseInfo = defaultLicenseInfo;
             }
 
             return LicenseInfo;
@@ -239,7 +271,9 @@ namespace UZonMailProPlugin.Services.License
 
             // 解密
             // 从嵌入的资源中获取密钥
-            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("UZonMailProPlugin.Services.License.PrivateKey.pem");
+            using var stream = Assembly
+                .GetExecutingAssembly()
+                .GetManifestResourceStream("UZonMailProPlugin.Services.License.PrivateKey.pem");
             if (stream == null)
             {
                 var assembly = Assembly.GetExecutingAssembly();
@@ -256,7 +290,8 @@ namespace UZonMailProPlugin.Services.License
             var privateKeyBytes = Convert.FromBase64String(responseResult.Data);
             var jsonString = privateKeyBytes.FromRSA(privateKey);
             var jsonData = JObject.Parse(jsonString);
-            if (jsonData == null) return null;
+            if (jsonData == null)
+                return null;
             return jsonData.ToObject<LicenseInfo>();
         }
 
@@ -268,7 +303,7 @@ namespace UZonMailProPlugin.Services.License
         {
             // 判断是否有机器码文件，若没有，则新增
             var fileTokenPath = GetDeviceTokenPath();
-            string deviceId = string.Empty;
+            string deviceId;
             if (IsContainerEnv())
             {
                 _logger.Info("检测到 Docker 环境, 使用自定义识别码");
@@ -278,12 +313,12 @@ namespace UZonMailProPlugin.Services.License
             {
                 // 获取机器识别码
                 deviceId = new DeviceIdBuilder()
-                          .AddOsVersion()
-                          .AddMachineName()
-                          .AddUserName()
-                          .AddMacAddress()
-                          .AddFileToken(fileTokenPath)
-                          .ToString();
+                    .AddOsVersion()
+                    .AddMachineName()
+                    .AddUserName()
+                    .AddMacAddress()
+                    .AddFileToken(fileTokenPath)
+                    .ToString();
             }
 
             _logger.Info($"当前机器码: {deviceId}");
@@ -301,10 +336,11 @@ namespace UZonMailProPlugin.Services.License
 
         private bool IsVirtualEnvByCGroup()
         {
-            if (!File.Exists("/proc/1/cgroup")) return false;
+            if (!File.Exists("/proc/1/cgroup"))
+                return false;
             string[] lines = File.ReadAllLines("/proc/1/cgroup");
-            var isDocker = lines.Any(line => line.Contains("docker")
-                || line.Contains("kubepods"))
+            var isDocker =
+                lines.Any(line => line.Contains("docker") || line.Contains("kubepods"))
                 || lines.Any(line => line.Contains("lxc"))
                 || lines.Any(line => line.Contains("libvirt"))
                 || lines.Any(line => line.Contains("openvz"));
@@ -325,9 +361,12 @@ namespace UZonMailProPlugin.Services.License
         private string GetDeviceTokenPath()
         {
             var fileTokenPath = "data/device/device-token.txt";
-            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var localAppData = Environment.GetFolderPath(
+                Environment.SpecialFolder.LocalApplicationData
+            );
             var fullTokenPath = Path.Combine(localAppData, "UZonMail/device-token.txt");
-            if (File.Exists(fullTokenPath)) return fullTokenPath;
+            if (File.Exists(fullTokenPath))
+                return fullTokenPath;
 
             // 不存在时，判断用户目录下是否包含
             if (File.Exists(fileTokenPath))
@@ -347,7 +386,6 @@ namespace UZonMailProPlugin.Services.License
             // 重新获取
             return GetDeviceTokenPath();
         }
-
 
         /// <summary>
         /// 移除当前机器上的 License

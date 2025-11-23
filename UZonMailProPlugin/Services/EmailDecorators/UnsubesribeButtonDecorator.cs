@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using UZonMail.Core.Services.EmailDecorator.Interfaces;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.Managers.Cache;
@@ -9,31 +9,50 @@ using UZonMailProPlugin.SQL;
 
 namespace UZonMailProPlugin.Services.EmailBodyDecorators
 {
-    public partial class UnsubesribeButtonDecorator(SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess,AppSettingsManager settingsManager) : IContentDecroator
+    public partial class UnsubesribeButtonDecorator(
+        SqlContext db,
+        SqlContextPro dbPro,
+        LicenseAccessService functionAccess,
+        AppSettingsManager settingsManager
+    ) : IContentDecroator
     {
         public int Order { get; }
 
-        public async Task<string> StartDecorating(IContentDecoratorParams unsubesribeParams, string originBody)
+        public async Task<string> StartDecorating(
+            IContentDecoratorParams unsubesribeParams,
+            string originBody
+        )
         {
-            if (string.IsNullOrEmpty(originBody)) return originBody;
+            if (string.IsNullOrEmpty(originBody))
+                return originBody;
             // 判断是否有企业版本功能
-            if (!(await functionAccess.HasEmailTrackingAccess())) return originBody;
+            if (!(await functionAccess.HasEmailTrackingAccess()))
+                return originBody;
             var decoratorParams = unsubesribeParams as EmailDecoratorParams;
 
-            var userInfo = await CacheManager.Global.GetCache<UserInfoCache>(db, decoratorParams.SendingItem.UserId.ToString());
+            var userInfo = await DBCacheManager.Global.GetCache<UserInfoCache>(
+                db,
+                decoratorParams!.SendingItem.UserId
+            );
 
             // 获取设置
-            var unsubscribeSetting = await settingsManager.GetSetting<UnsubscribeSetting>(db, userInfo.UserId);
+            var unsubscribeSetting = await settingsManager.GetSetting<UnsubscribeSetting>(
+                db,
+                userInfo.UserId
+            );
             await unsubscribeSetting.InitForSubscribling(dbPro, userInfo.OrganizationId);
 
             var unsubscribeUrl = await unsubscribeSetting.GetUnsubscribeUrl(db);
 
             // 说明没有设置 API 地址
-            if (unsubscribeSetting == null || !unsubscribeSetting.IsEnable()) return originBody;
-            if (string.IsNullOrEmpty(unsubscribeUrl)) return originBody;
+            if (unsubscribeSetting == null || !unsubscribeSetting.IsEnable())
+                return originBody;
+            if (string.IsNullOrEmpty(unsubscribeUrl))
+                return originBody;
 
             // 若已经存在追踪锚点则不再添加
-            if (originBody.Contains(unsubscribeUrl)) return originBody;
+            if (originBody.Contains(unsubscribeUrl))
+                return originBody;
 
             // 生成退订链接
             unsubscribeUrl += $"&token={decoratorParams.SendingItem.ObjectId}";

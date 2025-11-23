@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Base;
@@ -106,7 +106,8 @@ namespace UZonMailProPlugin.Controllers.Api.Model
             // 模板
             if (TemplateIds != null && TemplateIds.Count > 0)
             {
-                var templates = await db.EmailTemplates.Where(x => TemplateIds.Contains(x.ObjectId))
+                var templates = await db
+                    .EmailTemplates.Where(x => TemplateIds.Contains(x.ObjectId))
                     .ToListAsync();
                 sendingGroup.Templates = templates;
             }
@@ -117,7 +118,8 @@ namespace UZonMailProPlugin.Controllers.Api.Model
             // 发件箱
             if (OutboxIds != null && OutboxIds.Count > 0)
             {
-                var outboxes = await db.Outboxes.Where(x => OutboxIds.Contains(x.ObjectId))
+                var outboxes = await db
+                    .Outboxes.Where(x => OutboxIds.Contains(x.ObjectId))
                     .ToListAsync();
                 sendingGroup.Outboxes = outboxes;
             }
@@ -125,62 +127,66 @@ namespace UZonMailProPlugin.Controllers.Api.Model
             // 发件箱组
             if (OutboxGroupIds != null && OutboxGroupIds.Count > 0)
             {
-                var outboxGroups = await db.EmailGroups.Where(x => OutboxGroupIds.Contains(x.ObjectId))
+                var outboxGroups = await db
+                    .EmailGroups.Where(x => OutboxGroupIds.Contains(x.ObjectId))
                     .ToListAsync();
-                sendingGroup.OutboxGroups = outboxGroups.Select(x => new IdAndName()
-                {
-                    Id = x.Id,
-                    ObjectId = x.ObjectId,
-                    Name = x.Name,
-                    Description = x.Description
-                }).ToList();
+                sendingGroup.OutboxGroups = outboxGroups
+                    .Select(x => new IdAndName()
+                    {
+                        Id = x.Id,
+                        ObjectId = x.ObjectId,
+                        Name = x.Name,
+                        Description = x.Description
+                    })
+                    .ToList();
             }
 
             // 收件箱
             if (InboxEmails != null && InboxEmails.Count > 0)
             {
-                sendingGroup.Inboxes = InboxEmails.Select(email => new EmailAddress
-                {
-                    Email = email
-                }).ToList();
+                sendingGroup.Inboxes = InboxEmails
+                    .Select(email => new EmailAddress { Email = email })
+                    .ToList();
             }
 
             // 收件箱组
             if (InboxGroupIds != null && InboxGroupIds.Count > 0)
             {
-                var inboxGroups = await db.EmailGroups.Where(x => InboxGroupIds.Contains(x.ObjectId))
+                var inboxGroups = await db
+                    .EmailGroups.Where(x => InboxGroupIds.Contains(x.ObjectId))
                     .ToListAsync();
-                sendingGroup.InboxGroups = inboxGroups.Select(x => new IdAndName()
-                {
-                    Id = x.Id,
-                    ObjectId = x.ObjectId,
-                    Name = x.Name,
-                    Description = x.Description
-                }).ToList();
+                sendingGroup.InboxGroups = inboxGroups
+                    .Select(x => new IdAndName()
+                    {
+                        Id = x.Id,
+                        ObjectId = x.ObjectId,
+                        Name = x.Name,
+                        Description = x.Description
+                    })
+                    .ToList();
             }
 
             // 抄送箱
             if (CcBoxes != null && CcBoxes.Count > 0)
             {
-                sendingGroup.CcBoxes = CcBoxes.Select(email => new EmailAddress
-                {
-                    Email = email
-                }).ToList();
+                sendingGroup.CcBoxes = CcBoxes
+                    .Select(email => new EmailAddress { Email = email })
+                    .ToList();
             }
 
             // 密送
             if (BccBoxes != null && BccBoxes.Count > 0)
             {
-                sendingGroup.BccBoxes = BccBoxes.Select(email => new EmailAddress
-                {
-                    Email = email
-                }).ToList();
+                sendingGroup.BccBoxes = BccBoxes
+                    .Select(email => new EmailAddress { Email = email })
+                    .ToList();
             }
 
             // 附件
             if (AttachmentIds != null && AttachmentIds.Count > 0)
             {
-                var attachments = await db.FileUsages.Where(x => AttachmentIds.Contains(x.ObjectId))
+                var attachments = await db
+                    .FileUsages.Where(x => AttachmentIds.Contains(x.ObjectId))
                     .ToListAsync();
                 sendingGroup.Attachments = attachments;
             }
@@ -192,17 +198,16 @@ namespace UZonMailProPlugin.Controllers.Api.Model
             sendingGroup.SendingType = SendingType;
             // 定时发件时间
             sendingGroup.ScheduleDate = ScheduleDate;
-            
+
             // 代理
             if (ProxyIds != null && ProxyIds.Count > 0)
             {
-                var proxies = await db.Proxies.Where(x => ProxyIds.Contains(x.ObjectId))
+                var proxies = await db
+                    .Proxies.Where(x => ProxyIds.Contains(x.ObjectId))
                     .ToListAsync();
-                sendingGroup.ProxyIds = proxies.Select(x=>x.Id).ToList();
+                sendingGroup.ProxyIds = proxies.Select(x => x.Id).ToList();
             }
 
-            // smtp 密码解密 key
-            sendingGroup.SmtpPasswordSecretKeys = SmtpPasswordSecretKeys;
             // 批量发送
             sendingGroup.SendBatch = SendBatch;
 

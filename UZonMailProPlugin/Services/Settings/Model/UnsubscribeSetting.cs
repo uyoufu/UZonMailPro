@@ -1,8 +1,8 @@
-﻿using log4net;
+using log4net;
 using Microsoft.EntityFrameworkCore;
 using UZonMail.Core.Services.Settings.Model;
-using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.DB.SQL;
+using UZonMail.DB.SQL.Core.Settings;
 using UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders;
 using UZonMailProPlugin.SQL;
 using UZonMailProPlugin.SQL.Unsubscribes;
@@ -51,7 +51,7 @@ namespace UZonMailProPlugin.Services.Settings.Model
         /// </summary>
         public long UnsubscribeButtonId { get; set; } = 1;
 
-        protected override void InitValue()
+        protected override void ReadValuesFromJsons()
         {
             Enable = GetBoolValue(nameof(Enable), false);
             Type = (UnsubscibeType)GetIntValue(nameof(Type), 0);
@@ -61,8 +61,10 @@ namespace UZonMailProPlugin.Services.Settings.Model
 
         public bool IsEnable()
         {
-            if (Enable == null) return false;
-            if (Enable == false) return false;
+            if (Enable == null)
+                return false;
+            if (Enable == false)
+                return false;
             return true;
         }
 
@@ -72,9 +74,11 @@ namespace UZonMailProPlugin.Services.Settings.Model
         public string? UnsubscribeButtonHtml { get; private set; }
 
         private bool _isInitialized = false;
+
         public async Task InitForSubscribling(SqlContextPro db, long organizationId)
         {
-            if (_isInitialized) return;
+            if (_isInitialized)
+                return;
 
             // 获取退订按钮
             var unsubscribeButton = await db.UnsubscribeButtons.FirstOrDefaultAsync();
@@ -101,7 +105,9 @@ namespace UZonMailProPlugin.Services.Settings.Model
             }
 
             // 判断是否有退订页面
-            var unsubscribePage = await db.UnsubscribePages.FirstOrDefaultAsync(x => x.OrganizationId == organizationId);
+            var unsubscribePage = await db.UnsubscribePages.FirstOrDefaultAsync(x =>
+                x.OrganizationId == organizationId
+            );
             if (unsubscribePage == null)
             {
                 _logger.Error($"组织 {organizationId} 未设置 UnsubscribePage, 无法添加退订");
@@ -111,6 +117,7 @@ namespace UZonMailProPlugin.Services.Settings.Model
         }
 
         private string? _unsubscribeUrl;
+
         /// <summary>
         /// 获取退订链接
         /// </summary>
@@ -118,9 +125,11 @@ namespace UZonMailProPlugin.Services.Settings.Model
         /// <returns></returns>
         public async Task<string> GetUnsubscribeUrl(SqlContext db)
         {
-            if (!IsEnable()) return string.Empty;
+            if (!IsEnable())
+                return string.Empty;
 
-            if (!string.IsNullOrEmpty(_unsubscribeUrl)) return _unsubscribeUrl;
+            if (!string.IsNullOrEmpty(_unsubscribeUrl))
+                return _unsubscribeUrl;
 
             // 若是外部退订，直接返回外部链接
             if (Type == UnsubscibeType.External)
@@ -130,15 +139,22 @@ namespace UZonMailProPlugin.Services.Settings.Model
             }
 
             // 获取 baseUrl
-            var setting = await db.AppSettings.FirstOrDefaultAsync(x => x.Key == AppSetting.BaseApiUrl);
-            if (setting == null || string.IsNullOrEmpty(setting.StringValue) || !setting.StringValue.StartsWith("http"))
+            var setting = await db.AppSettings.FirstOrDefaultAsync(x =>
+                x.Key == AppSetting.BaseApiUrl
+            );
+            if (
+                setting == null
+                || string.IsNullOrEmpty(setting.StringValue)
+                || !setting.StringValue.StartsWith("http")
+            )
             {
                 _logger.Warn("BaseApiUrl 未设置或者格式错误");
                 Enable = false;
                 return string.Empty;
             }
 
-            _unsubscribeUrl = $"{setting.StringValue.TrimEnd('/')}/pages/unsubscribe/pls-give-me-a-shot";
+            _unsubscribeUrl =
+                $"{setting.StringValue.TrimEnd('/')}/pages/unsubscribe/pls-give-me-a-shot";
             return _unsubscribeUrl;
         }
     }

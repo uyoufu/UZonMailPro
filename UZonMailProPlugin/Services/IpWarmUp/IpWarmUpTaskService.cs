@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.SQL;
@@ -30,16 +30,6 @@ namespace UZonMailProPlugin.Services.IpWarmUp
         /// <returns></returns>
         public async Task<IpWarmUpUpPlan> CreatePlan(WarmUpPlanData plandData)
         {
-            if (
-                (
-                    plandData.SmtpPasswordSecretKeys == null
-                    || plandData.SmtpPasswordSecretKeys.Count != 2
-                )
-            )
-            {
-                throw new KnownException("请提供两个 SMTP 密钥，用于不同阶段的发送");
-            }
-
             var userId = tokenService.GetUserSqlId();
 
             var outboxSet = new HashSet<long>(plandData.Outboxes!.Select(x => x.Id));
@@ -131,12 +121,7 @@ namespace UZonMailProPlugin.Services.IpWarmUp
             await dbPro.SaveChangesAsync();
 
             // 创建循环任务，每天都执行发送任务
-            await CreatePlanSchedule(
-                plan.Id,
-                [.. plandData.SmtpPasswordSecretKeys],
-                plan.StartDate,
-                plan.EndDate
-            );
+            await CreatePlanSchedule(plan.Id, plan.StartDate, plan.EndDate);
 
             return plan;
         }
@@ -161,7 +146,6 @@ namespace UZonMailProPlugin.Services.IpWarmUp
         /// <returns></returns>
         public async Task CreatePlanSchedule(
             long planId,
-            string[] smtpPasswordSecretKeys,
             DateTime startDateUtc,
             DateTime endDateUtc
         )
@@ -173,13 +157,7 @@ namespace UZonMailProPlugin.Services.IpWarmUp
             var job = JobBuilder
                 .Create<IpWarmUpTaskJob>()
                 .WithIdentity(jobKey)
-                .SetJobData(
-                    new JobDataMap
-                    {
-                        { "id", planId },
-                        { "smtpPasswordSecretKeys", string.Join(',', smtpPasswordSecretKeys) }
-                    }
-                )
+                .SetJobData(new JobDataMap { { "id", planId }, })
                 .Build();
 
             if (startDateUtc < DateTime.UtcNow.AddSeconds(10))

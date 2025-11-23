@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
@@ -16,8 +16,13 @@ using UZonMailProPlugin.SQL.ReadingTracker;
 
 namespace UZonMailProPlugin.Controllers.EmailTracker
 {
-    public class EmailTrackerController(SqlContext db, SqlContextPro dbPro, TokenService tokenService,
-        AppSettingService settingService, AppSettingsManager settingsManager) : ControllerBasePro
+    public class EmailTrackerController(
+        SqlContext db,
+        SqlContextPro dbPro,
+        TokenService tokenService,
+        AppSettingService settingService,
+        AppSettingsManager settingsManager
+    ) : ControllerBasePro
     {
         private static byte[] _transparentPngBytes =
         [
@@ -100,10 +105,12 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         public async Task<IActionResult> GetStream(string trackerId)
         {
             // 查找文件对象
-            var emailAnchor = await dbPro.EmailAnchors.Where(x => x.ObjectId == trackerId)
+            var emailAnchor = await dbPro
+                .EmailAnchors.Where(x => x.ObjectId == trackerId)
                 .Include(x => x.VisitedHistories)
                 .FirstOrDefaultAsync();
-            if (emailAnchor == null) return NotFound();
+            if (emailAnchor == null)
+                return NotFound();
 
             // 更新访问次数
             if (emailAnchor.FirstVisitDate > DateTime.UtcNow)
@@ -118,10 +125,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
             if (!string.IsNullOrEmpty(ip))
             {
-                var visitHistory = new EmailVisitHistory
-                {
-                    IP = ip
-                };
+                var visitHistory = new EmailVisitHistory { IP = ip };
                 emailAnchor.VisitedHistories.Add(visitHistory);
             }
             await dbPro.SaveChangesAsync();
@@ -131,8 +135,12 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
             if (!IsRequestFromCDN())
             {
                 // 更新发送的邮件的状态
-                await db.SendingItems.UpdateAsync(x => x.Id == emailAnchor.SendingItemId, x => x.SetProperty(p => p.Status, SendingItemStatus.Read)
-                .SetProperty(p => p.ReadDate, DateTime.UtcNow));
+                await db.SendingItems.UpdateAsync(
+                    x => x.Id == emailAnchor.SendingItemId,
+                    x =>
+                        x.SetProperty(p => p.Status, SendingItemStatus.Read)
+                            .SetProperty(p => p.ReadDate, DateTime.UtcNow)
+                );
             }
 
             // 返回一个像素的透明 png 图片流
@@ -182,7 +190,9 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
             var dbSet = dbPro.EmailAnchors.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.InboxEmails.Contains(filter) || x.OutboxEmail.Contains(filter));
+                dbSet = dbSet.Where(x =>
+                    x.InboxEmails.Contains(filter) || x.OutboxEmail.Contains(filter)
+                );
             }
             var count = await dbSet.CountAsync();
             return count.ToSuccessResponse();
@@ -195,13 +205,18 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpPost("filtered-data")]
-        public async Task<ResponseResult<List<EmailAnchor>>> GetSendingGroupsData(string filter, Pagination pagination)
+        public async Task<ResponseResult<List<EmailAnchor>>> GetSendingGroupsData(
+            string filter,
+            Pagination pagination
+        )
         {
             var userId = tokenService.GetUserSqlId();
             var dbSet = dbPro.EmailAnchors.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.OutboxEmail.Contains(filter) || x.InboxEmails.Contains(filter));
+                dbSet = dbSet.Where(x =>
+                    x.OutboxEmail.Contains(filter) || x.InboxEmails.Contains(filter)
+                );
             }
 
             var results = await dbSet.Page(pagination).ToListAsync();
@@ -214,7 +229,9 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         /// </summary>
         /// <returns></returns>
         [HttpGet("setting")]
-        public async Task<ResponseResult<EmailTrackingSetting>> GetEmailTrackingSetting(AppSettingType type = AppSettingType.System)
+        public async Task<ResponseResult<EmailTrackingSetting>> GetEmailTrackingSetting(
+            AppSettingType type = AppSettingType.System
+        )
         {
             // 获取设置
             var key = nameof(EmailTrackingSetting);
@@ -232,7 +249,10 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
         /// </summary>
         /// <returns></returns>
         [HttpPut("setting")]
-        public async Task<ResponseResult<bool>> UpserEmailTrackingSetting([FromBody] EmailTrackingSetting trackingSetting, AppSettingType type = AppSettingType.System)
+        public async Task<ResponseResult<bool>> UpserEmailTrackingSetting(
+            [FromBody] EmailTrackingSetting trackingSetting,
+            AppSettingType type = AppSettingType.System
+        )
         {
             var userId = tokenService.GetUserSqlId();
             // 判断权限
@@ -242,7 +262,7 @@ namespace UZonMailProPlugin.Controllers.EmailTracker
             var appSetting = await settingService.UpdateAppSetting(trackingSetting, key, type);
 
             // 更新缓存
-            settingsManager.ResetSetting<EmailTrackingSetting>(appSetting.Id);
+            settingsManager.ResetSetting<EmailTrackingSetting>(appSetting);
 
             return true.ToSuccessResponse();
         }

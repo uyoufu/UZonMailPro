@@ -1,4 +1,4 @@
-﻿using log4net;
+using log4net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,10 +24,16 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
     /// 退订控制器
     /// 退订默认是组织级别的设置
     /// </summary>
-    public class UnsubscribeController(SqlContext db, SqlContextPro dbPro, TokenService tokenService,
-        IConfiguration configuration, UnsubscribeService unsubscribeService, PermissionService permissionService,
-        AppSettingService settingService,AppSettingsManager settingsManager
-        ) : ControllerBasePro
+    public class UnsubscribeController(
+        SqlContext db,
+        SqlContextPro dbPro,
+        TokenService tokenService,
+        IConfiguration configuration,
+        UnsubscribeService unsubscribeService,
+        PermissionService permissionService,
+        AppSettingService settingService,
+        AppSettingsManager settingsManager
+    ) : ControllerBasePro
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(UnsubscribeController));
 
@@ -36,7 +42,9 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         /// </summary>
         /// <returns></returns>
         [HttpGet("setting")]
-        public async Task<ResponseResult<UnsubscribeSetting>> GetUnsubscribeSettings(AppSettingType type = AppSettingType.System)
+        public async Task<ResponseResult<UnsubscribeSetting>> GetUnsubscribeSettings(
+            AppSettingType type = AppSettingType.System
+        )
         {
             // 获取设置
             var key = nameof(UnsubscribeSetting);
@@ -55,7 +63,10 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         /// <param name="data"></param>
         /// <returns></returns>
         [HttpPut("setting")]
-        public async Task<ResponseResult<bool>> UpdateUnsubscribeSettings([FromBody] UnsubscribeSetting setting, AppSettingType type = AppSettingType.System)
+        public async Task<ResponseResult<bool>> UpdateUnsubscribeSettings(
+            [FromBody] UnsubscribeSetting setting,
+            AppSettingType type = AppSettingType.System
+        )
         {
             var userId = tokenService.GetUserSqlId();
             // 判断权限
@@ -65,7 +76,7 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             var appSetting = await settingService.UpdateAppSetting(setting, key, type);
 
             // 更新缓存
-            await settingsManager.ResetSetting<UnsubscribeSetting>(appSetting.Id);
+            settingsManager.ResetSetting<UnsubscribeSetting>(appSetting);
 
             return true.ToSuccessResponse();
         }
@@ -101,7 +112,9 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
             }
 
             // 添加到退订列表
-            var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x => x.Email == email && x.OrganizationId == longOrganizationId);
+            var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x =>
+                x.Email == email && x.OrganizationId == longOrganizationId
+            );
             return (existOne != null).ToSuccessResponse();
         }
 
@@ -115,8 +128,12 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         public async Task<ResponseResult<UnsubscribePayloads>> GetTokenPayloads(string token)
         {
             // token 是 SendItem 中的 ObjectId
-            var sendingItem = await db.SendingItems.AsNoTracking().FirstOrDefaultAsync(x => x.ObjectId == token);
-            var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
+            var sendingItem = await db
+                .SendingItems.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.ObjectId == token);
+            var user = await db
+                .Users.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
 
             // 从 token 中解析出 email 和 organizationId
             var tokenPayloads = new UnsubscribePayloads(sendingItem)
@@ -167,7 +184,9 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         public async Task<ResponseResult<int>> GetUnsubscribesCount(string filter)
         {
             var organizationId = tokenService.GetOrganizationId();
-            var dbSet = dbPro.UnsubscribeEmails.AsNoTracking().Where(x => x.OrganizationId == organizationId);
+            var dbSet = dbPro
+                .UnsubscribeEmails.AsNoTracking()
+                .Where(x => x.OrganizationId == organizationId);
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.Email.Contains(filter) || x.Host.Contains(filter));
@@ -183,10 +202,15 @@ namespace UZonMailProPlugin.Controllers.Unsubscribes
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpPost("filtered-data")]
-        public async Task<ResponseResult<List<UnsubscribeEmail>>> GetUnsubscribesData(string filter, Pagination pagination)
+        public async Task<ResponseResult<List<UnsubscribeEmail>>> GetUnsubscribesData(
+            string filter,
+            Pagination pagination
+        )
         {
             var organizationId = tokenService.GetOrganizationId();
-            var dbSet = dbPro.UnsubscribeEmails.AsNoTracking().Where(x => x.OrganizationId == organizationId);
+            var dbSet = dbPro
+                .UnsubscribeEmails.AsNoTracking()
+                .Where(x => x.OrganizationId == organizationId);
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.Email.Contains(filter) || x.Host.Contains(filter));

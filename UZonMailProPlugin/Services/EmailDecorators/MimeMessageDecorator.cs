@@ -1,4 +1,4 @@
-﻿using MimeKit;
+using MimeKit;
 using UZonMail.Core.Services.EmailDecorator.Interfaces;
 using UZonMail.Core.Services.Settings;
 using UZonMail.DB.Managers.Cache;
@@ -13,21 +13,35 @@ namespace UZonMailProPlugin.Services.EmailBodyDecorators
     /// <summary>
     /// 在消息体中添加退订链接
     /// </summary>
-    public class MimeMessageDecorator(IServiceProvider serviceProvider, SqlContext db, SqlContextPro dbPro, LicenseAccessService functionAccess)
-        : IMimeMessageDecroator
+    public class MimeMessageDecorator(
+        IServiceProvider serviceProvider,
+        SqlContext db,
+        SqlContextPro dbPro,
+        LicenseAccessService functionAccess
+    ) : IMimeMessageDecroator
     {
-        public async Task<MimeMessage> StartDecorating(IContentDecoratorParams mimeParams, MimeMessage mimeMessage)
+        public async Task<MimeMessage> StartDecorating(
+            IContentDecoratorParams mimeParams,
+            MimeMessage mimeMessage
+        )
         {
-            if (!(await functionAccess.HasUnsubscribeAccess())) return mimeMessage;
+            if (!(await functionAccess.HasUnsubscribeAccess()))
+                return mimeMessage;
 
             var decoratorParams = mimeParams as EmailDecoratorParams;
-            var userInfo = await CacheManager.Global.GetCache<UserInfoCache>(db, decoratorParams.SendingItem.UserId);
+            var userInfo = await DBCacheManager.Global.GetCache<UserInfoCache>(
+                db,
+                decoratorParams.SendingItem.UserId
+            );
 
-            var unsubscribeSettings = await serviceProvider.GetRequiredService<AppSettingsManager>().GetSetting<UnsubscribeSetting>(db,userInfo.UserId);
+            var unsubscribeSettings = await serviceProvider
+                .GetRequiredService<AppSettingsManager>()
+                .GetSetting<UnsubscribeSetting>(db, userInfo.UserId);
             await unsubscribeSettings.InitForSubscribling(dbPro, userInfo.OrganizationId);
 
             // 没有启用退订
-            if (unsubscribeSettings == null || !unsubscribeSettings.IsEnable()) return mimeMessage;
+            if (unsubscribeSettings == null || !unsubscribeSettings.IsEnable())
+                return mimeMessage;
 
             // 生成退订链接
             var unsubscribeUrl = await unsubscribeSettings.GetUnsubscribeUrl(db);
@@ -37,7 +51,10 @@ namespace UZonMailProPlugin.Services.EmailBodyDecorators
             {
                 unsubscribeUrl = unsubscribeUrl.Replace("&", "?");
             }
-            var unsubscribeHeader = UnsubscribeHeaderFactory.GetUnsubscribeHeader(serviceProvider, decoratorParams.OutboxEmail);
+            var unsubscribeHeader = UnsubscribeHeaderFactory.GetUnsubscribeHeader(
+                serviceProvider,
+                decoratorParams.OutboxEmail
+            );
             unsubscribeHeader.SetHeader(mimeMessage, unsubscribeUrl);
 
             return mimeMessage;

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Core.Services.Settings;
@@ -18,18 +18,23 @@ namespace UZonMailProPlugin.Controllers.JsVariable
     /// <summary>
     /// js 变量控制器
     /// </summary>
-    public class JsVariableSourceController(SqlContextPro dbPro, TokenService tokenService) : ControllerBasePro
+    public class JsVariableSourceController(SqlContextPro dbPro, TokenService tokenService)
+        : ControllerBasePro
     {
         [HttpPost]
-        public async Task<ResponseResult<JsVariableSource>> UpsertJsVariableSource([FromBody] JsVariableSource data)
+        public async Task<ResponseResult<JsVariableSource>> UpsertJsVariableSource(
+            [FromBody] JsVariableSource data
+        )
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
             data.UserId = tokenPayloads.UserId;
             data.OrganizationId = tokenPayloads.OrganizationId;
 
             // 判断是否存在
-            var existSource = await dbPro.JsVariableSources
-                .Where(x => x.UserId == data.UserId && x.Name == data.Name && x.Id != data.Id)
+            var existSource = await dbPro
+                .JsVariableSources.Where(x =>
+                    x.UserId == data.UserId && x.Name == data.Name && x.Id != data.Id
+                )
                 .FirstOrDefaultAsync();
             if (existSource != null)
                 return existSource.ToFailResponse("名称已存在");
@@ -37,10 +42,12 @@ namespace UZonMailProPlugin.Controllers.JsVariable
             // 若存在 id, 则更新
             if (data.Id > 0)
             {
-                await dbPro.JsVariableSources.UpdateAsync(x => x.UserId == data.UserId && x.Id == data.Id,
-                    y => y.SetProperty(m => m.Description, data.Description)
-                    .SetProperty(m => m.Name, data.Name)
-                    .SetProperty(m => m.Value, data.Value)
+                await dbPro.JsVariableSources.UpdateAsync(
+                    x => x.UserId == data.UserId && x.Id == data.Id,
+                    y =>
+                        y.SetProperty(m => m.Description, data.Description)
+                            .SetProperty(m => m.Name, data.Name)
+                            .SetProperty(m => m.Value, data.Value)
                 );
                 return data.ToSuccessResponse();
             }
@@ -49,7 +56,7 @@ namespace UZonMailProPlugin.Controllers.JsVariable
             await dbPro.SaveChangesAsync();
 
             // 更新缓存
-            CacheManager.Global.SetCacheDirty<JsVariableCache>(data.UserId);
+            DBCacheManager.Global.SetCacheDirty<JsVariableCache>(data.UserId);
 
             return data.ToSuccessResponse();
         }
@@ -78,7 +85,10 @@ namespace UZonMailProPlugin.Controllers.JsVariable
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpPost("filtered-data")]
-        public async Task<ResponseResult<List<JsVariableSource>>> GetJsVariableSourceData(string filter, Pagination pagination)
+        public async Task<ResponseResult<List<JsVariableSource>>> GetJsVariableSourceData(
+            string filter,
+            Pagination pagination
+        )
         {
             var userId = tokenService.GetUserSqlId();
             var dbSet = dbPro.JsVariableSources.AsNoTracking().Where(x => x.UserId == userId);
@@ -97,10 +107,14 @@ namespace UZonMailProPlugin.Controllers.JsVariable
         /// <param name="Ids"></param>
         /// <returns></returns>
         [HttpDelete("ids")]
-        public async Task<ResponseResult<bool>> DeleteJsVariableSourceDatas([FromBody] List<long> Ids)
+        public async Task<ResponseResult<bool>> DeleteJsVariableSourceDatas(
+            [FromBody] List<long> Ids
+        )
         {
             var userId = tokenService.GetUserSqlId();
-            await dbPro.JsVariableSources.Where(x => x.UserId == userId && Ids.Contains(x.Id)).ExecuteDeleteAsync();
+            await dbPro
+                .JsVariableSources.Where(x => x.UserId == userId && Ids.Contains(x.Id))
+                .ExecuteDeleteAsync();
             return true.ToSuccessResponse();
         }
     }

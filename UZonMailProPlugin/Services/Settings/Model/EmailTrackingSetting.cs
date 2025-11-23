@@ -1,4 +1,4 @@
-﻿using UZonMail.Core.Services.Settings.Model;
+using UZonMail.Core.Services.Settings.Model;
 
 namespace UZonMailProPlugin.Services.Settings.Model
 {
@@ -12,15 +12,17 @@ namespace UZonMailProPlugin.Services.Settings.Model
         /// </summary>
         public bool? EnableEmailTracker { get; set; }
 
-        protected override void InitValue()
+        protected override void ReadValuesFromJsons()
         {
             EnableEmailTracker = GetBoolValue(nameof(EnableEmailTracker), false);
         }
 
         public bool IsEnableTracker()
         {
-            if (EnableEmailTracker == null) return false;
-            if (EnableEmailTracker == false) return false;
+            if (EnableEmailTracker == null)
+                return false;
+            if (EnableEmailTracker == false)
+                return false;
             return true;
         }
     }

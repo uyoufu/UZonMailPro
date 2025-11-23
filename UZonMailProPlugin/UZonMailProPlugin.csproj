@@ -12,7 +12,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<BaseOutputPath>..\..\SendMultipleEmails\backend-src\UZonMailService\bin\Debug\net9.0\Plugins\UZonMailPro</BaseOutputPath>
+		<BaseOutputPath>..\..\UzonMail\backend-src\UZonMailService\bin\Debug\net9.0\Plugins\UZonMailPro</BaseOutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -37,7 +37,7 @@
 	<ItemGroup>		
 	  <PackageReference Include="DeviceId" Version="6.9.0" />		
 	  <PackageReference Include="DnsClient" Version="1.8.0" />		
-	  <PackageReference Include="Jint" Version="4.4.1" />		
+	  <PackageReference Include="Jint" Version="4.4.2" />		
 	  <PackageReference Include="MathNet.Numerics" Version="5.0.0" />		
 	  <PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.2.0" />		
 	  <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="8.0.13" />		
@@ -45,18 +45,17 @@
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>		
-	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.3" />		
-	  <PackageReference Include="SmtpServer" Version="10.0.1" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\..\SendMultipleEmails\backend-src\Plugins\UZonMailCorePlugin\UZonMailCorePlugin.csproj" />
+	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Folder Include="Controllers\EmailCrawler\Model\" />
 	  <Folder Include="Migrations\SqLite\" />
 	  <Folder Include="Services\SystemInfo\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\UzonMail\backend-src\Plugins\UZonMailCorePlugin\UZonMailCorePlugin.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
