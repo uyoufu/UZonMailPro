@@ -1,4 +1,4 @@
-﻿using log4net;
+using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Quartz;
@@ -80,14 +80,10 @@ namespace UZonMailProPlugin.Services.IpWarmUp
                 }
             }
 
-            // 获取密钥
-            string[] smtpPasswordSecretKeys = context
-                .JobDetail.JobDataMap.GetString("smtpPasswordSecretKeys")!
-                .Split(',');
             // 如果在发送中，则跳过
             if (!isSending)
             {
-                await CreateWarmUpTaskAndSending(plan, smtpPasswordSecretKeys);
+                await CreateWarmUpTaskAndSending(plan);
             }
             else
             {
@@ -95,10 +91,7 @@ namespace UZonMailProPlugin.Services.IpWarmUp
             }
         }
 
-        private async Task CreateWarmUpTaskAndSending(
-            IpWarmUpUpPlan plan,
-            string[] smtpPasswordSecretKeys
-        )
+        private async Task CreateWarmUpTaskAndSending(IpWarmUpUpPlan plan)
         {
             _logger.Info($"IP 预热计划 {plan.Id} 创建发送任务");
 
@@ -107,7 +100,6 @@ namespace UZonMailProPlugin.Services.IpWarmUp
             {
                 UserId = plan.UserId,
 
-                SmtpPasswordSecretKeys = [.. smtpPasswordSecretKeys],
                 Subjects = string.Join("\n", plan.Subjects),
                 Body = plan.Body,
 
