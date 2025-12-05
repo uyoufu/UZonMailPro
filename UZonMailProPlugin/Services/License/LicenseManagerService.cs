@@ -160,7 +160,7 @@ namespace UZonMailProPlugin.Services.License
             var existLicenseCode = await IsExistValidLicenseCode();
             if (!existLicenseCode)
             {
-                return ResponseResult<LicenseInfo>.Success(LicenseInfo.CreateDefaultLicense());
+                return ResponseResult<LicenseInfo>.Success(LicenseInfo);
             }
 
             // 下载授权信息
@@ -198,13 +198,13 @@ namespace UZonMailProPlugin.Services.License
             }
 
             var defaultLicenseInfo = LicenseInfo.CreateDefaultLicense();
-            LicenseInfo = defaultLicenseInfo;
             _lastUpdateDate = DateTime.UtcNow;
 
             // 如果更新的日期大于当前日期，说明系统时间被修改了
             if (_lastUpdateDate > DateTime.UtcNow)
             {
                 _logger.Warn("请勿修改系统日期");
+                LicenseInfo = defaultLicenseInfo;
                 return LicenseInfo;
             }
 
@@ -213,6 +213,10 @@ namespace UZonMailProPlugin.Services.License
             {
                 LicenseInfo = defaultLicenseInfo;
                 return LicenseInfo;
+            }
+            else
+            {
+                LicenseInfo = defaultLicenseInfo;
             }
 
             // 更新授权信息
