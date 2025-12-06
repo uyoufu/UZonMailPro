@@ -21,9 +21,17 @@
 
 	<ItemGroup>
 		<Compile Remove="bin\**" />
+		<Compile Remove="Controllers\EmailCrawler\Model\**" />
+		<Compile Remove="Services\SystemInfo\**" />
 		<Content Remove="bin\**" />
+		<Content Remove="Controllers\EmailCrawler\Model\**" />
+		<Content Remove="Services\SystemInfo\**" />
 		<EmbeddedResource Remove="bin\**" />
+		<EmbeddedResource Remove="Controllers\EmailCrawler\Model\**" />
+		<EmbeddedResource Remove="Services\SystemInfo\**" />
 		<None Remove="bin\**" />
+		<None Remove="Controllers\EmailCrawler\Model\**" />
+		<None Remove="Services\SystemInfo\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -49,9 +57,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Controllers\EmailCrawler\Model\" />
 	  <Folder Include="Migrations\SqLite\" />
-	  <Folder Include="Services\SystemInfo\" />
 	</ItemGroup>
 
 	<ItemGroup>

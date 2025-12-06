@@ -3,13 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.SQL;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.ProPlugin.Controllers.Base;
 using UZonMail.ProPlugin.Controllers.EmailCrawler.Validators;
 using UZonMail.ProPlugin.SQL;
 using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UZonMail.Utils.Web.PagingQuery;
+using UZonMail.Utils.Web.ResponseModel;
 
 namespace UZonMail.ProPlugin.Controllers.EmailCrawler
 {
