@@ -1,6 +1,5 @@
 using UZonMail.CorePlugin.Services.HostedServices;
 using UZonMail.ProPlugin.Services.License;
-using UZonMail.Utils.Web.Service;
 
 namespace UZonMail.ProPlugin.Services.HostedServices
 {

@@ -7,12 +7,12 @@ using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.EmailSending;
 using UZonMail.DB.SQL.Core.Settings;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.ProPlugin.Controllers.Base;
 using UZonMail.ProPlugin.Services.Settings.Model;
 using UZonMail.ProPlugin.SQL;
 using UZonMail.ProPlugin.SQL.ReadingTracker;
+using UZonMail.Utils.Web.PagingQuery;
+using UZonMail.Utils.Web.ResponseModel;
 
 namespace UZonMail.ProPlugin.Controllers.EmailTracker
 {
@@ -262,7 +262,7 @@ namespace UZonMail.ProPlugin.Controllers.EmailTracker
             var appSetting = await settingService.UpdateAppSetting(trackingSetting, key, type);
 
             // 更新缓存
-            settingsManager.ResetSetting<EmailTrackingSetting>(appSetting);
+            await settingsManager.ResetSetting<EmailTrackingSetting>(appSetting, db);
 
             return true.ToSuccessResponse();
         }

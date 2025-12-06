@@ -7,16 +7,16 @@ using UZonMail.CorePlugin.Services.Permission;
 using UZonMail.CorePlugin.Services.Settings;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
-using UZonMail.Utils.Json;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
-using UZonMail.Utils.Web.Token;
 using UZonMail.ProPlugin.Controllers.Base;
 using UZonMail.ProPlugin.Controllers.Unsubscribes.ResponseModels;
 using UZonMail.ProPlugin.Services.Settings.Model;
 using UZonMail.ProPlugin.Services.Unsubscribe;
 using UZonMail.ProPlugin.SQL;
 using UZonMail.ProPlugin.SQL.Unsubscribes;
+using UZonMail.Utils.Json;
+using UZonMail.Utils.Web.PagingQuery;
+using UZonMail.Utils.Web.ResponseModel;
+using UZonMail.Utils.Web.Token;
 
 namespace UZonMail.ProPlugin.Controllers.Unsubscribes
 {
@@ -76,7 +76,7 @@ namespace UZonMail.ProPlugin.Controllers.Unsubscribes
             var appSetting = await settingService.UpdateAppSetting(setting, key, type);
 
             // 更新缓存
-            settingsManager.ResetSetting<UnsubscribeSetting>(appSetting);
+            await settingsManager.ResetSetting<UnsubscribeSetting>(appSetting, db);
 
             return true.ToSuccessResponse();
         }

@@ -23,7 +23,8 @@ namespace UZonMail.ProPlugin.Services.License
         HttpClient httpClient,
         PermissionService permissionService,
         LicenseAccessService licenseAccess,
-        DebugConfig debugConfig
+        DebugConfig debugConfig,
+        ILogger<LicenseManagerService> logger
     ) : IScopedService
     {
 #if DEBUG
@@ -277,13 +278,13 @@ namespace UZonMail.ProPlugin.Services.License
             // 从嵌入的资源中获取密钥
             using var stream = Assembly
                 .GetExecutingAssembly()
-                .GetManifestResourceStream("UZonMailProPlugin.Services.License.PrivateKey.pem");
+                .GetManifestResourceStream("UZonMail.ProPlugin.Services.License.PrivateKey.pem");
             if (stream == null)
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 foreach (var resourceName in assembly.GetManifestResourceNames())
                 {
-                    Console.WriteLine(resourceName);
+                    logger.LogInformation("ManifestResourceName: {resourceName}", resourceName);
                 }
                 return null;
             }
