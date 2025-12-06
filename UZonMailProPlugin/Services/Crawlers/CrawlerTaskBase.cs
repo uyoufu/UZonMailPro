@@ -1,15 +1,15 @@
-﻿using log4net;
+using log4net;
 using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Http;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.Services.Crawlers.ByteDance.Extensions;
-using UZonMailProPlugin.Services.Crawlers.TikTok;
-using UZonMailProPlugin.Services.License;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.Services.Crawlers.ByteDance.Extensions;
+using UZonMail.ProPlugin.Services.Crawlers.TikTok;
+using UZonMail.ProPlugin.Services.License;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers
+namespace UZonMail.ProPlugin.Services.Crawlers
 {
     /// <summary>
     /// 爬虫任务基类

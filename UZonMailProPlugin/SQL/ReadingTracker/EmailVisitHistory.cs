@@ -1,6 +1,6 @@
-﻿using UZonMail.DB.SQL.Base;
+using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.ReadingTracker
+namespace UZonMail.ProPlugin.SQL.ReadingTracker
 {
     /// <summary>
     /// 访问历史

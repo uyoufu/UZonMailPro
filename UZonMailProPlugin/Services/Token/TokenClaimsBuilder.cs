@@ -1,13 +1,13 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Uamazing.Utils.Web.Token;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Organization;
+using UZonMail.ProPlugin.Services.License;
+using UZonMail.ProPlugin.Utils;
 using UZonMail.Utils.Web.Token;
-using UZonMailProPlugin.Services.License;
-using UZonMailProPlugin.Utils;
 
-namespace UZonMailProPlugin.Services.Token
+namespace UZonMail.ProPlugin.Services.Token
 {
     /// <summary>
     /// TokenClains 创建器

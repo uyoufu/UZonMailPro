@@ -1,13 +1,13 @@
-﻿using log4net;
-using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
-using UZonMail.Core.Services.SendCore.Proxies.Clients;
-using UZonMail.Core.Services.SendCore.Proxies.ProxyTesters;
+using log4net;
+using Newtonsoft.Json.Linq;
+using UZonMail.CorePlugin.Services.SendCore.Proxies.Clients;
+using UZonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
-using UZonMailProPlugin.Services.ProxyFactories.YDaili;
+using UZonMail.ProPlugin.Services.ProxyFactories.YDaili;
 
-namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
+namespace UZonMail.ProPlugin.Services.ProxyFactories.Ip2World
 {
     public class Ip2WorldProxyClient : ProxyHandlersCluster
     {
@@ -16,6 +16,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
         private int _ipNumber = 5;
 
         private bool _isAvailable = true;
+
         public override bool IsEnable()
         {
             return _isAvailable;
@@ -25,7 +26,9 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
         /// 若 IP 池为空时，父级会自动调用此方法获取新的 IP
         /// </summary>
         /// <returns></returns>
-        protected override async Task<List<ProxyHandler>> GetProxyHandlersAsync(IServiceProvider serviceProvider)
+        protected override async Task<List<ProxyHandler>> GetProxyHandlersAsync(
+            IServiceProvider serviceProvider
+        )
         {
             var httpClient = serviceProvider.GetRequiredService<HttpClient>();
 
@@ -46,7 +49,8 @@ namespace UZonMailProPlugin.Services.ProxyFactories.Ip2World
 
             var ipList = json!.SelectTokenOrDefault<List<JObject>>("data", []);
             // 将 IP 转换成代理客户端
-            var handlers = ipList!.Select(x =>
+            var handlers = ipList!
+                .Select(x =>
                 {
                     var ip = x.SelectTokenOrDefault("ip", string.Empty);
                     var port = x.SelectTokenOrDefault("port", string.Empty);

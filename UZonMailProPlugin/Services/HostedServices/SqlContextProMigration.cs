@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.HostedServices;
+using Microsoft.EntityFrameworkCore;
+using UZonMail.CorePlugin.Services.HostedServices;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.SQL;
+using UZonMail.ProPlugin.SQL;
 
-namespace UZonMailProPlugin.Services.HostedServices
+namespace UZonMail.ProPlugin.Services.HostedServices
 {
     public class SqlContextProMigration(SqlContextPro db) : IHostedServiceStart
     {

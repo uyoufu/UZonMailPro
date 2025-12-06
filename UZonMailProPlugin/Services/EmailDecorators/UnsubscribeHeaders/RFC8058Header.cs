@@ -1,6 +1,6 @@
-﻿using MimeKit;
+using MimeKit;
 
-namespace UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
+namespace UZonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
 {
     public class RFC8058Header : IUnsubscribeHeader
     {

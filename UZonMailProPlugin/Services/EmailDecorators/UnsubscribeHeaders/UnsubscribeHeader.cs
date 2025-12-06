@@ -1,4 +1,4 @@
-﻿namespace UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
+namespace UZonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
 {
     public class UnsubscribeConfig
     {

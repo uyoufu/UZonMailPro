@@ -1,12 +1,12 @@
-﻿using log4net;
+using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using UZonMail.Utils.Json;
-using UZonMailProPlugin.Services.License;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.Services.License;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers.TikTok
+namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
 {
     /// <summary>
     /// TikTok 邮箱爬虫

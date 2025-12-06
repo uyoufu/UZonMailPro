@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using UZonMail.Core.Services.SendCore.Outboxes;
-using UZonMail.Core.Services.SendCore.WaitList;
-using UZonMail.Core.Services.SendCore;
+using System.Diagnostics;
+using UZonMail.CorePlugin.Services.SendCore;
+using UZonMail.CorePlugin.Services.SendCore.Outboxes;
+using UZonMail.CorePlugin.Services.SendCore.WaitList;
 
 namespace UZonMail.Pro.Controllers.SystemInfo.Model
 {
@@ -16,19 +16,23 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
         public List<OutboxPoolInfo> OutboxPoolInfos { get; set; }
         public List<SendingGroupInfo> SendingGroupsPoolInfos { get; set; }
 
-        public async Task GatherInfomations(GroupTasksList groupTasksList, OutboxesManager outboxesManager, OutboxTasksManager sendingTasksManager)
+        public async Task GatherInfomations(
+            GroupTasksList groupTasksList,
+            OutboxesManager outboxesManager,
+            OutboxTasksManager sendingTasksManager
+        )
         {
             CpuUsage = await GetCpuUsageForProcess();
             MemoryUsage = Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024;
 
-            OutboxPoolInfos = outboxesManager.Values
-                .GroupBy(x => x.UserId)
+            OutboxPoolInfos = outboxesManager
+                .Values.GroupBy(x => x.UserId)
                 .Select(x => new OutboxPoolInfo(x.Key, x.Count()))
                 .ToList();
 
             RunningTasksCount = sendingTasksManager.RunningTasksCount;
-            SendingGroupsPoolInfos = groupTasksList.Values
-                .Select(x => new SendingGroupInfo(x))
+            SendingGroupsPoolInfos = groupTasksList
+                .Values.Select(x => new SendingGroupInfo(x))
                 .ToList();
         }
 

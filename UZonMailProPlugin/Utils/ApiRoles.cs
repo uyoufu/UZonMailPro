@@ -1,4 +1,4 @@
-﻿namespace UZonMailProPlugin.Utils
+namespace UZonMail.ProPlugin.Utils
 {
     public class ApiRoles
     {

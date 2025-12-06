@@ -1,8 +1,8 @@
-﻿using UZonMail.Core.Services.HostedServices;
+using UZonMail.CorePlugin.Services.HostedServices;
+using UZonMail.ProPlugin.Services.License;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.Services.License;
 
-namespace UZonMailProPlugin.Services.HostedServices
+namespace UZonMail.ProPlugin.Services.HostedServices
 {
     /// <summary>
     /// 更新授权信息

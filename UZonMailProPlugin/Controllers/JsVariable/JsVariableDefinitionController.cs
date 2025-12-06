@@ -3,17 +3,17 @@ using Jint.Native;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.Settings;
+using UZonMail.CorePlugin.Services.Settings;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.Managers.Cache;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Services.EmailDecorators.JsVariable;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.JsVariable;
+using UZonMail.ProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Services.EmailDecorators.JsVariable;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.JsVariable;
 
-namespace UZonMailProPlugin.Controllers.JsVariable
+namespace UZonMail.ProPlugin.Controllers.JsVariable
 {
     /// <summary>
     /// 变量定义控制器

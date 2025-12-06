@@ -2,16 +2,16 @@ using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Quartz;
-using UZonMail.Core.Services.SendCore;
+using UZonMail.CorePlugin.Services.SendCore;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.EmailSending;
 using UZonMail.Utils.Json;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.IPWarmUp;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.IPWarmUp;
 
-namespace UZonMailProPlugin.Services.IpWarmUp
+namespace UZonMail.ProPlugin.Services.IpWarmUp
 {
     public class IpWarmUpTaskJob(
         SqlContextPro dbPro,

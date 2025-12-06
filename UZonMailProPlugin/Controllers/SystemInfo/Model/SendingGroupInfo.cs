@@ -1,4 +1,4 @@
-﻿using UZonMail.Core.Services.SendCore.WaitList;
+using UZonMail.CorePlugin.Services.SendCore.WaitList;
 
 namespace UZonMail.Pro.Controllers.SystemInfo.Model
 {

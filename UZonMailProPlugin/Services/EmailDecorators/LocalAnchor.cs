@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.EmailDecorator.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using UZonMail.CorePlugin.Services.EmailDecorator.Interfaces;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.ReadingTracker;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.ReadingTracker;
 
-namespace UZonMailProPlugin.Services.EmailBodyDecorators
+namespace UZonMail.ProPlugin.Services.EmailBodyDecorators
 {
     public class LocalAnchor(SqlContextPro sqlContext, HttpClient httpClient) : ITransientService
     {
@@ -19,7 +19,9 @@ namespace UZonMailProPlugin.Services.EmailBodyDecorators
         public async Task<EmailAnchor> GetEmailAnchor(EmailDecoratorParams decoratorParams)
         {
             var sendingItem = decoratorParams.SendingItem;
-            var emailAnchor = await sqlContext.EmailAnchors.Where(x => x.SendingItemId == sendingItem.Id).FirstOrDefaultAsync();
+            var emailAnchor = await sqlContext
+                .EmailAnchors.Where(x => x.SendingItemId == sendingItem.Id)
+                .FirstOrDefaultAsync();
             if (emailAnchor == null)
             {
                 // 新增
@@ -35,7 +37,6 @@ namespace UZonMailProPlugin.Services.EmailBodyDecorators
                 await sqlContext.SaveChangesAsync();
 
                 // 向远程推送邮件锚点记录
-
             }
 
             return emailAnchor;

@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.Unsubscribes
+namespace UZonMail.ProPlugin.SQL.Unsubscribes
 {
     /// <summary>
     /// 退订邮件

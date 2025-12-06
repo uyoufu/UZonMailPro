@@ -1,9 +1,9 @@
-﻿using UZonMail.Core.Database.Updater;
+using UZonMail.CorePlugin.Database.Updater;
 using UZonMail.DB.SQL;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Database.Updaters
+namespace UZonMail.ProPlugin.Database.Updaters
 {
     public class AddDefaultTikTokDevices(SqlContextPro db) : IDatabaseUpdater
     {
@@ -13,7 +13,8 @@ namespace UZonMailProPlugin.Database.Updaters
         {
             var adminUserId = 2l;
 
-            var deviceInfos = new[] {
+            var deviceInfos = new[]
+            {
                 new TikTokDevice()
                 {
                     Name = "UzonMail-Edge",
@@ -32,7 +33,10 @@ namespace UZonMailProPlugin.Database.Updaters
 
             foreach (var device in deviceInfos)
             {
-                var existOne = db.TikTokDevices.Where(x => x.UserId == adminUserId && x.DeviceId == device.DeviceId)
+                var existOne = db
+                    .TikTokDevices.Where(x =>
+                        x.UserId == adminUserId && x.DeviceId == device.DeviceId
+                    )
                     .FirstOrDefault();
                 if (existOne == null)
                 {

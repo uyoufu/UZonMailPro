@@ -1,6 +1,6 @@
-﻿using UZonMail.Utils.Http.Request;
+using UZonMail.Utils.Http.Request;
 
-namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
+namespace UZonMail.ProPlugin.Services.ProxyFactories.YDaili
 {
     public enum YDailiFormat
     {

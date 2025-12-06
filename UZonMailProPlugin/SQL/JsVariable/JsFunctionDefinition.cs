@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.JsVariable
+namespace UZonMail.ProPlugin.SQL.JsVariable
 {
     /// <summary>
     /// JavaScript 函数定义

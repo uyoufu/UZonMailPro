@@ -1,7 +1,7 @@
-﻿using UZonMail.DB.SQL.Base;
+using UZonMail.DB.SQL.Base;
 using UZonMail.DB.SQL.Core.EmailSending;
 
-namespace UZonMailProPlugin.SQL.IPWarmUp
+namespace UZonMail.ProPlugin.SQL.IPWarmUp
 {
     /// <summary>
     /// IP 预热具体的任务

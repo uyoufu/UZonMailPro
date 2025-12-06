@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +6,9 @@ using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Files;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Controllers.Base;
 
-namespace UZonMailProPlugin.Controllers.Files
+namespace UZonMail.ProPlugin.Controllers.Files
 {
     public class ObjectReaderController(SqlContext db) : ControllerBasePro
     {

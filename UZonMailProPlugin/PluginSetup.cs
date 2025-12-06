@@ -1,29 +1,33 @@
-﻿using Uamazing.Utils.Plugin;
 using UZonMail.DB.SQL;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.Utils.Plugin;
 using UZonMail.Utils.Web;
-using UZonMailProPlugin.SQL;
 
-namespace UZonMailProPlugin
+namespace UZonMail.ProPlugin
 {
     /// <summary>
     /// 加载插件
     /// </summary>
     public class PluginSetup : IPlugin
     {
-        public void UseServices(WebApplicationBuilder webApplicationBuilder)
+        public int Priority => 1;
+
+        public void ConfigureServices(IHostApplicationBuilder hostBuilder)
         {
-            var services = webApplicationBuilder.Services;
+            var services = hostBuilder.Services;
 
             // 添加数据库上下文
-            services.AddSqlContext<SqlContextPro, PostgreSqlContextPro, MySqlContextPro, SqLiteContextPro>(webApplicationBuilder.Configuration);
+            services.AddSqlContext<
+                SqlContextPro,
+                PostgreSqlContextPro,
+                MySqlContextPro,
+                SqLiteContextPro
+            >(hostBuilder.Configuration);
 
             // 批量注册服务
             services.AddServices();
         }
 
-        public void UseApp(WebApplication webApplication)
-        {
-
-        }
+        public void ConfigureApp(IApplicationBuilder app) { }
     }
 }

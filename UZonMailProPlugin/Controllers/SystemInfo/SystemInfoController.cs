@@ -1,23 +1,24 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.SendCore;
-using UZonMail.Core.Services.SendCore.Outboxes;
-using UZonMail.Core.Services.SendCore.WaitList;
+using UZonMail.CorePlugin.Services.SendCore;
+using UZonMail.CorePlugin.Services.SendCore.Outboxes;
+using UZonMail.CorePlugin.Services.SendCore.WaitList;
 using UZonMail.Pro.Controllers.SystemInfo.Model;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Config;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Services.License;
+using UZonMail.ProPlugin.Config;
+using UZonMail.ProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Services.License;
 
 namespace UZonMail.Pro.Controllers.SystemInfo
 {
-    public class SystemInfoController(GroupTasksList groupTasksList
-        , OutboxesManager outboxesPools
-        , OutboxTasksManager sendingThreadsManager
-        , LicenseAccessService licenseAccess
-        , IConfiguration configuration
-        ) : ControllerBasePro
+    public class SystemInfoController(
+        GroupTasksList groupTasksList,
+        OutboxesManager outboxesPools,
+        OutboxTasksManager sendingThreadsManager,
+        LicenseAccessService licenseAccess,
+        IConfiguration configuration
+    ) : ControllerBasePro
     {
         /// <summary>
         /// 获取系统配置信息
@@ -30,7 +31,8 @@ namespace UZonMail.Pro.Controllers.SystemInfo
             // 判断是否有企业版本授权
             var enterpriseAccess = await licenseAccess.HasEnterpriseLicense();
 
-            if (!enterpriseAccess) return SystemConfig.DefaultSystemConfig().ToSuccessResponse();
+            if (!enterpriseAccess)
+                return SystemConfig.DefaultSystemConfig().ToSuccessResponse();
 
             return SystemConfig.GetSystemConfig(configuration).ToSuccessResponse();
         }
@@ -40,7 +42,7 @@ namespace UZonMail.Pro.Controllers.SystemInfo
         /// </summary>
         /// <returns></returns>
         [HttpGet("resource-usage")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ResponseResult<SystemUsageInfo>> GetSystemResourceUsage()
         {
             var usageInfo = new SystemUsageInfo();

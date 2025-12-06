@@ -1,8 +1,8 @@
-﻿using Innofactor.EfCoreJsonValueConverter;
+using Innofactor.EfCoreJsonValueConverter;
 using Newtonsoft.Json.Linq;
 using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.IPWarmUp
+namespace UZonMail.ProPlugin.SQL.IPWarmUp
 {
     public class IpWarmUpUpPlan : SqlId
     {

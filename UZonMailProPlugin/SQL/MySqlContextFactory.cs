@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SqLite;
 using UZonMail.DB.MySql;
 
-namespace UZonMailProPlugin.SQL
+namespace UZonMail.ProPlugin.SQL
 {
     public class MySqlContextFactory : IDesignTimeDbContextFactory<MySqlContextPro>
     {

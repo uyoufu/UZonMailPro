@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SqLite;
 
-namespace UZonMailProPlugin.SQL
+namespace UZonMail.ProPlugin.SQL
 {
     public class SqLiteContextPro : SqlContextPro
     {

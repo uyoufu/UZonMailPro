@@ -4,7 +4,7 @@ using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Base;
 using UZonMail.DB.SQL.Core.EmailSending;
 
-namespace UZonMailProPlugin.Controllers.Api.Model
+namespace UZonMail.ProPlugin.Controllers.Api.Model
 {
     public class SendingGroupData
     {

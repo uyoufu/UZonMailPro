@@ -1,12 +1,12 @@
-﻿using log4net;
+using log4net;
 using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Exceptions;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.Unsubscribes;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.Unsubscribes;
 
-namespace UZonMailProPlugin.Services.Unsubscribe
+namespace UZonMail.ProPlugin.Services.Unsubscribe
 {
     public class UnsubscribeService(SqlContext db, SqlContextPro dbPro) : IScopedService
     {

@@ -1,18 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Database.Validators;
-using UZonMail.Core.Services.Settings;
+using UZonMail.CorePlugin.Database.Validators;
+using UZonMail.CorePlugin.Services.Settings;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Emails;
 using UZonMail.DB.Utils;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Services.EmailVerify;
+using UZonMail.ProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Services.EmailVerify;
 
-namespace UZonMailProPlugin.Controllers.Email
+namespace UZonMail.ProPlugin.Controllers.Email
 {
-    public class EmailVerifyController(SqlContext db, InboxVerifyService inboxVerify, TokenService tokenService) : ControllerBasePro
+    public class EmailVerifyController(
+        SqlContext db,
+        InboxVerifyService inboxVerify,
+        TokenService tokenService
+    ) : ControllerBasePro
     {
         /// <summary>
         /// 验证所有无效的邮箱
@@ -24,7 +28,11 @@ namespace UZonMailProPlugin.Controllers.Email
         {
             // 判断是否属于自己的组
             var userId = tokenService.GetUserSqlId();
-            var inboxes = db.Inboxes.AsNoTracking().Where(x => x.EmailGroupId == groupId && x.UserId == userId /*&& x.Status != InboxStatus.Valid*/);
+            var inboxes = db
+                .Inboxes.AsNoTracking()
+                .Where(x =>
+                    x.EmailGroupId == groupId && x.UserId == userId /*&& x.Status != InboxStatus.Valid*/
+                );
 
             await inboxVerify.Validate(userId, new QueryPaginator<Inbox>(inboxes));
             return true.ToSuccessResponse();

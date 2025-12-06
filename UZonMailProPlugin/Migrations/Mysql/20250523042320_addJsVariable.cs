@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace UZonMailProPlugin.Migrations.Mysql
+namespace UZonMail.ProPlugin.Migrations.Mysql
 {
     /// <inheritdoc />
     public partial class addJsVariable : Migration

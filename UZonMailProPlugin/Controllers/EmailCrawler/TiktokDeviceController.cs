@@ -1,19 +1,20 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.Settings;
+using UZonMail.CorePlugin.Services.Settings;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Controllers.EmailCrawler.Validators;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Controllers.EmailCrawler.Validators;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Controllers.EmailCrawler
+namespace UZonMail.ProPlugin.Controllers.EmailCrawler
 {
-    public class TiktokDeviceController(SqlContextPro db, TokenService tokenService) : ControllerBasePro
+    public class TiktokDeviceController(SqlContextPro db, TokenService tokenService)
+        : ControllerBasePro
     {
         /// <summary>
         /// 创建一个 TikTok 设备
@@ -35,7 +36,9 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
 
             // 判断是否重复
             var userId = tokenPayloads.UserId;
-            var existOne = await db.TikTokDevices.Where(x => x.UserId == userId && x.Name == deviceInfo.Name).FirstOrDefaultAsync();
+            var existOne = await db
+                .TikTokDevices.Where(x => x.UserId == userId && x.Name == deviceInfo.Name)
+                .FirstOrDefaultAsync();
             if (existOne != null)
             {
                 return new ErrorResponse<TikTokDevice>("设备名称已存在");
@@ -43,7 +46,8 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
 
             // 添加个人信息
             deviceInfo.UserId = userId;
-            if (deviceInfo.IsShared) deviceInfo.OrganizationId = tokenPayloads.OrganizationId;
+            if (deviceInfo.IsShared)
+                deviceInfo.OrganizationId = tokenPayloads.OrganizationId;
             db.TikTokDevices.Add(deviceInfo);
             await db.SaveChangesAsync();
 
@@ -59,7 +63,9 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         public async Task<ResponseResult<bool>> Delete(long id)
         {
             var userId = tokenService.GetUserSqlId();
-            var deviceInfo = await db.TikTokDevices.Where(x => x.UserId == userId && x.Id == id).FirstOrDefaultAsync();
+            var deviceInfo = await db
+                .TikTokDevices.Where(x => x.UserId == userId && x.Id == id)
+                .FirstOrDefaultAsync();
             if (deviceInfo == null)
             {
                 return false.ToFailResponse("设备不存在");
@@ -76,7 +82,10 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         /// <param name="deviceInfo"></param>
         /// <returns></returns>
         [HttpPut("{id:long}")]
-        public async Task<ResponseResult<TikTokDevice>> Update(long id, [FromBody] TikTokDevice deviceInfo)
+        public async Task<ResponseResult<TikTokDevice>> Update(
+            long id,
+            [FromBody] TikTokDevice deviceInfo
+        )
         {
             // 验证数据
             var validator = new TikTokDeviceValidator();
@@ -90,14 +99,16 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
             // 判断是否重复
             var userId = tokenPayloads.UserId;
 
-            var oldDeviceInfo = await db.TikTokDevices.Where(x => x.UserId == userId && x.Id == id).FirstOrDefaultAsync();
+            var oldDeviceInfo = await db
+                .TikTokDevices.Where(x => x.UserId == userId && x.Id == id)
+                .FirstOrDefaultAsync();
             if (oldDeviceInfo == null)
             {
                 return new ErrorResponse<TikTokDevice>("设备不存在");
             }
 
-            var sameNameOne = await db.TikTokDevices
-                .AsNoTracking()
+            var sameNameOne = await db
+                .TikTokDevices.AsNoTracking()
                 .Where(x => x.UserId == userId && x.Name == deviceInfo.Name && x.Id != id)
                 .FirstOrDefaultAsync();
             if (sameNameOne != null)
@@ -125,7 +136,12 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         public async Task<ResponseResult<int>> GetCount(string filter)
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
-            var dbSet = db.TikTokDevices.AsNoTracking().Where(x => x.UserId == tokenPayloads.UserId || x.OrganizationId == tokenPayloads.OrganizationId);
+            var dbSet = db
+                .TikTokDevices.AsNoTracking()
+                .Where(x =>
+                    x.UserId == tokenPayloads.UserId
+                    || x.OrganizationId == tokenPayloads.OrganizationId
+                );
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.Name.Contains(filter));
@@ -141,11 +157,18 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpPost("filtered-data")]
-        public async Task<ResponseResult<List<TikTokDevice>>> GetData(string filter, Pagination pagination)
+        public async Task<ResponseResult<List<TikTokDevice>>> GetData(
+            string filter,
+            Pagination pagination
+        )
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
-            var dbSet = db.TikTokDevices.AsNoTracking()
-                .Where(x => x.UserId == tokenPayloads.UserId || x.OrganizationId == tokenPayloads.OrganizationId);
+            var dbSet = db
+                .TikTokDevices.AsNoTracking()
+                .Where(x =>
+                    x.UserId == tokenPayloads.UserId
+                    || x.OrganizationId == tokenPayloads.OrganizationId
+                );
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x => x.Name.Contains(filter));
@@ -163,8 +186,12 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         public async Task<ResponseResult<List<TikTokDevice>>> GetAllData()
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
-            var results = await db.TikTokDevices.AsNoTracking()
-                .Where(x => x.UserId == tokenPayloads.UserId || x.OrganizationId == tokenPayloads.OrganizationId)
+            var results = await db
+                .TikTokDevices.AsNoTracking()
+                .Where(x =>
+                    x.UserId == tokenPayloads.UserId
+                    || x.OrganizationId == tokenPayloads.OrganizationId
+                )
                 .ToListAsync();
             return results.ToSuccessResponse();
         }
@@ -177,7 +204,9 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         public async Task<ResponseResult<bool>> UpdateIsShared(long id, bool isShared)
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
-            var deviceInfo = await db.TikTokDevices.Where(x => x.UserId == tokenPayloads.UserId && x.Id == id).FirstOrDefaultAsync();
+            var deviceInfo = await db
+                .TikTokDevices.Where(x => x.UserId == tokenPayloads.UserId && x.Id == id)
+                .FirstOrDefaultAsync();
             if (deviceInfo == null)
             {
                 return false.ToFailResponse("设备不存在");

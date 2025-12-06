@@ -2,10 +2,10 @@ using System.Collections.Concurrent;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using UZonMail.DB.Managers.Cache;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.JsVariable;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.JsVariable;
 
-namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
+namespace UZonMail.ProPlugin.Services.EmailDecorators.JsVariable
 {
     public class JsVariableCache : BaseDBCache<SqlContextPro, long>
     {

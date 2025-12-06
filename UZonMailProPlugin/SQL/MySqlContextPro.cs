@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.MySql;
 using UZonMail.DB.SQL;
 
-namespace UZonMailProPlugin.SQL
+namespace UZonMail.ProPlugin.SQL
 {
     public class MySqlContextPro: SqlContextPro
     {

@@ -1,6 +1,6 @@
-﻿using UZonMail.Utils.Http.Request;
+using UZonMail.Utils.Http.Request;
 
-namespace UZonMailProPlugin.Services.ProxyFactories.HaiLiangIp
+namespace UZonMail.ProPlugin.Services.ProxyFactories.HaiLiangIp
 {
     public class HaiLiangIpGetter(string url) : FluentHttpRequest(HttpMethod.Get, url)
     {

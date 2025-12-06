@@ -1,6 +1,6 @@
-﻿using UZonMail.DB.SQL.Core.EmailSending;
+using UZonMail.DB.SQL.Core.EmailSending;
 
-namespace UZonMailProPlugin.Controllers.IPWarmUp.DTOs
+namespace UZonMail.ProPlugin.Controllers.IPWarmUp.DTOs
 {
     public class WarmUpPlanData : SendingGroup
     {

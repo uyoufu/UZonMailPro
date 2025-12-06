@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
 using System.Linq;
-using UZonMail.Core.Services.EmailDecorator.Interfaces;
+using Newtonsoft.Json.Linq;
+using UZonMail.CorePlugin.Services.EmailDecorator.Interfaces;
 using UZonMail.DB.SQL.Core.EmailSending;
 
-namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
+namespace UZonMail.ProPlugin.Services.EmailDecorators.JsVariable
 {
     /// <summary>
     /// uzon 数据定义类
@@ -78,20 +78,9 @@ namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
                 OutboxEmail = "out@test.com",
                 InboxEmail = "in@test.com",
                 Body = "This is a test email body.",
-                Outbox = new EmailAddress()
-                {
-                    Email = "out@test.com",
-                    Name = "outbox"
-                },
-                Inbox = new EmailAddress()
-                {
-                    Email = "in@test.com",
-                    Name = "inbox"
-                },
-                Inboxes = [new EmailAddress() {
-                    Email = "in@test.com",
-                    Name = "inbox"
-                }],
+                Outbox = new EmailAddress() { Email = "out@test.com", Name = "outbox" },
+                Inbox = new EmailAddress() { Email = "in@test.com", Name = "inbox" },
+                Inboxes = [new EmailAddress() { Email = "in@test.com", Name = "inbox" }],
                 CC = [],
                 BCC = [],
             };
@@ -105,7 +94,10 @@ namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
         /// <param name="decoratorParams"></param>
         /// <param name="variableCache"></param>
         /// <returns></returns>
-        public static UzonData GetUzonData(IContentDecoratorParams decoratorParams, JsVariableCache variableCache)
+        public static UzonData GetUzonData(
+            IContentDecoratorParams decoratorParams,
+            JsVariableCache variableCache
+        )
         {
             var sendItemMeta = decoratorParams.SendItemMeta;
 
@@ -120,7 +112,7 @@ namespace UZonMailProPlugin.Services.EmailDecorators.JsVariable
 
                 // 完整数据
                 Outbox = new EmailAddress()
-                { 
+                {
                     Email = decoratorParams.Outbox.Email,
                     Name = decoratorParams.Outbox.Name
                 },

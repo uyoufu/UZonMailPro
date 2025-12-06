@@ -1,6 +1,6 @@
-﻿using UZonMail.Utils.Web.Service;
+using UZonMail.Utils.Web.Service;
 
-namespace UZonMailProPlugin.Services.License
+namespace UZonMail.ProPlugin.Services.License
 {
     /// <summary>
     /// 功能权限服务
@@ -19,7 +19,8 @@ namespace UZonMailProPlugin.Services.License
         /// <returns></returns>
         public async Task<bool> HasProLicense()
         {
-            return LicenseInfo.ExpireDate > DateTime.UtcNow && LicenseInfo.LicenseType >= LicenseType.Professional;
+            return LicenseInfo.ExpireDate > DateTime.UtcNow
+                && LicenseInfo.LicenseType >= LicenseType.Professional;
         }
 
         /// <summary>
@@ -28,7 +29,8 @@ namespace UZonMailProPlugin.Services.License
         /// <returns></returns>
         public async Task<bool> HasEnterpriseLicense()
         {
-            return LicenseInfo.ExpireDate > DateTime.UtcNow && LicenseInfo.LicenseType.HasFlag(LicenseType.Enterprise);
+            return LicenseInfo.ExpireDate > DateTime.UtcNow
+                && LicenseInfo.LicenseType.HasFlag(LicenseType.Enterprise);
         }
 
         /// <summary>

@@ -2,19 +2,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.Settings;
+using UZonMail.CorePlugin.Services.Settings;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.EmailSending;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Services.Settings.Model;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.ReadingTracker;
+using UZonMail.ProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Services.Settings.Model;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.ReadingTracker;
 
-namespace UZonMailProPlugin.Controllers.EmailTracker
+namespace UZonMail.ProPlugin.Controllers.EmailTracker
 {
     public class EmailTrackerController(
         SqlContext db,

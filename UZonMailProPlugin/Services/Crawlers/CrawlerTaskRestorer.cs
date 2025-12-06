@@ -1,19 +1,19 @@
-﻿
 using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.HostedServices;
+using UZonMail.CorePlugin.Services.HostedServices;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers
+namespace UZonMail.ProPlugin.Services.Crawlers
 {
     /// <summary>
     /// 应该在数据库迁移成功后，再启动爬虫任务
     /// </summary>
     /// <param name="ssf"></param>
     /// <param name="crawlerManager"></param>
-    public class CrawlerTaskRestorer(IServiceScopeFactory ssf, CrawlerManager crawlerManager) : IHostedServiceStart
+    public class CrawlerTaskRestorer(IServiceScopeFactory ssf, CrawlerManager crawlerManager)
+        : IHostedServiceStart
     {
         // 靠后启动
         public int Order => 100;
@@ -23,8 +23,8 @@ namespace UZonMailProPlugin.Services.Crawlers
             using var scope = ssf.CreateAsyncScope();
             var db = scope.ServiceProvider.GetRequiredService<SqlContextPro>();
             // 对爬虫任务进行恢复
-            var runnintTasks = await db.CrawlerTaskInfos
-                .Where(x => x.Status == CrawlerStatus.Running)
+            var runnintTasks = await db
+                .CrawlerTaskInfos.Where(x => x.Status == CrawlerStatus.Running)
                 .ToListAsync(cancellationToken: stoppingToken);
 
             foreach (var task in runnintTasks)

@@ -1,6 +1,6 @@
-﻿using UZonMail.DB.SQL.Base;
+using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.EmailCrawler
+namespace UZonMail.ProPlugin.SQL.EmailCrawler
 {
     /// <summary>
     /// 邮件爬虫任务

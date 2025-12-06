@@ -1,4 +1,4 @@
-﻿using DnsClient;
+using DnsClient;
 using log4net;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Net.Sockets;
 using System.Text;
 
-namespace UZonMailProPlugin.Services.EmailVerify
+namespace UZonMail.ProPlugin.Services.EmailVerify
 {
     public class VerifySmtpClient : SmtpClient
     {

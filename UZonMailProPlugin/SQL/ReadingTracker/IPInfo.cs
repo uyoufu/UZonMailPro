@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.ReadingTracker
+namespace UZonMail.ProPlugin.SQL.ReadingTracker
 {
     [Index(nameof(IP))]
     public class IPInfo : SqlId

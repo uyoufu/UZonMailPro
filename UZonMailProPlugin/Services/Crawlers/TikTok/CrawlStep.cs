@@ -1,13 +1,13 @@
-﻿using log4net;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
-using UZonMail.Core.Utils.Database;
+using log4net;
+using Microsoft.EntityFrameworkCore;
+using UZonMail.CorePlugin.Utils.Database;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers.TikTok
+namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
 {
     public abstract class CrawlStep
     {
@@ -16,6 +16,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
         private static readonly object _lock = new();
 
         protected CrawlerTaskParams CrawlerTaskParams { get; }
+
         /// <summary>
         /// 表示作者的 Id
         /// </summary>
@@ -32,6 +33,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
         }
 
         private Task _executeTask;
+
         /// <summary>
         /// 执行的任务
         /// </summary>
@@ -43,7 +45,8 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
         /// <param name="taskId"></param>
         public void AddCrawlerTaskId(long taskId)
         {
-            if (taskId <= 0) return;
+            if (taskId <= 0)
+                return;
 
             lock (_lock)
             {
@@ -83,7 +86,8 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
         /// <returns></returns>
         public CrawlStep AddParent(CrawlStep parent)
         {
-            if (parent == null) return this;
+            if (parent == null)
+                return this;
 
             _parents.TryAdd(parent.Key, parent);
             parent._children.TryAdd(Key, this);
@@ -132,11 +136,13 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
 
         public bool ExistsCrawlerTaskId(long taskId)
         {
-            if (_crawlerTaskIds.Contains(taskId)) return true;
+            if (_crawlerTaskIds.Contains(taskId))
+                return true;
 
             foreach (var item in _parents)
             {
-                if (item.Value.ExistsCrawlerTaskId(taskId)) return true;
+                if (item.Value.ExistsCrawlerTaskId(taskId))
+                    return true;
             }
             return false;
         }
@@ -147,7 +153,8 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
         /// <returns></returns>
         public bool ShouldStop()
         {
-            if (_crawlerTaskIds.Count > 0) return false;
+            if (_crawlerTaskIds.Count > 0)
+                return false;
             // 判断父级是否全部退出
             var someNotEmpty = _parents.Any(x => !x.Value.ShouldStop());
             return !someNotEmpty;
@@ -163,7 +170,8 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
         {
             _logger.Debug($"保存爬虫任务结果 [{tiktokAuthor.Nickname}]");
             var taskIds = GetAllTaskIds();
-            var existIds = await db.CrawlerTaskResults.AsNoTracking()
+            var existIds = await db
+                .CrawlerTaskResults.AsNoTracking()
                 .Where(x => x.TikTokAuthorId == tiktokAuthor.Id)
                 .Where(x => taskIds.Contains(x.CrawlerTaskInfoId))
                 .Select(x => x.CrawlerTaskInfoId)
@@ -172,7 +180,7 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
 
             // 移除已经存在的任务
             var newTaskIds = taskIds.Except(existIds).ToList();
-            if(newTaskIds.Count == 0)
+            if (newTaskIds.Count == 0)
             {
                 _logger.Debug($"已经保存过 [{tiktokAuthor.Nickname}] 的爬虫任务结果，本次跳过");
                 return;
@@ -190,7 +198,10 @@ namespace UZonMailProPlugin.Services.Crawlers.TikTok
             await db.CrawlerTaskResults.AddRangeAsync(newTaskResults);
 
             // 更新数量
-            await db.CrawlerTaskInfos.UpdateAsync(x => newTaskIds.Contains(x.Id), x => x.SetProperty(y => y.Count, y => y.Count + 1));
+            await db.CrawlerTaskInfos.UpdateAsync(
+                x => newTaskIds.Contains(x.Id),
+                x => x.SetProperty(y => y.Count, y => y.Count + 1)
+            );
             await db.SaveChangesAsync();
             _logger.Debug($"保存爬虫结果 [{tiktokAuthor.Nickname}] 完成");
         }

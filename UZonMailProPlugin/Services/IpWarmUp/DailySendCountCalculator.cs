@@ -1,4 +1,4 @@
-﻿namespace UZonMailProPlugin.Services.IpWarmUp
+namespace UZonMail.ProPlugin.Services.IpWarmUp
 {
     /// <summary>
     /// 每日发件量计算器

@@ -1,13 +1,13 @@
 using log4net;
 using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.Settings.Model;
+using UZonMail.CorePlugin.Services.Settings.Model;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
-using UZonMailProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.Unsubscribes;
+using UZonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.Unsubscribes;
 
-namespace UZonMailProPlugin.Services.Settings.Model
+namespace UZonMail.ProPlugin.Services.Settings.Model
 {
     public enum UnsubscibeType
     {

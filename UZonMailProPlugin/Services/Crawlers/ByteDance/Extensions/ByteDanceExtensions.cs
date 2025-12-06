@@ -1,6 +1,6 @@
-﻿using UZonMail.Utils.Http;
+using UZonMail.Utils.Http;
 
-namespace UZonMailProPlugin.Services.Crawlers.ByteDance.Extensions
+namespace UZonMail.ProPlugin.Services.Crawlers.ByteDance.Extensions
 {
     public static class ByteDanceExtensions
     {

@@ -4,8 +4,8 @@ using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.Config;
-using UZonMail.Core.Services.Permission;
+using UZonMail.CorePlugin.Services.Config;
+using UZonMail.CorePlugin.Services.Permission;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Extensions;
@@ -13,7 +13,7 @@ using UZonMail.Utils.Web.Exceptions;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Service;
 
-namespace UZonMailProPlugin.Services.License
+namespace UZonMail.ProPlugin.Services.License
 {
     /// <summary>
     /// 授权管理器

@@ -1,8 +1,8 @@
-﻿using Uamazing.Utils.Web.ResponseModel;
+using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Access;
-using UZonMailProPlugin.Services.License;
+using UZonMail.ProPlugin.Services.License;
 
-namespace UZonMailProPlugin.Services.Permission
+namespace UZonMail.ProPlugin.Services.Permission
 {
     /// <summary>
     /// 主系统在需要时，会自动调用此服务，生成用户的 pro 权限码

@@ -1,4 +1,4 @@
-﻿namespace UZonMailProPlugin.SQL.IPWarmUp
+namespace UZonMail.ProPlugin.SQL.IPWarmUp
 {
     public enum IpWarmUpUpStatus
     {

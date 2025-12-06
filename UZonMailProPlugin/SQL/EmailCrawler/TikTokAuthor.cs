@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.EmailCrawler
+namespace UZonMail.ProPlugin.SQL.EmailCrawler
 {
     /// <summary>
     /// tiktok 作者信息

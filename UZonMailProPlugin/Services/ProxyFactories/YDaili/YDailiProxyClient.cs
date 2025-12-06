@@ -1,13 +1,13 @@
-﻿using log4net;
-using Newtonsoft.Json.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using UZonMail.Core.Services.SendCore.Proxies.Clients;
-using UZonMail.Core.Services.SendCore.Proxies.ProxyTesters;
+using log4net;
+using Newtonsoft.Json.Linq;
+using UZonMail.CorePlugin.Services.SendCore.Proxies.Clients;
+using UZonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
 
-namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
+namespace UZonMail.ProPlugin.Services.ProxyFactories.YDaili
 {
     public class YDailiProxyClient : ProxyHandlersCluster
     {
@@ -17,6 +17,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
         private int _maxNumber = 100;
 
         private bool _isAvailable = true;
+
         public override bool IsEnable()
         {
             return _isAvailable;
@@ -26,7 +27,9 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
         /// 若 IP 池为空时，父级会自动调用此方法获取新的 IP
         /// </summary>
         /// <returns></returns>
-        protected override async Task<List<ProxyHandler>> GetProxyHandlersAsync(IServiceProvider serviceProvider)
+        protected override async Task<List<ProxyHandler>> GetProxyHandlersAsync(
+            IServiceProvider serviceProvider
+        )
         {
             var httpClient = serviceProvider.GetRequiredService<HttpClient>();
 
@@ -68,13 +71,10 @@ namespace UZonMailProPlugin.Services.ProxyFactories.YDaili
 
             var ipList = json!.SelectTokenOrDefault<List<JObject>>("data", []);
             // 将 IP 转换成代理客户端
-            var handlers = ipList!.Select(x => x.SelectTokenOrDefault("IP", ""))
+            var handlers = ipList!
+                .Select(x => x.SelectTokenOrDefault("IP", ""))
                 .Where(x => !string.IsNullOrEmpty(x))
-                .Select(x => new Proxy()
-                {
-                    ObjectId = x,
-                    Url = $"socks5://{x}",
-                })
+                .Select(x => new Proxy() { ObjectId = x, Url = $"socks5://{x}", })
                 .Select(x =>
                 {
                     var handler = serviceProvider.GetRequiredService<ProxyHandler>();

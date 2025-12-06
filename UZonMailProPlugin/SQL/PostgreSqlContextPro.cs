@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UZonMail.DB.SQL;
 
-namespace UZonMailProPlugin.SQL
+namespace UZonMail.ProPlugin.SQL
 {
     public class PostgreSqlContextPro : SqlContextPro
     {

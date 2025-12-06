@@ -1,13 +1,13 @@
-﻿using log4net;
-using Newtonsoft.Json.Linq;
 using System.Text.RegularExpressions;
-using UZonMail.Core.Services.SendCore.Proxies.Clients;
-using UZonMail.Core.Services.SendCore.Proxies.ProxyTesters;
+using log4net;
+using Newtonsoft.Json.Linq;
+using UZonMail.CorePlugin.Services.SendCore.Proxies.Clients;
+using UZonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
-using UZonMailProPlugin.Services.ProxyFactories.YDaili;
+using UZonMail.ProPlugin.Services.ProxyFactories.YDaili;
 
-namespace UZonMailProPlugin.Services.ProxyFactories.IPFoxy
+namespace UZonMail.ProPlugin.Services.ProxyFactories.IPFoxy
 {
     public class IpFoxyProxyClient : ProxyHandlersCluster
     {
@@ -16,6 +16,7 @@ namespace UZonMailProPlugin.Services.ProxyFactories.IPFoxy
         private int _ipNumber = 5;
 
         private bool _isAvailable = true;
+
         public override bool IsEnable()
         {
             return _isAvailable;
@@ -25,7 +26,9 @@ namespace UZonMailProPlugin.Services.ProxyFactories.IPFoxy
         /// 若 IP 池为空时，父级会自动调用此方法获取新的 IP
         /// </summary>
         /// <returns></returns>
-        protected override async Task<List<ProxyHandler>> GetProxyHandlersAsync(IServiceProvider serviceProvider)
+        protected override async Task<List<ProxyHandler>> GetProxyHandlersAsync(
+            IServiceProvider serviceProvider
+        )
         {
             var httpClient = serviceProvider.GetRequiredService<HttpClient>();
 
@@ -45,21 +48,22 @@ namespace UZonMailProPlugin.Services.ProxyFactories.IPFoxy
 
             var ipList = json!.SelectTokenOrDefault<List<JObject>>("data", []);
             // 将 IP 转换成代理客户端
-            var handlers = ipList!.Select(x =>
-            {
-                var host = x.SelectTokenOrDefault("host", string.Empty);
-                var port = x.SelectTokenOrDefault("port", string.Empty);
-                var user = x.SelectTokenOrDefault("user", string.Empty);
-                var password = x.SelectTokenOrDefault("password", string.Empty);
-
-                return new
+            var handlers = ipList!
+                .Select(x =>
                 {
-                    host,
-                    port,
-                    user,
-                    password
-                };
-            })
+                    var host = x.SelectTokenOrDefault("host", string.Empty);
+                    var port = x.SelectTokenOrDefault("port", string.Empty);
+                    var user = x.SelectTokenOrDefault("user", string.Empty);
+                    var password = x.SelectTokenOrDefault("password", string.Empty);
+
+                    return new
+                    {
+                        host,
+                        port,
+                        user,
+                        password
+                    };
+                })
                 .Where(x => !string.IsNullOrEmpty(x.host))
                 .Select(x => new Proxy()
                 {

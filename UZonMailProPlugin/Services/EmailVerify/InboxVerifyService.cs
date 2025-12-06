@@ -1,24 +1,28 @@
-﻿using log4net;
+using log4net;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.SendCore.Proxies;
-using UZonMail.Core.SignalRHubs;
-using UZonMail.Core.SignalRHubs.Extensions;
+using UZonMail.CorePlugin.Services.SendCore.Proxies;
+using UZonMail.CorePlugin.SignalRHubs;
+using UZonMail.CorePlugin.SignalRHubs.Extensions;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Emails;
 using UZonMail.DB.Utils;
 using UZonMail.Utils.Web.Service;
 
-namespace UZonMailProPlugin.Services.EmailVerify
+namespace UZonMail.ProPlugin.Services.EmailVerify
 {
     /// <summary>
     /// 收件箱验证
     /// </summary>
-    public class InboxVerifyService(SqlContext db, IHubContext<UzonMailHub, IUzonMailClient> hub,
-        MxManager mxManager, ProxiesManager proxyManager,
-        IServiceProvider serviceProvider) : IScopedService
+    public class InboxVerifyService(
+        SqlContext db,
+        IHubContext<UzonMailHub, IUzonMailClient> hub,
+        MxManager mxManager,
+        ProxiesManager proxyManager,
+        IServiceProvider serviceProvider
+    ) : IScopedService
     {
         private readonly ILog _logger = LogManager.GetLogger(typeof(InboxVerifyService));
 
@@ -58,7 +62,13 @@ namespace UZonMailProPlugin.Services.EmailVerify
                 {
                     // 创建 scope
                     using var scope = serviceProvider.CreateAsyncScope();
-                    await ValidateInboxes(fromDomains, inboxes, client, userId, scope.ServiceProvider);
+                    await ValidateInboxes(
+                        fromDomains,
+                        inboxes,
+                        client,
+                        userId,
+                        scope.ServiceProvider
+                    );
                 });
                 tasks.Add(task);
             }
@@ -66,7 +76,13 @@ namespace UZonMailProPlugin.Services.EmailVerify
             await Task.WhenAll(tasks);
         }
 
-        private async Task ValidateInboxes(List<string> fromDomains, List<Inbox> inboxes, IUzonMailClient hubClient, long userId, IServiceProvider provider)
+        private async Task ValidateInboxes(
+            List<string> fromDomains,
+            List<Inbox> inboxes,
+            IUzonMailClient hubClient,
+            long userId,
+            IServiceProvider provider
+        )
         {
             Dictionary<string, VerifySmtpClient> smtpClients = [];
 
@@ -80,8 +96,12 @@ namespace UZonMailProPlugin.Services.EmailVerify
                 {
                     _logger.Info($"获取 MX 记录失败，邮箱: {inbox.Email}");
                     // 标记为不可用
-                    await db.Inboxes.UpdateAsync(x => x.Id == inbox.Id, x => x.SetProperty(y => y.Status, InboxStatus.Invalid)
-                        .SetProperty(y => y.ValidFailReason, "获取 MX 记录失败"));
+                    await db.Inboxes.UpdateAsync(
+                        x => x.Id == inbox.Id,
+                        x =>
+                            x.SetProperty(y => y.Status, InboxStatus.Invalid)
+                                .SetProperty(y => y.ValidFailReason, "获取 MX 记录失败")
+                    );
                     continue;
                 }
 
@@ -96,14 +116,20 @@ namespace UZonMailProPlugin.Services.EmailVerify
                 {
                     // 说明获取到，但是无法连接，状态未知
                     _logger.Info($"MX 连接失败{mxRecord}");
-                    await db.Inboxes.UpdateAsync(x => x.Id == inbox.Id, x => x.SetProperty(y => y.Status, InboxStatus.Unkown)
-                        .SetProperty(y => y.ValidFailReason, "MX 连接失败"));
+                    await db.Inboxes.UpdateAsync(
+                        x => x.Id == inbox.Id,
+                        x =>
+                            x.SetProperty(y => y.Status, InboxStatus.Unkown)
+                                .SetProperty(y => y.ValidFailReason, "MX 连接失败")
+                    );
                     continue;
                 }
 
                 var response = await client.CheckExist(inbox.Email, fromDomains);
 
-                _logger.Debug($"验证邮箱 {inbox.Email} 的结果: {response.StatusCode} - {response.Response}");
+                _logger.Debug(
+                    $"验证邮箱 {inbox.Email} 的结果: {response.StatusCode} - {response.Response}"
+                );
                 InboxStatus inboxStatus = InboxStatus.None;
                 if (response.StatusCode == SmtpStatusCode.Ok)
                 {
@@ -125,8 +151,17 @@ namespace UZonMailProPlugin.Services.EmailVerify
                 }
 
                 // 保存到数据库中
-                await db.Inboxes.UpdateAsync(x => x.Id == inbox.Id, x => x.SetProperty(y => y.Status, response.StatusCode == SmtpStatusCode.Ok ? InboxStatus.Valid : InboxStatus.Invalid)
-                    .SetProperty(y => y.ValidFailReason, response.Response));
+                await db.Inboxes.UpdateAsync(
+                    x => x.Id == inbox.Id,
+                    x =>
+                        x.SetProperty(
+                                y => y.Status,
+                                response.StatusCode == SmtpStatusCode.Ok
+                                    ? InboxStatus.Valid
+                                    : InboxStatus.Invalid
+                            )
+                            .SetProperty(y => y.ValidFailReason, response.Response)
+                );
 
                 // 推送更新
                 await hubClient.InboxStatusChanged(inbox);

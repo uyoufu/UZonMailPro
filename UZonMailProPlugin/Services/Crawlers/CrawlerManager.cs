@@ -1,16 +1,20 @@
-﻿using System.Collections.Concurrent;
-using UZonMail.Core.Services.Config;
+using System.Collections.Concurrent;
+using UZonMail.CorePlugin.Services.Config;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.Services.Crawlers.TikTok;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.Services.Crawlers.TikTok;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers
+namespace UZonMail.ProPlugin.Services.Crawlers
 {
     /// <summary>
     /// 爬虫管理器
     /// </summary>
-    public class CrawlerManager(IServiceProvider serviceProvider, ILogger<CrawlerManager> logger, DebugConfig debugConfig) : ConcurrentDictionary<long, CrawlerTaskBase>, ISingletonService
+    public class CrawlerManager(
+        IServiceProvider serviceProvider,
+        ILogger<CrawlerManager> logger,
+        DebugConfig debugConfig
+    ) : ConcurrentDictionary<long, CrawlerTaskBase>, ISingletonService
     {
         /// <summary>
         /// 开始 TikTok 邮箱爬虫
@@ -39,7 +43,8 @@ namespace UZonMailProPlugin.Services.Crawlers
                     using var scope = serviceProvider.CreateAsyncScope();
                     var crawlerTaskId = crawlerTaskInfo.Id;
                     // 创建爬虫任务
-                    var crawlerTaskService = scope.ServiceProvider.GetRequiredService<TikTokEmailCrawler>();
+                    var crawlerTaskService =
+                        scope.ServiceProvider.GetRequiredService<TikTokEmailCrawler>();
                     TryAdd(crawlerTaskId, crawlerTaskService);
                     await crawlerTaskService.StartAsync(scope, crawlerTaskId);
                     TryRemove(crawlerTaskId, out _);
@@ -58,7 +63,8 @@ namespace UZonMailProPlugin.Services.Crawlers
         /// <returns></returns>
         public async Task StopCrawler(long crawlerTaskId)
         {
-            if (!TryGetValue(crawlerTaskId, out var crawler)) return;
+            if (!TryGetValue(crawlerTaskId, out var crawler))
+                return;
             await crawler.StopAsync(crawlerTaskId);
         }
     }

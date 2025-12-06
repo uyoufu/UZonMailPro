@@ -1,7 +1,7 @@
-﻿using System.Text.RegularExpressions;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using System.Text.RegularExpressions;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers.TikTok
+namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
 {
     public class SignatureResolver(string signature)
     {

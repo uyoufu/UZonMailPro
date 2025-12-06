@@ -1,27 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.Config;
-using UZonMail.Core.Services.Settings;
-using UZonMail.Core.Utils.Database;
+using UZonMail.CorePlugin.Services.Config;
+using UZonMail.CorePlugin.Services.Settings;
+using UZonMail.CorePlugin.Utils.Database;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Emails;
 using UZonMail.Utils.Web.Exceptions;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Services.Crawlers;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Services.Crawlers;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Controllers.EmailCrawler
+namespace UZonMail.ProPlugin.Controllers.EmailCrawler
 {
     /// <summary>
     /// 邮件爬虫控制器
     /// </summary>
-    public class CrawlerTaskInfoController(SqlContext db, SqlContextPro dbPro, TokenService tokenService,
-        CrawlerManager crawlerManager, IHttpClientFactory httpClientFactory,DebugConfig debugConfig) : ControllerBasePro
+    public class CrawlerTaskInfoController(
+        SqlContext db,
+        SqlContextPro dbPro,
+        TokenService tokenService,
+        CrawlerManager crawlerManager,
+        IHttpClientFactory httpClientFactory,
+        DebugConfig debugConfig
+    ) : ControllerBasePro
     {
         /// <summary>
         /// 获取所有的爬虫类型
@@ -30,10 +36,7 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         [HttpGet]
         public async Task<ResponseResult<List<CrawlerType>>> GetCrawlerTypes()
         {
-            return Enum.GetValues<CrawlerType>()
-                .Cast<CrawlerType>()
-                .ToList()
-                .ToSuccessResponse();
+            return Enum.GetValues<CrawlerType>().Cast<CrawlerType>().ToList().ToSuccessResponse();
         }
 
         /// <summary>
@@ -42,7 +45,9 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         /// <param name="crawlerTaskInfo"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ResponseResult<CrawlerTaskInfo>> CreateCrawler([FromBody] CrawlerTaskInfo crawlerTaskInfo)
+        public async Task<ResponseResult<CrawlerTaskInfo>> CreateCrawler(
+            [FromBody] CrawlerTaskInfo crawlerTaskInfo
+        )
         {
             // 验证数据
             if (string.IsNullOrEmpty(crawlerTaskInfo.Name))
@@ -67,16 +72,21 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         /// <param name="crawlerTaskInfo"></param>
         /// <returns></returns>
         [HttpPut("{crawlerTaskId:long}")]
-        public async Task<ResponseResult<bool>> UpdateCrawler(long crawlerTaskId, [FromBody] CrawlerTaskInfo crawlerTaskInfo)
+        public async Task<ResponseResult<bool>> UpdateCrawler(
+            long crawlerTaskId,
+            [FromBody] CrawlerTaskInfo crawlerTaskInfo
+        )
         {
             var userId = tokenService.GetUserSqlId();
-            await dbPro.CrawlerTaskInfos.UpdateAsync(x => x.Id == crawlerTaskId && x.UserId == userId,
-                x => x.SetProperty(y => y.Name, crawlerTaskInfo.Name)
-                    .SetProperty(y => y.Description, crawlerTaskInfo.Description)
-                    .SetProperty(y => y.ProxyId, crawlerTaskInfo.ProxyId)
-                    .SetProperty(y => y.TikTokDeviceId, crawlerTaskInfo.TikTokDeviceId)
-                    .SetProperty(y => y.Deadline, crawlerTaskInfo.Deadline)
-                );
+            await dbPro.CrawlerTaskInfos.UpdateAsync(
+                x => x.Id == crawlerTaskId && x.UserId == userId,
+                x =>
+                    x.SetProperty(y => y.Name, crawlerTaskInfo.Name)
+                        .SetProperty(y => y.Description, crawlerTaskInfo.Description)
+                        .SetProperty(y => y.ProxyId, crawlerTaskInfo.ProxyId)
+                        .SetProperty(y => y.TikTokDeviceId, crawlerTaskInfo.TikTokDeviceId)
+                        .SetProperty(y => y.Deadline, crawlerTaskInfo.Deadline)
+            );
             return true.ToSuccessResponse();
         }
 
@@ -88,11 +98,14 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         public async Task<ResponseResult<bool>> DeleteCrawler(long crawlerTaskId)
         {
             var userId = tokenService.GetUserSqlId();
-            var deletedCount = await dbPro.CrawlerTaskInfos.UpdateAsync(x => x.Id == crawlerTaskId && x.UserId == userId, x => x.SetProperty(y => y.IsDeleted, true));
+            var deletedCount = await dbPro.CrawlerTaskInfos.UpdateAsync(
+                x => x.Id == crawlerTaskId && x.UserId == userId,
+                x => x.SetProperty(y => y.IsDeleted, true)
+            );
 
             // 移除爬虫任务
-            if (deletedCount > 0) await crawlerManager.StopCrawler(crawlerTaskId);
-
+            if (deletedCount > 0)
+                await crawlerManager.StopCrawler(crawlerTaskId);
 
             return true.ToSuccessResponse();
         }
@@ -105,7 +118,9 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         public async Task<ResponseResult<bool>> StartCrawler(long crawlerTaskId)
         {
             var userId = tokenService.GetUserSqlId();
-            var crawlerTaskInfo = await dbPro.CrawlerTaskInfos.AsNoTracking().FirstOrDefaultAsync(x => x.Id == crawlerTaskId && x.UserId == userId);
+            var crawlerTaskInfo = await dbPro
+                .CrawlerTaskInfos.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == crawlerTaskId && x.UserId == userId);
             if (crawlerTaskInfo == null)
             {
                 return false.ToFailResponse("未找到爬虫任务");
@@ -115,7 +130,6 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
             {
                 return false.ToFailResponse("当前为示例状态，爬虫无法执行");
             }
-
 
             // 根据类型启动不同的爬虫
             if (crawlerTaskInfo.Type == CrawlerType.TikTokEmail)
@@ -139,7 +153,9 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         public async Task<ResponseResult<bool>> StopCrawler(long crawlerTaskId)
         {
             var userId = tokenService.GetUserSqlId();
-            var crawlerTaskInfo = await dbPro.CrawlerTaskInfos.AsNoTracking().FirstOrDefaultAsync(x => x.Id == crawlerTaskId && x.UserId == userId);
+            var crawlerTaskInfo = await dbPro
+                .CrawlerTaskInfos.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == crawlerTaskId && x.UserId == userId);
             if (crawlerTaskInfo == null)
             {
                 return false.ToFailResponse("未找到爬虫任务");
@@ -172,7 +188,10 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpPost("filtered-data")]
-        public async Task<ResponseResult<List<CrawlerTaskInfo>>> GetCrawlerTasksData(string filter, Pagination pagination)
+        public async Task<ResponseResult<List<CrawlerTaskInfo>>> GetCrawlerTasksData(
+            string filter,
+            Pagination pagination
+        )
         {
             var userId = tokenService.GetUserSqlId();
             var dbSet = dbPro.CrawlerTaskInfos.AsNoTracking().Where(x => x.UserId == userId);
@@ -191,18 +210,18 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         /// <param name="crawlerTaskIds"></param>
         /// <returns></returns>
         [HttpPost("count-infos")]
-        public async Task<ResponseResult<List<CrawlerTaskInfo>>> GetCrawlerTasksCount([FromBody] List<long> crawlerTaskIds)
+        public async Task<ResponseResult<List<CrawlerTaskInfo>>> GetCrawlerTasksCount(
+            [FromBody] List<long> crawlerTaskIds
+        )
         {
-            if (crawlerTaskIds.Count == 0) return new List<CrawlerTaskInfo>().ToSuccessResponse();
+            if (crawlerTaskIds.Count == 0)
+                return new List<CrawlerTaskInfo>().ToSuccessResponse();
 
             // 获取数量
-            var results = await dbPro.CrawlerTaskInfos.AsNoTracking()
+            var results = await dbPro
+                .CrawlerTaskInfos.AsNoTracking()
                 .Where(x => crawlerTaskIds.Contains(x.Id))
-                .Select(x => new CrawlerTaskInfo()
-                {
-                    Id = x.Id,
-                    Count = x.Count
-                })
+                .Select(x => new CrawlerTaskInfo() { Id = x.Id, Count = x.Count })
                 .ToListAsync();
             return results.ToSuccessResponse();
         }
@@ -212,9 +231,13 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         /// </summary>
         /// <returns></returns>
         [HttpGet("{crawlerTaskId:long}/results/filtered-count")]
-        public async Task<ResponseResult<int>> GetCrawlerTaskResultsCount(long crawlerTaskId, string filter)
+        public async Task<ResponseResult<int>> GetCrawlerTaskResultsCount(
+            long crawlerTaskId,
+            string filter
+        )
         {
-            var dbSet = dbPro.CrawlerTaskResults.AsNoTracking()
+            var dbSet = dbPro
+                .CrawlerTaskResults.AsNoTracking()
                 .Where(x => x.CrawlerTaskInfoId == crawlerTaskId)
                 .Where(x => x.ExistExtraInfo)
                 .Include(x => x.TiktokAuthor)
@@ -236,17 +259,24 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpPost("{crawlerTaskId:long}/results/filtered-data")]
-        public async Task<ResponseResult<List<TiktokAuthor>>> GetCrawlerTaskResultsData(long crawlerTaskId, string filter, Pagination pagination)
+        public async Task<ResponseResult<List<TiktokAuthor>>> GetCrawlerTaskResultsData(
+            long crawlerTaskId,
+            string filter,
+            Pagination pagination
+        )
         {
             var userId = tokenService.GetUserSqlId();
             // 判断是否属于用户可访问
-            var crawlerTask = dbPro.CrawlerTaskInfos.AsNoTracking()
+            var crawlerTask = dbPro
+                .CrawlerTaskInfos.AsNoTracking()
                 .Where(x => x.UserId == userId && x.Id == crawlerTaskId)
                 .Select(x => x.Id)
                 .FirstAsync();
-            if (crawlerTask == null) return ResponseResult<List<TiktokAuthor>>.Fail("未找到爬虫任务");
+            if (crawlerTask == null)
+                return ResponseResult<List<TiktokAuthor>>.Fail("未找到爬虫任务");
 
-            var dbSet = dbPro.CrawlerTaskResults.AsNoTracking()
+            var dbSet = dbPro
+                .CrawlerTaskResults.AsNoTracking()
                 .Where(x => x.CrawlerTaskInfoId == crawlerTaskId)
                 .Where(x => x.ExistExtraInfo)
                 .Include(x => x.TiktokAuthor)
@@ -279,8 +309,8 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
 
-            var crawlerTask = await dbPro.CrawlerTaskInfos
-                .Where(x => x.Id == crawlerTaskId)
+            var crawlerTask = await dbPro
+                .CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId)
                 .Where(x => x.UserId == tokenPayloads.UserId)
                 .FirstAsync();
 
@@ -308,7 +338,8 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
             }
 
             // 保存收件箱
-            var tiktokAuthors = await dbPro.CrawlerTaskResults.AsNoTracking()
+            var tiktokAuthors = await dbPro
+                .CrawlerTaskResults.AsNoTracking()
                 .Where(x => x.CrawlerTaskInfoId == crawlerTaskId)
                 .Where(x => x.ExistExtraInfo)
                 .Where(x => !x.IsAttachingInbox)
@@ -326,29 +357,36 @@ namespace UZonMailProPlugin.Controllers.EmailCrawler
                 return crawlerTask.OutboxGroupId.ToSuccessResponse();
             }
 
-            var inboxes = tiktokAuthors.Select(x => new Inbox()
-            {
-                EmailGroupId = crawlerTask.OutboxGroupId,
-                Name = x.Nickname,
-                Email = x.Email,
-                Description = $"来源于爬虫任务 {crawlerTask.Name}",
-                UserId = tokenPayloads.UserId,
-                OrganizationId = tokenPayloads.OrganizationId
-            })
+            var inboxes = tiktokAuthors
+                .Select(x => new Inbox()
+                {
+                    EmailGroupId = crawlerTask.OutboxGroupId,
+                    Name = x.Nickname,
+                    Email = x.Email,
+                    Description = $"来源于爬虫任务 {crawlerTask.Name}",
+                    UserId = tokenPayloads.UserId,
+                    OrganizationId = tokenPayloads.OrganizationId
+                })
                 .DistinctBy(x => x.Email)
                 .ToList();
 
             // 若不存在，则添加
             foreach (var inbox in inboxes)
             {
-                var existOne = await db.Inboxes.AsNoTracking().Where(x => x.Email == inbox.Email && x.UserId == inbox.UserId)
+                var existOne = await db
+                    .Inboxes.AsNoTracking()
+                    .Where(x => x.Email == inbox.Email && x.UserId == inbox.UserId)
                     .Select(x => new { x.Id })
                     .FirstOrDefaultAsync();
-                if (existOne != null) continue;
-                await db.Inboxes.AddAsync(inbox);                
+                if (existOne != null)
+                    continue;
+                await db.Inboxes.AddAsync(inbox);
             }
             // 标记已经转换成 outbox
-            await dbPro.CrawlerTaskResults.UpdateAsync(x => x.CrawlerTaskInfoId == crawlerTaskId, x => x.SetProperty(y => y.IsAttachingInbox, true));
+            await dbPro.CrawlerTaskResults.UpdateAsync(
+                x => x.CrawlerTaskInfoId == crawlerTaskId,
+                x => x.SetProperty(y => y.IsAttachingInbox, true)
+            );
             await dbPro.SaveChangesAsync();
             await db.SaveChangesAsync();
 

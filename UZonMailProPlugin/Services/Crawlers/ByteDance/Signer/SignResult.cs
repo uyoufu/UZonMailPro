@@ -1,4 +1,4 @@
-﻿namespace UZonMailProPlugin.Modules.ByteDance.Signer
+namespace UZonMail.ProPlugin.Modules.ByteDance.Signer
 {
     public abstract class SignResult(string requestUrl,string msToken, string signature)
     {

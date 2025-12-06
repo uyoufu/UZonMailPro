@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace UZonMailProPlugin.Migrations.PostgreSQL
+namespace UZonMail.ProPlugin.Migrations.PostgreSQL
 {
     /// <inheritdoc />
     public partial class addIpWarmUp : Migration

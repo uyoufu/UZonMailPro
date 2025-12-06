@@ -1,6 +1,6 @@
-﻿using UZonMail.DB.SQL.Base;
+using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.Unsubscribes
+namespace UZonMail.ProPlugin.SQL.Unsubscribes
 {
     /// <summary>
     /// 退订按钮样式

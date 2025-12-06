@@ -1,12 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using UZonMail.Core.Services.UserInfos;
+using UZonMail.CorePlugin.Services.UserInfos;
 using UZonMail.DB.SQL;
 using UZonMail.Utils.Web.Exceptions;
 using UZonMail.Utils.Web.Service;
-using UZonMailProPlugin.Utils;
+using UZonMail.ProPlugin.Utils;
 
-namespace UZonMailProPlugin.Services.Token
+namespace UZonMail.ProPlugin.Services.Token
 {
     /// <summary>
     /// API 访问服务
@@ -20,7 +20,11 @@ namespace UZonMailProPlugin.Services.Token
         /// <param name="jwtId"></param>
         /// <param name="expireDate"></param>
         /// <returns></returns>
-        public async Task<string> GenerateApiAccessToken(long userId, string jwtId, DateTime expireDate)
+        public async Task<string> GenerateApiAccessToken(
+            long userId,
+            string jwtId,
+            DateTime expireDate
+        )
         {
             var payloads = new List<Claim>()
             {

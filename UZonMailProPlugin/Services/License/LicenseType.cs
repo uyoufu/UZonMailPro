@@ -1,4 +1,4 @@
-﻿namespace UZonMailProPlugin.Services.License
+namespace UZonMail.ProPlugin.Services.License
 {
     /// <summary>
     /// 类型

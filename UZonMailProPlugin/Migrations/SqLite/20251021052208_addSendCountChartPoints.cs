@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace UZonMailProPlugin.Migrations.SqLite
+namespace UZonMail.ProPlugin.Migrations.SqLite
 {
     /// <inheritdoc />
     public partial class addSendCountChartPoints : Migration

@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace UZonMailProPlugin.Migrations.PostgreSql
+namespace UZonMail.ProPlugin.Migrations.PostgreSql
 {
     /// <inheritdoc />
     public partial class initPostgres : Migration

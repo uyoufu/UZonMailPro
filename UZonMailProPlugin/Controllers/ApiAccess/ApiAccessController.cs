@@ -1,28 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.Cache;
-using UZonMail.Core.Services.Config;
-using UZonMail.Core.Services.Settings;
+using UZonMail.CorePlugin.Services.Cache;
+using UZonMail.CorePlugin.Services.Config;
+using UZonMail.CorePlugin.Services.Settings;
 using UZonMail.Utils.Web.Exceptions;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
-using UZonMailProPlugin.Controllers.ApiAccess.Model;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Services.Token;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.ApiAccess;
+using UZonMail.ProPlugin.Controllers.ApiAccess.Model;
+using UZonMail.ProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Services.Token;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.ApiAccess;
 
-namespace UZonMailProPlugin.Controllers.ApiAccess
+namespace UZonMail.ProPlugin.Controllers.ApiAccess
 {
     /// <summary>
     /// API 访问控制器
     /// </summary>
-    public class ApiAccessController(SqlContextPro dbPro, TokenService tokenService, CacheService cacheService,
-        ApiAccessService apiAccess, DebugConfig debugConfig) : ControllerBasePro
+    public class ApiAccessController(
+        SqlContextPro dbPro,
+        TokenService tokenService,
+        CacheService cacheService,
+        ApiAccessService apiAccess,
+        DebugConfig debugConfig
+    ) : ControllerBasePro
     {
         [HttpPost]
-        public async Task<ResponseResult<AccessToken>> UpsertAccessTokenSource([FromBody] AccessToken data)
+        public async Task<ResponseResult<AccessToken>> UpsertAccessTokenSource(
+            [FromBody] AccessToken data
+        )
         {
             data.UserId = tokenService.GetUserSqlId();
 
@@ -43,12 +50,13 @@ namespace UZonMailProPlugin.Controllers.ApiAccess
                 throw new KnownException("当前功能需要启用 Redis 缓存");
             }
 
-
             // 若存在 id, 则更新
             if (data.Id > 0)
             {
                 // 获取现有数据
-                var existOne = dbPro.AccessTokens.Where(x => x.Id == data.Id && x.UserId == data.UserId).FirstOrDefault();
+                var existOne = dbPro
+                    .AccessTokens.Where(x => x.Id == data.Id && x.UserId == data.UserId)
+                    .FirstOrDefault();
                 if (existOne == null)
                 {
                     return ResponseResult<AccessToken>.Fail("令牌不存在");
@@ -79,7 +87,11 @@ namespace UZonMailProPlugin.Controllers.ApiAccess
             // 不存在时，添加
             data.InitJwtId();
             // 生成 apiToken
-            var apiToken = await apiAccess.GenerateApiAccessToken(data.UserId, data.JwtId, data.ExpireDate);
+            var apiToken = await apiAccess.GenerateApiAccessToken(
+                data.UserId,
+                data.JwtId,
+                data.ExpireDate
+            );
 
             dbPro.AccessTokens.Add(data);
             await dbPro.SaveChangesAsync();
@@ -112,7 +124,10 @@ namespace UZonMailProPlugin.Controllers.ApiAccess
         /// <param name="pagination"></param>
         /// <returns></returns>
         [HttpPost("filtered-data")]
-        public async Task<ResponseResult<List<AccessToken>>> GetAccessTokenSourceData(string filter, Pagination pagination)
+        public async Task<ResponseResult<List<AccessToken>>> GetAccessTokenSourceData(
+            string filter,
+            Pagination pagination
+        )
         {
             var userId = tokenService.GetUserSqlId();
             var dbSet = dbPro.AccessTokens.AsNoTracking().Where(x => x.UserId == userId);
@@ -134,7 +149,9 @@ namespace UZonMailProPlugin.Controllers.ApiAccess
         public async Task<ResponseResult<bool>> DeleteAccessTokenSourceDatas(string id)
         {
             var userId = tokenService.GetUserSqlId();
-            var existOne = await dbPro.AccessTokens.Where(x => x.ObjectId == id && x.UserId == userId).FirstOrDefaultAsync();
+            var existOne = await dbPro
+                .AccessTokens.Where(x => x.ObjectId == id && x.UserId == userId)
+                .FirstOrDefaultAsync();
             if (existOne == null)
             {
                 return true.ToSuccessResponse();
@@ -144,7 +161,11 @@ namespace UZonMailProPlugin.Controllers.ApiAccess
             var expireTimeSpan = existOne.ExpireDate - DateTime.UtcNow;
             if (expireTimeSpan.TotalSeconds > 10)
                 // 添加到黑名单中
-                await cacheService.SetAsync(existOne.GetBlacklistKey(), existOne.Id, expireTimeSpan);
+                await cacheService.SetAsync(
+                    existOne.GetBlacklistKey(),
+                    existOne.Id,
+                    expireTimeSpan
+                );
 
             // 删除
             dbPro.AccessTokens.Remove(existOne);

@@ -1,7 +1,7 @@
-﻿using UZonMail.Utils.Http.Request;
-using UZonMailProPlugin.Services.ProxyFactories.IPFoxy;
+using UZonMail.Utils.Http.Request;
+using UZonMail.ProPlugin.Services.ProxyFactories.IPFoxy;
 
-namespace UZonMailProPlugin.Services.ProxyFactories.IpIdea
+namespace UZonMail.ProPlugin.Services.ProxyFactories.IpIdea
 {
     // 参考 https://www.ipidea.net/getapi/
     // 完整链接示例：http://api.proxy.ipidea.io/getBalanceProxyIp?num=100&return_type=txt&lb=1&sb=0&flow=1&regions=&protocol=socks5

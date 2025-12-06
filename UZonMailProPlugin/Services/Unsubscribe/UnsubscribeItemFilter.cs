@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using UZonMail.Core.Services.SendCore.Interfaces;
+using UZonMail.CorePlugin.Services.SendCore.Interfaces;
 using UZonMail.DB.Extensions;
 using UZonMail.DB.Managers.Cache;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.EmailSending;
-using UZonMailProPlugin.SQL;
+using UZonMail.ProPlugin.SQL;
 
-namespace UZonMailProPlugin.Services.Unsubscribe
+namespace UZonMail.ProPlugin.Services.Unsubscribe
 {
     public class UnsubscribeItemFilter(SqlContext sqlContext, SqlContextPro dbPro)
         : ISendingItemFilter

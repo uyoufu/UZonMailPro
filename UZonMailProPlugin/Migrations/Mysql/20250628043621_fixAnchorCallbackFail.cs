@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace UZonMailProPlugin.Migrations.Mysql
+namespace UZonMail.ProPlugin.Migrations.Mysql
 {
     /// <inheritdoc />
     public partial class fixAnchorCallbackFail : Migration

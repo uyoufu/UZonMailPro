@@ -1,7 +1,7 @@
-﻿using UZonMail.Utils.Http;
-using UZonMailProPlugin.Modules.ByteDance.Signer;
+using UZonMail.Utils.Http;
+using UZonMail.ProPlugin.Modules.ByteDance.Signer;
 
-namespace UZonMailProPlugin.Services.Crawlers.ByteDance.APIs
+namespace UZonMail.ProPlugin.Services.Crawlers.ByteDance.APIs
 {
     public class GetRecommendList() : ApiBase(HttpMethod.Get, $"https://www.tiktok.com/api/recommend/item_list/")
     {

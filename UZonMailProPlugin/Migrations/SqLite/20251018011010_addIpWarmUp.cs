@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace UZonMailProPlugin.Migrations.SqLite
+namespace UZonMail.ProPlugin.Migrations.SqLite
 {
     /// <inheritdoc />
     public partial class addIpWarmUp : Migration

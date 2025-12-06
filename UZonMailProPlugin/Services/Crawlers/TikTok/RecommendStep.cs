@@ -1,11 +1,11 @@
-﻿using log4net;
+using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using UZonMail.Utils.Json;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMailProPlugin.Services.Crawlers.TikTok
+namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
 {
     /// <summary>
     /// 获取推荐视频的用户

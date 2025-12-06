@@ -1,6 +1,6 @@
-﻿using UZonMail.DB.SQL.Base;
+using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.EmailCrawler
+namespace UZonMail.ProPlugin.SQL.EmailCrawler
 {
     /// <summary>
     /// tiktok 用户视频所属类别

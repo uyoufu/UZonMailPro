@@ -1,6 +1,6 @@
-﻿using UZonMail.DB.SQL.Base;
+using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.Services.License
+namespace UZonMail.ProPlugin.Services.License
 {
     /// <summary>
     /// 授权信息

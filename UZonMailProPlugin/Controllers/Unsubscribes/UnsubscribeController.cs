@@ -3,22 +3,22 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.Core.Services.Permission;
-using UZonMail.Core.Services.Settings;
+using UZonMail.CorePlugin.Services.Permission;
+using UZonMail.CorePlugin.Services.Settings;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.Utils.Json;
 using UZonMail.Utils.Web.PagingQuery;
 using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.Utils.Web.Token;
-using UZonMailProPlugin.Controllers.Base;
-using UZonMailProPlugin.Controllers.Unsubscribes.ResponseModels;
-using UZonMailProPlugin.Services.Settings.Model;
-using UZonMailProPlugin.Services.Unsubscribe;
-using UZonMailProPlugin.SQL;
-using UZonMailProPlugin.SQL.Unsubscribes;
+using UZonMail.ProPlugin.Controllers.Base;
+using UZonMail.ProPlugin.Controllers.Unsubscribes.ResponseModels;
+using UZonMail.ProPlugin.Services.Settings.Model;
+using UZonMail.ProPlugin.Services.Unsubscribe;
+using UZonMail.ProPlugin.SQL;
+using UZonMail.ProPlugin.SQL.Unsubscribes;
 
-namespace UZonMailProPlugin.Controllers.Unsubscribes
+namespace UZonMail.ProPlugin.Controllers.Unsubscribes
 {
     /// <summary>
     /// 退订控制器

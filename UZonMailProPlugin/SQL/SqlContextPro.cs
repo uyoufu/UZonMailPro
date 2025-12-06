@@ -1,16 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.DB.SQL.EntityConfigs;
-using UZonMailProPlugin.SQL.ApiAccess;
-using UZonMailProPlugin.SQL.EmailCrawler;
-using UZonMailProPlugin.SQL.IPWarmUp;
-using UZonMailProPlugin.SQL.JsVariable;
-using UZonMailProPlugin.SQL.ReadingTracker;
-using UZonMailProPlugin.SQL.Unsubscribes;
+using UZonMail.ProPlugin.SQL.ApiAccess;
+using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UZonMail.ProPlugin.SQL.IPWarmUp;
+using UZonMail.ProPlugin.SQL.JsVariable;
+using UZonMail.ProPlugin.SQL.ReadingTracker;
+using UZonMail.ProPlugin.SQL.Unsubscribes;
 
-namespace UZonMailProPlugin.SQL
+namespace UZonMail.ProPlugin.SQL
 {
     public class SqlContextPro : SqlContextBase
     {

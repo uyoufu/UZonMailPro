@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace UZonMailProPlugin.Controllers.Base
+namespace UZonMail.ProPlugin.Controllers.Base
 {
     /// <summary>
     /// pro 版本控制器基类

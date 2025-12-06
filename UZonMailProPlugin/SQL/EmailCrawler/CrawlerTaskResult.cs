@@ -1,6 +1,6 @@
-﻿using UZonMail.DB.SQL.Base;
+using UZonMail.DB.SQL.Base;
 
-namespace UZonMailProPlugin.SQL.EmailCrawler
+namespace UZonMail.ProPlugin.SQL.EmailCrawler
 {
     public class CrawlerTaskResult : SqlId
     {
