@@ -109,14 +109,15 @@ namespace UZonMail.ProPlugin.Controllers.IPWarmUp
                 .SendingGroups.AsNoTracking()
                 .Where(x => sendingGroupIds.Contains(x.Id))
                 .ToListAsync();
+
+            var message = "手动取消";
             foreach (var sendingGroup in sendingGroups)
             {
-                await sendingGroupService.RemoveSendingGroupTask(sendingGroup);
-
+                await sendingGroupService.RemoveSendingGroupTask(sendingGroup, message);
                 await sendingGroupService.UpdateSendingGroupStatus(
                     sendingGroup.Id,
                     SendingGroupStatus.Pause,
-                    "手动取消"
+                    message
                 );
             }
 
