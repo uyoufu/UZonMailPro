@@ -3,14 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
 using UZonMail.CorePlugin.Services.SendCore;
 using UZonMail.CorePlugin.Services.Settings;
+using UZonMail.DB.Extensions;
 using UZonMail.DB.SQL;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
+using UZonMail.DB.SQL.Core.EmailSending;
 using UZonMail.ProPlugin.Controllers.Base;
 using UZonMail.ProPlugin.Controllers.IPWarmUp.DTOs;
 using UZonMail.ProPlugin.Services.IpWarmUp;
 using UZonMail.ProPlugin.SQL;
 using UZonMail.ProPlugin.SQL.IPWarmUp;
+using UZonMail.Utils.Web.PagingQuery;
+using UZonMail.Utils.Web.ResponseModel;
 
 namespace UZonMail.ProPlugin.Controllers.IPWarmUp
 {
@@ -110,6 +112,12 @@ namespace UZonMail.ProPlugin.Controllers.IPWarmUp
             foreach (var sendingGroup in sendingGroups)
             {
                 await sendingGroupService.RemoveSendingGroupTask(sendingGroup);
+
+                await sendingGroupService.UpdateSendingGroupStatus(
+                    sendingGroup.Id,
+                    SendingGroupStatus.Pause,
+                    "手动取消"
+                );
             }
 
             // 删除计划

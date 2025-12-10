@@ -9,15 +9,19 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
     {
         public double CpuUsage { get; private set; }
 
+        public string CpuUsageString => $"{CpuUsage:F2}%";
+
         public double MemoryUsage { get; private set; }
+
+        public string MemoryUsageString => $"{MemoryUsage:F2} MB";
 
         public int RunningTasksCount { get; private set; }
 
-        public List<OutboxPoolInfo> OutboxPoolInfos { get; set; }
-        public List<SendingGroupInfo> SendingGroupsPoolInfos { get; set; }
+        public List<OutboxPoolInfo> OutboxPools { get; set; }
+        public List<SendingGroupInfo> UserSendingPools { get; set; }
 
         public async Task GatherInfomations(
-            UserGroupTasksPools groupTasksList,
+            UserGroupTasksPools userGroupTaskPool,
             OutboxesManager outboxesManager,
             SendingTasksManager sendingTasksManager
         )
@@ -25,27 +29,33 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
             CpuUsage = await GetCpuUsageForProcess();
             MemoryUsage = Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024;
 
-            OutboxPoolInfos = outboxesManager
-                .Values.GroupBy(x => x.UserId)
-                .Select(x => new OutboxPoolInfo(x.Key, x.Count()))
-                .ToList();
-
+            OutboxPools =
+            [
+                .. outboxesManager
+                    .Values.GroupBy(x => x.UserId)
+                    .Select(x => new OutboxPoolInfo(x.Key, x.Count()))
+            ];
             RunningTasksCount = sendingTasksManager.RunningTasksCount;
-            SendingGroupsPoolInfos = groupTasksList
-                .Values.Select(x => new SendingGroupInfo(x))
-                .ToList();
+
+            UserSendingPools = [.. userGroupTaskPool.Values.Select(x => new SendingGroupInfo(x))];
         }
 
-        private async Task<double> GetCpuUsageForProcess()
+        private static async Task<double> GetCpuUsageForProcess()
         {
+            var process = Process.GetCurrentProcess();
             var startTime = DateTime.UtcNow;
-            var startCpuUsage = Process.GetCurrentProcess().TotalProcessorTime;
+            var startCpuUsage = process.TotalProcessorTime;
             await Task.Delay(500);
 
+            process.Refresh();
             var endTime = DateTime.UtcNow;
-            var endCpuUsage = Process.GetCurrentProcess().TotalProcessorTime;
+            var endCpuUsage = process.TotalProcessorTime;
             var cpuUsedMs = (endCpuUsage - startCpuUsage).TotalMilliseconds;
             var totalMsPassed = (endTime - startTime).TotalMilliseconds;
+
+            if (cpuUsedMs <= 0)
+                return 0;
+
             var cpuUsageTotal = cpuUsedMs / (Environment.ProcessorCount * totalMsPassed);
             return cpuUsageTotal * 100;
         }
