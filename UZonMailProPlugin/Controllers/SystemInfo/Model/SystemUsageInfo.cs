@@ -17,9 +17,9 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
         public List<SendingGroupInfo> SendingGroupsPoolInfos { get; set; }
 
         public async Task GatherInfomations(
-            GroupTasksList groupTasksList,
+            UserGroupTasksPools groupTasksList,
             OutboxesManager outboxesManager,
-            OutboxTasksManager sendingTasksManager
+            SendingTasksManager sendingTasksManager
         )
         {
             CpuUsage = await GetCpuUsageForProcess();

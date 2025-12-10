@@ -7,7 +7,7 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
         public long UserId { get; private set; }
         public int SendingGroupsCount { get; private set; }
 
-        public SendingGroupInfo(GroupTasks sendingGroupsPool)
+        public SendingGroupInfo(UserGroupTasksPool sendingGroupsPool)
         {
             UserId = sendingGroupsPool.UserId;
             SendingGroupsCount = sendingGroupsPool.Count;

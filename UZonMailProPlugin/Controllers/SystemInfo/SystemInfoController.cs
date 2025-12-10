@@ -5,17 +5,17 @@ using UZonMail.CorePlugin.Services.SendCore;
 using UZonMail.CorePlugin.Services.SendCore.Outboxes;
 using UZonMail.CorePlugin.Services.SendCore.WaitList;
 using UZonMail.Pro.Controllers.SystemInfo.Model;
-using UZonMail.Utils.Web.ResponseModel;
 using UZonMail.ProPlugin.Config;
 using UZonMail.ProPlugin.Controllers.Base;
 using UZonMail.ProPlugin.Services.License;
+using UZonMail.Utils.Web.ResponseModel;
 
 namespace UZonMail.Pro.Controllers.SystemInfo
 {
     public class SystemInfoController(
-        GroupTasksList groupTasksList,
+        UserGroupTasksPools groupTasksList,
         OutboxesManager outboxesPools,
-        OutboxTasksManager sendingThreadsManager,
+        SendingTasksManager sendingThreadsManager,
         LicenseAccessService licenseAccess,
         IConfiguration configuration
     ) : ControllerBasePro
