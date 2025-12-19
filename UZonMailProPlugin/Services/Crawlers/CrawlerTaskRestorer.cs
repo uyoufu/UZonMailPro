@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using UZonMail.CorePlugin.Services.HostedServices;
 using UZonMail.DB.SQL;
-using UZonMail.Utils.Web.Service;
 using UZonMail.ProPlugin.SQL;
 using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UZonMail.Utils.Web.Service;
 
 namespace UZonMail.ProPlugin.Services.Crawlers
 {
@@ -13,7 +13,7 @@ namespace UZonMail.ProPlugin.Services.Crawlers
     /// <param name="ssf"></param>
     /// <param name="crawlerManager"></param>
     public class CrawlerTaskRestorer(IServiceScopeFactory ssf, CrawlerManager crawlerManager)
-        : IHostedServiceStart
+        : IScopedServiceAfterStarting
     {
         // 靠后启动
         public int Order => 100;

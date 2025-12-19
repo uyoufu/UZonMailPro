@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using UZonMail.CorePlugin.Services.HostedServices;
 using UZonMail.DB.SQL;
-using UZonMail.Utils.Web.Service;
 using UZonMail.ProPlugin.SQL;
+using UZonMail.Utils.Web.Service;
 
 namespace UZonMail.ProPlugin.Services.HostedServices
 {
-    public class SqlContextProMigration(SqlContextPro db) : IHostedServiceStart
+    public class SqlContextProMigration(SqlContextPro db) : IScopedServiceAfterStarting
     {
         public int Order => -10000;
 

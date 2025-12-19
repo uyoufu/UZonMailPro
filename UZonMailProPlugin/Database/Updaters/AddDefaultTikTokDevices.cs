@@ -1,4 +1,4 @@
-using UZonMail.CorePlugin.Database.Updater;
+using UZonMail.CorePlugin.Database.Upgrade;
 using UZonMail.DB.SQL;
 using UZonMail.ProPlugin.SQL;
 using UZonMail.ProPlugin.SQL.EmailCrawler;
@@ -9,9 +9,9 @@ namespace UZonMail.ProPlugin.Database.Updaters
     {
         public Version Version => new(0, 11, 1, 0);
 
-        public async Task Update()
+        public async Task ExecuteAsync()
         {
-            var adminUserId = 2l;
+            var adminUserId = 2L;
 
             var deviceInfos = new[]
             {
@@ -40,7 +40,7 @@ namespace UZonMail.ProPlugin.Database.Updaters
                     .FirstOrDefault();
                 if (existOne == null)
                 {
-                    await db.TikTokDevices.AddRangeAsync(device);
+                    await db.TikTokDevices.AddAsync(device);
                 }
             }
             await db.SaveChangesAsync();

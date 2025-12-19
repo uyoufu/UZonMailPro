@@ -1,19 +1,23 @@
-using UZonMail.CorePlugin.Database.Updater;
+using UZonMail.CorePlugin.Database.Initializers;
+using UZonMail.CorePlugin.Database.Upgrade;
 using UZonMail.DB.SQL;
 using UZonMail.ProPlugin.SQL;
 using UZonMail.ProPlugin.SQL.Unsubscribes;
 
-namespace UZonMail.ProPlugin.Database.Updaters
+namespace UZonMail.ProPlugin.Database.Initializers
 {
     /// <summary>
     /// 系统默认调用
     /// </summary>
-    public class InitUnsubscribe(SqlContextPro db) : IDatabaseUpdater
+    public class InitUnsubscribe(SqlContextPro db) : IDbInitializer
     {
-        public Version Version => new("0.1.1.0");
+        public string Name => nameof(InitUnsubscribe);
 
-        public async Task Update()
+        public async Task ExecuteAsync()
         {
+            if (db.UnsubscribePages.Any())
+                return;
+
             // 增加退订相关的表
             var unsubscribeButton = new UnsubscribeButton()
             {
