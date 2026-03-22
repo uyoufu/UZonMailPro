@@ -1,8 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UZonMail.CorePlugin.Services.HostedServices;
-using UZonMail.DB.SQL;
 using UZonMail.ProPlugin.SQL;
-using UZonMail.Utils.Web.Service;
 
 namespace UZonMail.ProPlugin.Services.HostedServices
 {

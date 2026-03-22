@@ -17,12 +17,9 @@ namespace UZonMail.ProPlugin
             var services = hostBuilder.Services;
 
             // 添加数据库上下文
-            services.AddSqlContext<
-                SqlContextPro,
-                PostgreSqlContextPro,
-                MySqlContextPro,
-                SqLiteContextPro
-            >(hostBuilder.Configuration);
+            services.AddSqlContext<SqlContextPro, PostgreSqlContextPro, SqLiteContextPro>(
+                hostBuilder.Configuration
+            );
 
             // 批量注册服务
             services.AddServices();
