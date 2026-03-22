@@ -54,10 +54,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Migrations\SqLite\" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\..\UzonMail\backend-src\Plugins\UZonMailCorePlugin\UZonMailCorePlugin.csproj" />
 	</ItemGroup>
 

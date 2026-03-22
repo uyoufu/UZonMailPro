@@ -1,5 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using UZonMail.DB.SQL;
 using UZonMail.DB.SQL.Core.Settings;
 using UZonMail.DB.SQL.EntityConfigs;
@@ -14,18 +15,78 @@ namespace UZonMail.ProPlugin.SQL
 {
     public class SqlContextPro : SqlContextBase
     {
+        /// <summary>
+        /// 运行时额外注册的外部程序集。
+        /// 这些程序集中的实体会包含在运行时模型中（支持跨库查询），
+        /// 但会通过 ExcludeFromMigrations 排除出本 Context 的迁移快照。
+        /// 应在应用启动时（DbContext 首次构建模型之前）完成注册。
+        /// </summary>
+        public static List<Assembly> ExternalAssemblies { get; } = [];
+
         #region 初始化
         public SqlContextPro() { }
-        public SqlContextPro(DbContextOptions<SqlContextPro> options) : base(options)
-        {
-        }
+
+        public SqlContextPro(DbContextOptions<SqlContextPro> options)
+            : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // 调用配置
+            // 当前程序集配置（参与迁移快照）
             new EntityTypeConfig().Configure(modelBuilder);
+
+            var currentAssembly = typeof(SqlContextPro).Assembly;
+            // 将来自外部程序集的实体排除出迁移快照，由各自的 Context 负责管理其 Schema。
+            // .NET 10 会把外部实体间的 many-to-many shared-type 中间表也带进迁移模型，
+            // 这里一并排除，只保留当前程序集自己的实体和关联表。
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes().ToList())
+            {
+                if (!ShouldExcludeFromMigrations(entityType, currentAssembly))
+                {
+                    continue;
+                }
+
+                ExcludeFromMigrations(modelBuilder, entityType);
+            }
+        }
+
+        private static bool ShouldExcludeFromMigrations(
+            IMutableEntityType entityType,
+            Assembly currentAssembly
+        )
+        {
+            if (entityType.ClrType != typeof(Dictionary<string, object>))
+            {
+                return entityType.ClrType.Assembly != currentAssembly
+                    && entityType.Name == entityType.ClrType.FullName;
+            }
+
+            var principalClrTypes = entityType
+                .GetForeignKeys()
+                .Select(x => x.PrincipalEntityType.ClrType)
+                .Where(x => x != typeof(Dictionary<string, object>))
+                .Distinct()
+                .ToList();
+
+            return principalClrTypes.Count > 0
+                && principalClrTypes.All(x => x.Assembly != currentAssembly);
+        }
+
+        private static void ExcludeFromMigrations(
+            ModelBuilder modelBuilder,
+            IMutableEntityType entityType
+        )
+        {
+            if (entityType.ClrType == typeof(Dictionary<string, object>))
+            {
+                modelBuilder
+                    .SharedTypeEntity<Dictionary<string, object>>(entityType.Name)
+                    .ToTable(t => t.ExcludeFromMigrations());
+                return;
+            }
+
+            modelBuilder.Entity(entityType.ClrType).ToTable(t => t.ExcludeFromMigrations());
         }
         #endregion
 
