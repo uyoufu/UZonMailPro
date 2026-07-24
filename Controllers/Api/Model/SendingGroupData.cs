@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Base;
-using UZonMail.DB.SQL.Core.EmailSending;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Base;
+using UzonMail.DB.SQL.Core.EmailSending;
 
-namespace UZonMail.ProPlugin.Controllers.Api.Model
+namespace UzonMail.ProPlugin.Controllers.Api.Model
 {
     public class SendingGroupData
     {

@@ -1,7 +1,7 @@
 using System.Configuration;
-using UZonMail.Utils.Web.Service;
+using UzonMail.Utils.Web.Service;
 
-namespace UZonMail.ProPlugin.Config
+namespace UzonMail.ProPlugin.Config
 {
     public class SystemConfig
     {

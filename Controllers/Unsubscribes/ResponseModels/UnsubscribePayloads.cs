@@ -1,6 +1,6 @@
-using UZonMail.DB.SQL.Core.EmailSending;
+using UzonMail.DB.SQL.Core.EmailSending;
 
-namespace UZonMail.ProPlugin.Controllers.Unsubscribes.ResponseModels
+namespace UzonMail.ProPlugin.Controllers.Unsubscribes.ResponseModels
 {
     /// <summary>
     /// 取消退订的 Payloads

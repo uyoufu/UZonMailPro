@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using UZonMail.CorePlugin.Services.HostedServices;
-using UZonMail.DB.SQL;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.EmailCrawler;
-using UZonMail.Utils.Web.Service;
+using UzonMail.CorePlugin.Services.HostedServices;
+using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.Utils.Web.Service;
 
-namespace UZonMail.ProPlugin.Services.Crawlers
+namespace UzonMail.ProPlugin.Services.Crawlers
 {
     /// <summary>
     /// 应该在数据库迁移成功后，再启动爬虫任务

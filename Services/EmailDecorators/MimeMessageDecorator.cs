@@ -1,14 +1,14 @@
 using MimeKit;
-using UZonMail.CorePlugin.Services.EmailDecorator.Interfaces;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.Managers.Cache;
-using UZonMail.DB.SQL;
-using UZonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders;
-using UZonMail.ProPlugin.Services.License;
-using UZonMail.ProPlugin.Services.Settings.Model;
-using UZonMail.ProPlugin.SQL;
+using UzonMail.CorePlugin.Services.EmailDecorator.Interfaces;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.DB.Managers.Cache;
+using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders;
+using UzonMail.ProPlugin.Services.License;
+using UzonMail.ProPlugin.Services.Settings.Model;
+using UzonMail.ProPlugin.SQL;
 
-namespace UZonMail.ProPlugin.Services.EmailBodyDecorators
+namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
 {
     /// <summary>
     /// 在消息体中添加退订链接

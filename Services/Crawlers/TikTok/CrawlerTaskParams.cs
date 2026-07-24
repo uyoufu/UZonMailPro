@@ -1,4 +1,4 @@
-namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
+namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
 {
     public class CrawlerTaskParams
     {

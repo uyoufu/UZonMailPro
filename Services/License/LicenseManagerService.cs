@@ -4,16 +4,16 @@ using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.Config;
-using UZonMail.CorePlugin.Services.Permission;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.Settings;
-using UZonMail.Utils.Extensions;
-using UZonMail.Utils.Web.Exceptions;
-using UZonMail.Utils.Web.ResponseModel;
-using UZonMail.Utils.Web.Service;
+using UzonMail.CorePlugin.Services.Config;
+using UzonMail.CorePlugin.Services.Permission;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.Settings;
+using UzonMail.Utils.Extensions;
+using UzonMail.Utils.Web.Exceptions;
+using UzonMail.Utils.Web.ResponseModel;
+using UzonMail.Utils.Web.Service;
 
-namespace UZonMail.ProPlugin.Services.License
+namespace UzonMail.ProPlugin.Services.License
 {
     /// <summary>
     /// 授权管理器
@@ -278,7 +278,7 @@ namespace UZonMail.ProPlugin.Services.License
             // 从嵌入的资源中获取密钥
             using var stream = Assembly
                 .GetExecutingAssembly()
-                .GetManifestResourceStream("UZonMail.ProPlugin.Services.License.PrivateKey.pem");
+                .GetManifestResourceStream("UzonMail.ProPlugin.Services.License.PrivateKey.pem");
             if (stream == null)
             {
                 var assembly = Assembly.GetExecutingAssembly();
@@ -369,7 +369,7 @@ namespace UZonMail.ProPlugin.Services.License
             var localAppData = Environment.GetFolderPath(
                 Environment.SpecialFolder.LocalApplicationData
             );
-            var fullTokenPath = Path.Combine(localAppData, "UZonMail/device-token.txt");
+            var fullTokenPath = Path.Combine(localAppData, "UzonMail/device-token.txt");
             if (File.Exists(fullTokenPath))
                 return fullTokenPath;
 

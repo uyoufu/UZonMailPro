@@ -1,6 +1,6 @@
-using UZonMail.DB.SQL.Base;
+using UzonMail.DB.SQL.Base;
 
-namespace UZonMail.ProPlugin.SQL.ApiAccess
+namespace UzonMail.ProPlugin.SQL.ApiAccess
 {
     /// <summary>
     /// AccessToken 类表示 API 访问令牌

@@ -1,20 +1,21 @@
 using Microsoft.Extensions.DependencyInjection;
-using UZonMail.CorePlugin.Services.SendCore.Proxies;
-using UZonMail.CorePlugin.Services.SendCore.Proxies.Clients;
-using UZonMail.DB.SQL.Core.Settings;
-using UZonMail.ProPlugin.Services.License;
+using UzonMail.CorePlugin.Services.SendCore.Proxies;
+using UzonMail.CorePlugin.Services.SendCore.Proxies.Clients;
+using UzonMail.DB.SQL.Core.Settings;
+using UzonMail.ProPlugin.Services.License;
 
-namespace UZonMail.ProPlugin.Services.ProxyFactories.YDaili
+namespace UzonMail.ProPlugin.Services.ProxyFactories.YDaili
 {
     public class YDailiProxyFactory() : IProxyFactory
     {
+        public string Kind => "ydaili";
+
         public int Order => 0;
+
+        public bool CanHandle(Uri uri) => IsProviderHost(uri, "ydaili.cn");
 
         public async Task<IProxyHandler?> CreateProxy(IServiceProvider serviceProvider, Proxy proxy)
         {
-            if (!proxy.Url.Contains("ydaili.cn"))
-                return null;
-
             // 判断是否有授权
             var functionAccess = serviceProvider.GetRequiredService<LicenseAccessService>();
             if (!await functionAccess.HasDynamicProxyAccess())
@@ -24,5 +25,12 @@ namespace UZonMail.ProPlugin.Services.ProxyFactories.YDaili
             handler.Update(proxy);
             return handler;
         }
+
+        private static bool IsProviderHost(Uri uri, string domain) =>
+            uri.AbsolutePath != "/"
+            && (
+                uri.Host.Equals(domain, StringComparison.OrdinalIgnoreCase)
+                || uri.Host.EndsWith($".{domain}", StringComparison.OrdinalIgnoreCase)
+            );
     }
 }

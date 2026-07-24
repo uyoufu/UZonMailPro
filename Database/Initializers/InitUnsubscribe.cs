@@ -1,10 +1,10 @@
-using UZonMail.CorePlugin.Database.Initializers;
-using UZonMail.CorePlugin.Database.Upgrade;
-using UZonMail.DB.SQL;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.Unsubscribes;
+using UzonMail.CorePlugin.Database.Initializers;
+using UzonMail.CorePlugin.Database.Upgrade;
+using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.Unsubscribes;
 
-namespace UZonMail.ProPlugin.Database.Initializers
+namespace UzonMail.ProPlugin.Database.Initializers
 {
     /// <summary>
     /// 系统默认调用

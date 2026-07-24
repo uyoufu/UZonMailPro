@@ -1,10 +1,10 @@
 
 using log4net;
 using Newtonsoft.Json.Linq;
-using UZonMail.Utils.Json;
-using UZonMail.ProPlugin.Services.Crawlers.ByteDance.APIs;
+using UzonMail.Utils.Json;
+using UzonMail.ProPlugin.Services.Crawlers.ByteDance.APIs;
 
-namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
+namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
 {
     public class RecommendAuthorGetter(CrawlerTaskParams taskParams) : RemoteItemListGetter
     {

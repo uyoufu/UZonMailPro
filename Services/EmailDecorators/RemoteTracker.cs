@@ -1,6 +1,6 @@
-using UZonMail.Utils.Web.Service;
+using UzonMail.Utils.Web.Service;
 
-namespace UZonMail.ProPlugin.Services.EmailBodyDecorators
+namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
 {
     /// <summary>
     /// 远程跟踪器

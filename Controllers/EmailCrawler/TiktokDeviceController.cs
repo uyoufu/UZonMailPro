@@ -2,15 +2,15 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Controllers.EmailCrawler.Validators;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.EmailCrawler;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Controllers.EmailCrawler.Validators;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.Utils.Web.PagingQuery;
+using UzonMail.Utils.Web.ResponseModel;
 
-namespace UZonMail.ProPlugin.Controllers.EmailCrawler
+namespace UzonMail.ProPlugin.Controllers.EmailCrawler
 {
     public class TiktokDeviceController(SqlContextPro db, TokenService tokenService)
         : ControllerBasePro

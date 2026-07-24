@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace UZonMail.ProPlugin.Migrations.PostgreSQL
+namespace UzonMail.ProPlugin.Migrations.PostgreSQL
 {
     /// <inheritdoc />
     public partial class addSendCountChartPoints : Migration

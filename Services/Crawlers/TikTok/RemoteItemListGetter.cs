@@ -1,8 +1,8 @@
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
-using UZonMail.ProPlugin.Services.Crawlers.ByteDance.APIs;
+using UzonMail.ProPlugin.Services.Crawlers.ByteDance.APIs;
 
-namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
+namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
 {
     public abstract class RemoteItemListGetter
     {

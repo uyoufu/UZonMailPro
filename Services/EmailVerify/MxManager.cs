@@ -1,9 +1,9 @@
 using DnsClient;
 using DnsClient.Protocol;
 using System.Collections.Concurrent;
-using UZonMail.Utils.Web.Service;
+using UzonMail.Utils.Web.Service;
 
-namespace UZonMail.ProPlugin.Services.EmailVerify
+namespace UzonMail.ProPlugin.Services.EmailVerify
 {
     public class MxRecords
     {

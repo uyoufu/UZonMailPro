@@ -1,9 +1,7 @@
 using System.Diagnostics;
-using UZonMail.CorePlugin.Services.SendCore;
-using UZonMail.CorePlugin.Services.SendCore.Outboxes;
-using UZonMail.CorePlugin.Services.SendCore.WaitList;
+using UzonMail.CorePlugin.Services.SendCore.Runtime;
 
-namespace UZonMail.Pro.Controllers.SystemInfo.Model
+namespace UzonMail.Pro.Controllers.SystemInfo.Model
 {
     public class SystemUsageInfo
     {
@@ -20,24 +18,26 @@ namespace UZonMail.Pro.Controllers.SystemInfo.Model
         public List<OutboxPoolInfo> OutboxPools { get; set; }
         public List<SendingGroupInfo> UserSendingPools { get; set; }
 
-        public async Task GatherInfomations(
-            UserGroupTasksPools userGroupTaskPool,
-            OutboxesManager outboxesManager,
-            SendingTasksManager sendingTasksManager
-        )
+        public async Task GatherInfomations(ISendRuntimeDiagnostics diagnostics)
         {
             CpuUsage = await GetCpuUsageForProcess();
             MemoryUsage = Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024;
 
+            var snapshot = diagnostics.GetSnapshot();
             OutboxPools =
             [
-                .. outboxesManager
-                    .Values.GroupBy(x => x.UserId)
+                .. snapshot
+                    .Outboxes.GroupBy(x => x.Key.UserId)
                     .Select(x => new OutboxPoolInfo(x.Key, x.Count()))
             ];
-            RunningTasksCount = sendingTasksManager.RunningTasksCount;
+            RunningTasksCount = snapshot.RunningTasksCount;
 
-            UserSendingPools = [.. userGroupTaskPool.Values.Select(x => new SendingGroupInfo(x))];
+            UserSendingPools =
+            [
+                .. snapshot
+                    .Groups.GroupBy(x => x.UserId)
+                    .Select(x => new SendingGroupInfo(x.Key, x.Count()))
+            ];
         }
 
         private static async Task<double> GetCpuUsageForProcess()

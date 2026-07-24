@@ -1,9 +1,9 @@
-using UZonMail.DB.SQL;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.Utils.Plugin;
-using UZonMail.Utils.Web;
+using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.Utils.Plugin;
+using UzonMail.Utils.Web;
 
-namespace UZonMail.ProPlugin
+namespace UzonMail.ProPlugin
 {
     /// <summary>
     /// 加载插件

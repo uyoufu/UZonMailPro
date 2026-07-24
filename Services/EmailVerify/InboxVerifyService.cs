@@ -2,16 +2,16 @@ using log4net;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
-using UZonMail.CorePlugin.Services.SendCore.Proxies;
-using UZonMail.CorePlugin.SignalRHubs;
-using UZonMail.CorePlugin.SignalRHubs.Extensions;
-using UZonMail.DB.Extensions;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.Emails;
-using UZonMail.DB.Utils;
-using UZonMail.Utils.Web.Service;
+using UzonMail.CorePlugin.Services.SendCore.Proxies;
+using UzonMail.CorePlugin.SignalRHubs;
+using UzonMail.CorePlugin.SignalRHubs.Extensions;
+using UzonMail.DB.Extensions;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.Emails;
+using UzonMail.DB.Utils;
+using UzonMail.Utils.Web.Service;
 
-namespace UZonMail.ProPlugin.Services.EmailVerify
+namespace UzonMail.ProPlugin.Services.EmailVerify
 {
     /// <summary>
     /// 收件箱验证

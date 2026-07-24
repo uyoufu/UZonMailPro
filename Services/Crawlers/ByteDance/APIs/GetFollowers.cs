@@ -1,7 +1,7 @@
-using UZonMail.Utils.Http;
-using UZonMail.ProPlugin.Modules.ByteDance.Signer;
+using UzonMail.Utils.Http;
+using UzonMail.ProPlugin.Modules.ByteDance.Signer;
 
-namespace UZonMail.ProPlugin.Services.Crawlers.ByteDance.APIs
+namespace UzonMail.ProPlugin.Services.Crawlers.ByteDance.APIs
 {
     public class GetFollowers() : ApiBase(HttpMethod.Get, $"https://www.tiktok.com/api/user/list/")
     {

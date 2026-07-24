@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.SendCore;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.Extensions;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.EmailSending;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Controllers.IPWarmUp.DTOs;
-using UZonMail.ProPlugin.Services.IpWarmUp;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.IPWarmUp;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
+using UzonMail.CorePlugin.Services.SendCore;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.DB.Extensions;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.EmailSending;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Controllers.IPWarmUp.DTOs;
+using UzonMail.ProPlugin.Services.IpWarmUp;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.IPWarmUp;
+using UzonMail.Utils.Web.PagingQuery;
+using UzonMail.Utils.Web.ResponseModel;
 
-namespace UZonMail.ProPlugin.Controllers.IPWarmUp
+namespace UzonMail.ProPlugin.Controllers.IPWarmUp
 {
     /// <summary>
     /// IP 预热计划控制器

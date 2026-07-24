@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.Emails;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Controllers.EmailCrawler.DTOs;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.Utils.Web.ResponseModel;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.Emails;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Controllers.EmailCrawler.DTOs;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.Utils.Web.ResponseModel;
 
-namespace UZonMail.ProPlugin.Controllers.EmailCrawler
+namespace UzonMail.ProPlugin.Controllers.EmailCrawler
 {
     /// <summary>
     /// QQ 成员

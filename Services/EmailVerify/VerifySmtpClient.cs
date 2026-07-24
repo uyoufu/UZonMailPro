@@ -8,7 +8,7 @@ using System.Globalization;
 using System.Net.Sockets;
 using System.Text;
 
-namespace UZonMail.ProPlugin.Services.EmailVerify
+namespace UzonMail.ProPlugin.Services.EmailVerify
 {
     public class VerifySmtpClient : SmtpClient
     {

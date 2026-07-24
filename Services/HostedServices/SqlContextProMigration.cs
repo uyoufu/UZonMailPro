@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using UZonMail.CorePlugin.Services.HostedServices;
-using UZonMail.ProPlugin.SQL;
+using UzonMail.CorePlugin.Services.HostedServices;
+using UzonMail.ProPlugin.SQL;
 
-namespace UZonMail.ProPlugin.Services.HostedServices
+namespace UzonMail.ProPlugin.Services.HostedServices
 {
     public class SqlContextProMigration(SqlContextPro db) : IScopedServiceAfterStarting
     {

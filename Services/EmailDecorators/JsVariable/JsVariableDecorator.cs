@@ -2,15 +2,15 @@ using System.Text.RegularExpressions;
 using Jint;
 using log4net;
 using Microsoft.Extensions.Options;
-using UZonMail.CorePlugin.Services.EmailDecorator;
-using UZonMail.CorePlugin.Services.EmailDecorator.Interfaces;
-using UZonMail.DB.Managers.Cache;
-using UZonMail.DB.SQL;
-using UZonMail.ProPlugin.Services.License;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.JsVariable;
+using UzonMail.CorePlugin.Services.EmailDecorator;
+using UzonMail.CorePlugin.Services.EmailDecorator.Interfaces;
+using UzonMail.DB.Managers.Cache;
+using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.Services.License;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.JsVariable;
 
-namespace UZonMail.ProPlugin.Services.EmailDecorators.JsVariable
+namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
 {
     public class JsVariableDecorator(
         SqlContext db,

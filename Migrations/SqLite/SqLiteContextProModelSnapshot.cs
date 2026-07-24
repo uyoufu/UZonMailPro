@@ -3,11 +3,11 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using UZonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL;
 
 #nullable disable
 
-namespace UZonMail.ProPlugin.Migrations.SqLite
+namespace UzonMail.ProPlugin.Migrations.SqLite
 {
     [DbContext(typeof(SqLiteContextPro))]
     partial class SqLiteContextProModelSnapshot : ModelSnapshot

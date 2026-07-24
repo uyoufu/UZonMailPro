@@ -1,8 +1,8 @@
 using log4net;
 using System.Reflection;
-using UZonMail.Utils.Http;
+using UzonMail.Utils.Http;
 
-namespace UZonMail.ProPlugin.Modules.ByteDance.Signer
+namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
 {
     /// <summary>
     /// 生成 tiktok Bogous

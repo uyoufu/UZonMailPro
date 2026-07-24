@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace UZonMail.ProPlugin.Migrations.SqLite
+namespace UzonMail.ProPlugin.Migrations.SqLite
 {
     /// <inheritdoc />
     public partial class fixManyToMany : Migration

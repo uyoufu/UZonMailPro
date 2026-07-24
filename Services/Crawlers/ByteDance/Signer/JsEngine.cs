@@ -1,7 +1,7 @@
 using Jint;
 using Jint.Native;
 
-namespace UZonMail.ProPlugin.Modules.ByteDance.Signer
+namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
 {
     public class JsEngine
     {

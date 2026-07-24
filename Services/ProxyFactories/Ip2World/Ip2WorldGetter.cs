@@ -1,7 +1,7 @@
-using UZonMail.Utils.Http.Request;
-using UZonMail.ProPlugin.Services.ProxyFactories.YDaili;
+using UzonMail.Utils.Http.Request;
+using UzonMail.ProPlugin.Services.ProxyFactories.YDaili;
 
-namespace UZonMail.ProPlugin.Services.ProxyFactories.Ip2World
+namespace UzonMail.ProPlugin.Services.ProxyFactories.Ip2World
 {
     public class Ip2WorldGetter(string url) : FluentHttpRequest(HttpMethod.Get, url)
     {

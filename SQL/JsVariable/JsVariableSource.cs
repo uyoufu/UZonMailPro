@@ -1,8 +1,8 @@
 using Innofactor.EfCoreJsonValueConverter;
 using Newtonsoft.Json.Linq;
-using UZonMail.DB.SQL.Base;
+using UzonMail.DB.SQL.Base;
 
-namespace UZonMail.ProPlugin.SQL.JsVariable
+namespace UzonMail.ProPlugin.SQL.JsVariable
 {
     /// <summary>
     /// 函数变量数据源

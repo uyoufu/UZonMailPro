@@ -1,15 +1,15 @@
 using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json.Linq;
-using UZonMail.CorePlugin.Services.SendCore.Proxies.Clients;
-using UZonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
-using UZonMail.DB.SQL.Core.Emails;
-using UZonMail.DB.SQL.Core.Settings;
-using UZonMail.Utils.Json;
-using UZonMail.ProPlugin.Services.ProxyFactories.IPFoxy;
-using UZonMail.ProPlugin.Services.ProxyFactories.YDaili;
+using UzonMail.CorePlugin.Services.SendCore.Proxies.Clients;
+using UzonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
+using UzonMail.DB.SQL.Core.Emails;
+using UzonMail.DB.SQL.Core.Settings;
+using UzonMail.Utils.Json;
+using UzonMail.ProPlugin.Services.ProxyFactories.IPFoxy;
+using UzonMail.ProPlugin.Services.ProxyFactories.YDaili;
 
-namespace UZonMail.ProPlugin.Services.ProxyFactories.IpIdea
+namespace UzonMail.ProPlugin.Services.ProxyFactories.IpIdea
 {
     public class IpIdeaProxyClient : ProxyHandlersCluster
     {

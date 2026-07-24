@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
-using UZonMail.Utils.Web.Service;
+using UzonMail.Utils.Web.Service;
 
-namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
+namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
 {
     /// <summary>
     /// 缓存爬虫步骤

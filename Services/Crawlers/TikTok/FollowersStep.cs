@@ -1,11 +1,11 @@
 using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using UZonMail.Utils.Json;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.Utils.Json;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
+namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
 {
     /// <summary>
     /// 爬取粉丝数量

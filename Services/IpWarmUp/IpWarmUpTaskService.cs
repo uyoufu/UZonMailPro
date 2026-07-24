@@ -1,16 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Quartz;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.Emails;
-using UZonMail.DB.SQL.Core.EmailSending;
-using UZonMail.Utils.Web.Exceptions;
-using UZonMail.Utils.Web.Service;
-using UZonMail.ProPlugin.Controllers.IPWarmUp.DTOs;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.IPWarmUp;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.Emails;
+using UzonMail.DB.SQL.Core.EmailSending;
+using UzonMail.Utils.Web.Exceptions;
+using UzonMail.Utils.Web.Service;
+using UzonMail.ProPlugin.Controllers.IPWarmUp.DTOs;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.IPWarmUp;
 
-namespace UZonMail.ProPlugin.Services.IpWarmUp
+namespace UzonMail.ProPlugin.Services.IpWarmUp
 {
     /// <summary>
     /// IP 预热任务

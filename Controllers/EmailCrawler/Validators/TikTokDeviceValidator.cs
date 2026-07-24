@@ -1,7 +1,7 @@
 using FluentValidation;
-using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMail.ProPlugin.Controllers.EmailCrawler.Validators
+namespace UzonMail.ProPlugin.Controllers.EmailCrawler.Validators
 {
     public class TikTokDeviceValidator : AbstractValidator<TikTokDevice>
     {

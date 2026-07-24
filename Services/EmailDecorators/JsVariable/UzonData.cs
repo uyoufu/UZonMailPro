@@ -1,9 +1,9 @@
 using System.Linq;
 using Newtonsoft.Json.Linq;
-using UZonMail.CorePlugin.Services.EmailDecorator.Interfaces;
-using UZonMail.DB.SQL.Core.EmailSending;
+using UzonMail.CorePlugin.Services.EmailDecorator.Interfaces;
+using UzonMail.DB.SQL.Core.EmailSending;
 
-namespace UZonMail.ProPlugin.Services.EmailDecorators.JsVariable
+namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
 {
     /// <summary>
     /// uzon 数据定义类

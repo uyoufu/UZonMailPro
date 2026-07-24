@@ -1,7 +1,7 @@
-using UZonMail.Utils.Http;
-using UZonMail.Utils.Http.Request;
+using UzonMail.Utils.Http;
+using UzonMail.Utils.Http.Request;
 
-namespace UZonMail.ProPlugin.Services.Crawlers.ByteDance.APIs
+namespace UzonMail.ProPlugin.Services.Crawlers.ByteDance.APIs
 {
     public abstract class ApiBase : FluentHttpRequest
     {

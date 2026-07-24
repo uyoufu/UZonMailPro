@@ -1,21 +1,21 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.Config;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.CorePlugin.Utils.Database;
-using UZonMail.DB.Extensions;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.Emails;
-using UZonMail.Utils.Web.Exceptions;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Services.Crawlers;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.CorePlugin.Services.Config;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.CorePlugin.Utils.Database;
+using UzonMail.DB.Extensions;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.Emails;
+using UzonMail.Utils.Web.Exceptions;
+using UzonMail.Utils.Web.PagingQuery;
+using UzonMail.Utils.Web.ResponseModel;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Services.Crawlers;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMail.ProPlugin.Controllers.EmailCrawler
+namespace UzonMail.ProPlugin.Controllers.EmailCrawler
 {
     /// <summary>
     /// 邮件爬虫控制器

@@ -1,21 +1,17 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.SendCore;
-using UZonMail.CorePlugin.Services.SendCore.Outboxes;
-using UZonMail.CorePlugin.Services.SendCore.WaitList;
-using UZonMail.Pro.Controllers.SystemInfo.Model;
-using UZonMail.ProPlugin.Config;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Services.License;
-using UZonMail.Utils.Web.ResponseModel;
+using UzonMail.CorePlugin.Services.SendCore.Runtime;
+using UzonMail.Pro.Controllers.SystemInfo.Model;
+using UzonMail.ProPlugin.Config;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Services.License;
+using UzonMail.Utils.Web.ResponseModel;
 
-namespace UZonMail.Pro.Controllers.SystemInfo
+namespace UzonMail.Pro.Controllers.SystemInfo
 {
     public class SystemInfoController(
-        UserGroupTasksPools groupTasksList,
-        OutboxesManager outboxesPools,
-        SendingTasksManager sendingThreadsManager,
+        ISendRuntimeDiagnostics runtimeDiagnostics,
         LicenseAccessService licenseAccess,
         IConfiguration configuration
     ) : ControllerBasePro
@@ -46,7 +42,7 @@ namespace UZonMail.Pro.Controllers.SystemInfo
         public async Task<ResponseResult<SystemUsageInfo>> GetSystemResourceUsage()
         {
             var usageInfo = new SystemUsageInfo();
-            await usageInfo.GatherInfomations(groupTasksList, outboxesPools, sendingThreadsManager);
+            await usageInfo.GatherInfomations(runtimeDiagnostics);
             return usageInfo.ToSuccessResponse();
         }
     }

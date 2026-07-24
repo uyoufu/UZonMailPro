@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace UZonMail.ProPlugin.Modules.ByteDance.Signer
+namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
 {
     /// <summary>
     /// 生成 Bogous

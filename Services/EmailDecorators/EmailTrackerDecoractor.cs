@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using UZonMail.CorePlugin.Services.EmailDecorator.Interfaces;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.SQL;
-using UZonMail.ProPlugin.Services.License;
-using UZonMail.ProPlugin.Services.Settings.Model;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.ReadingTracker;
+using UzonMail.CorePlugin.Services.EmailDecorator.Interfaces;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.Services.License;
+using UzonMail.ProPlugin.Services.Settings.Model;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.ReadingTracker;
 
-namespace UZonMail.ProPlugin.Services.EmailBodyDecorators
+namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
 {
     public class EmailTrackerDecoractor(
         SqlContext db,

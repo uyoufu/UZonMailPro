@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UZonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL;
 
 #nullable disable
 
-namespace UZonMail.ProPlugin.Migrations.PostgreSQL
+namespace UzonMail.ProPlugin.Migrations.PostgreSQL
 {
     [DbContext(typeof(PostgreSqlContextPro))]
     [Migration("20251018011015_addIpWarmUp")]

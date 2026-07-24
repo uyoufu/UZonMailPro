@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Database.Validators;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.Emails;
-using UZonMail.DB.Utils;
-using UZonMail.Utils.Web.ResponseModel;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Services.EmailVerify;
+using UzonMail.CorePlugin.Database.Validators;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.Emails;
+using UzonMail.DB.Utils;
+using UzonMail.Utils.Web.ResponseModel;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Services.EmailVerify;
 
-namespace UZonMail.ProPlugin.Controllers.Email
+namespace UzonMail.ProPlugin.Controllers.Email
 {
     public class EmailVerifyController(
         SqlContext db,

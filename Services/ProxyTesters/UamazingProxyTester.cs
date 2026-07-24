@@ -1,8 +1,8 @@
-using UZonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
-using UZonMail.Utils.Http.Request;
-using UZonMail.ProPlugin.Services.License;
+using UzonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
+using UzonMail.Utils.Http.Request;
+using UzonMail.ProPlugin.Services.License;
 
-namespace UZonMail.ProPlugin.Services.ProxyTesters
+namespace UzonMail.ProPlugin.Services.ProxyTesters
 {
     /// <summary>
     /// 基于 https://www.223434.xyz:2234/inspection/ip 实现的 IP 查询

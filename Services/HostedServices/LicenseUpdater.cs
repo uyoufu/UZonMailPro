@@ -1,7 +1,7 @@
-using UZonMail.CorePlugin.Services.HostedServices;
-using UZonMail.ProPlugin.Services.License;
+using UzonMail.CorePlugin.Services.HostedServices;
+using UzonMail.ProPlugin.Services.License;
 
-namespace UZonMail.ProPlugin.Services.HostedServices
+namespace UzonMail.ProPlugin.Services.HostedServices
 {
     /// <summary>
     /// 更新授权信息

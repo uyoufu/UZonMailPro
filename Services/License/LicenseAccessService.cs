@@ -1,6 +1,6 @@
-using UZonMail.Utils.Web.Service;
+using UzonMail.Utils.Web.Service;
 
-namespace UZonMail.ProPlugin.Services.License
+namespace UzonMail.ProPlugin.Services.License
 {
     /// <summary>
     /// 功能权限服务

@@ -1,6 +1,6 @@
-using UZonMail.Utils.Http.Request;
+using UzonMail.Utils.Http.Request;
 
-namespace UZonMail.ProPlugin.Services.ProxyFactories.IPFoxy
+namespace UzonMail.ProPlugin.Services.ProxyFactories.IPFoxy
 {
     public class IpFoxyGetter(string url) : FluentHttpRequest(HttpMethod.Get, url)
     {

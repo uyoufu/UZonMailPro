@@ -1,6 +1,6 @@
-using UZonMail.DB.SQL.Base;
+using UzonMail.DB.SQL.Base;
 
-namespace UZonMail.ProPlugin.SQL.EmailCrawler
+namespace UzonMail.ProPlugin.SQL.EmailCrawler
 {
     public class TikTokDevice : UserAndOrgId
     {

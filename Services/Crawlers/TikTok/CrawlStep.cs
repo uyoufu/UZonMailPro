@@ -1,13 +1,13 @@
 using System.Collections.Concurrent;
 using log4net;
 using Microsoft.EntityFrameworkCore;
-using UZonMail.CorePlugin.Utils.Database;
-using UZonMail.DB.Extensions;
-using UZonMail.DB.SQL;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.CorePlugin.Utils.Database;
+using UzonMail.DB.Extensions;
+using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMail.ProPlugin.Services.Crawlers.TikTok
+namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
 {
     public abstract class CrawlStep
     {

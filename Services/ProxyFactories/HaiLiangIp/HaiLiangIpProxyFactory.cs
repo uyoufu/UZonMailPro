@@ -1,20 +1,26 @@
-using UZonMail.CorePlugin.Services.SendCore.Proxies;
-using UZonMail.CorePlugin.Services.SendCore.Proxies.Clients;
-using UZonMail.DB.SQL.Core.Settings;
-using UZonMail.ProPlugin.Services.License;
-using UZonMail.ProPlugin.Services.ProxyFactories.Ip2World;
+using UzonMail.CorePlugin.Services.SendCore.Proxies;
+using UzonMail.CorePlugin.Services.SendCore.Proxies.Clients;
+using UzonMail.DB.SQL.Core.Settings;
+using UzonMail.ProPlugin.Services.License;
+using UzonMail.ProPlugin.Services.ProxyFactories.Ip2World;
 
-namespace UZonMail.ProPlugin.Services.ProxyFactories.HaiLiangIp
+namespace UzonMail.ProPlugin.Services.ProxyFactories.HaiLiangIp
 {
     public class HaiLiangIpProxyFactory : IProxyFactory
     {
+        public string Kind => "hailiangip";
+
         public int Order => 0;
+
+        public bool CanHandle(Uri uri) =>
+            uri.AbsolutePath != "/"
+            && (
+                uri.Host.Equals("hailiangip.com", StringComparison.OrdinalIgnoreCase)
+                || uri.Host.EndsWith(".hailiangip.com", StringComparison.OrdinalIgnoreCase)
+            );
 
         public async Task<IProxyHandler?> CreateProxy(IServiceProvider serviceProvider, Proxy proxy)
         {
-            if (!proxy.Url.Contains("hailiangip.com"))
-                return null;
-
             // 判断是否有授权
             var functionAccess = serviceProvider.GetRequiredService<LicenseAccessService>();
             if (!await functionAccess.HasDynamicProxyAccess())

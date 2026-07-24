@@ -1,20 +1,26 @@
-using UZonMail.CorePlugin.Services.SendCore.Proxies;
-using UZonMail.CorePlugin.Services.SendCore.Proxies.Clients;
-using UZonMail.DB.SQL.Core.Settings;
-using UZonMail.ProPlugin.Services.License;
-using UZonMail.ProPlugin.Services.ProxyFactories.YDaili;
+using UzonMail.CorePlugin.Services.SendCore.Proxies;
+using UzonMail.CorePlugin.Services.SendCore.Proxies.Clients;
+using UzonMail.DB.SQL.Core.Settings;
+using UzonMail.ProPlugin.Services.License;
+using UzonMail.ProPlugin.Services.ProxyFactories.YDaili;
 
-namespace UZonMail.ProPlugin.Services.ProxyFactories.Ip2World
+namespace UzonMail.ProPlugin.Services.ProxyFactories.Ip2World
 {
     public class Ip2WorldProxyFactory : IProxyFactory
     {
+        public string Kind => "ip2world";
+
         public int Order => 0;
+
+        public bool CanHandle(Uri uri) =>
+            uri.AbsolutePath != "/"
+            && (
+                uri.Host.Equals("ip2world.com", StringComparison.OrdinalIgnoreCase)
+                || uri.Host.EndsWith(".ip2world.com", StringComparison.OrdinalIgnoreCase)
+            );
 
         public async Task<IProxyHandler?> CreateProxy(IServiceProvider serviceProvider, Proxy proxy)
         {
-            if (!proxy.Url.Contains("ip2world.com"))
-                return null;
-
             // 判断是否有授权
             var functionAccess = serviceProvider.GetRequiredService<LicenseAccessService>();
             if (!await functionAccess.HasDynamicProxyAccess())

@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace UZonMail.ProPlugin.Migrations.PostgreSql
+namespace UzonMail.ProPlugin.Migrations.PostgreSql
 {
     /// <inheritdoc />
     public partial class initPostgres : Migration

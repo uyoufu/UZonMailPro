@@ -2,12 +2,12 @@ using System.Net;
 using System.Text.RegularExpressions;
 using log4net;
 using Newtonsoft.Json.Linq;
-using UZonMail.CorePlugin.Services.SendCore.Proxies.Clients;
-using UZonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
-using UZonMail.DB.SQL.Core.Settings;
-using UZonMail.Utils.Json;
+using UzonMail.CorePlugin.Services.SendCore.Proxies.Clients;
+using UzonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
+using UzonMail.DB.SQL.Core.Settings;
+using UzonMail.Utils.Json;
 
-namespace UZonMail.ProPlugin.Services.ProxyFactories.YDaili
+namespace UzonMail.ProPlugin.Services.ProxyFactories.YDaili
 {
     public class YDailiProxyClient : ProxyHandlersCluster
     {

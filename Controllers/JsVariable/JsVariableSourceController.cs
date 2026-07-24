@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.Extensions;
-using UZonMail.DB.Managers.Cache;
-using UZonMail.DB.SQL;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Services.EmailDecorators.JsVariable;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.JsVariable;
-using UZonMail.ProPlugin.SQL.ReadingTracker;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.DB.Extensions;
+using UzonMail.DB.Managers.Cache;
+using UzonMail.DB.SQL;
+using UzonMail.Utils.Web.PagingQuery;
+using UzonMail.Utils.Web.ResponseModel;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Services.EmailDecorators.JsVariable;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.JsVariable;
+using UzonMail.ProPlugin.SQL.ReadingTracker;
 
-namespace UZonMail.ProPlugin.Controllers.JsVariable
+namespace UzonMail.ProPlugin.Controllers.JsVariable
 {
     /// <summary>
     /// js 变量控制器

@@ -1,7 +1,7 @@
 using MimeKit;
 using Newtonsoft.Json.Linq;
 
-namespace UZonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
+namespace UzonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
 {
     public class AliDMHeader : RFC8058Header
     {

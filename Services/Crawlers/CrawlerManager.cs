@@ -1,11 +1,11 @@
 using System.Collections.Concurrent;
-using UZonMail.CorePlugin.Services.Config;
-using UZonMail.DB.SQL;
-using UZonMail.Utils.Web.Service;
-using UZonMail.ProPlugin.Services.Crawlers.TikTok;
-using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.CorePlugin.Services.Config;
+using UzonMail.DB.SQL;
+using UzonMail.Utils.Web.Service;
+using UzonMail.ProPlugin.Services.Crawlers.TikTok;
+using UzonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMail.ProPlugin.Services.Crawlers
+namespace UzonMail.ProPlugin.Services.Crawlers
 {
     /// <summary>
     /// 爬虫管理器

@@ -1,19 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.Cache;
-using UZonMail.CorePlugin.Services.Config;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.Utils.Web.Exceptions;
-using UZonMail.Utils.Web.PagingQuery;
-using UZonMail.Utils.Web.ResponseModel;
-using UZonMail.ProPlugin.Controllers.ApiAccess.Model;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Services.Token;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.ApiAccess;
+using UzonMail.CorePlugin.Services.Cache;
+using UzonMail.CorePlugin.Services.Config;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.Utils.Web.Exceptions;
+using UzonMail.Utils.Web.PagingQuery;
+using UzonMail.Utils.Web.ResponseModel;
+using UzonMail.ProPlugin.Controllers.ApiAccess.Model;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Services.Token;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.ApiAccess;
 
-namespace UZonMail.ProPlugin.Controllers.ApiAccess
+namespace UzonMail.ProPlugin.Controllers.ApiAccess
 {
     /// <summary>
     /// API 访问控制器

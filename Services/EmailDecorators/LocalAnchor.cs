@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameworkCore;
-using UZonMail.CorePlugin.Services.EmailDecorator.Interfaces;
-using UZonMail.DB.SQL;
-using UZonMail.Utils.Web.Service;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.ReadingTracker;
+using UzonMail.CorePlugin.Services.EmailDecorator.Interfaces;
+using UzonMail.DB.SQL;
+using UzonMail.Utils.Web.Service;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.ReadingTracker;
 
-namespace UZonMail.ProPlugin.Services.EmailBodyDecorators
+namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
 {
     public class LocalAnchor(SqlContextPro sqlContext, HttpClient httpClient) : ITransientService
     {

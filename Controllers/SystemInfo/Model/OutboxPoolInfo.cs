@@ -1,6 +1,6 @@
-using UZonMail.CorePlugin.Services.SendCore.Outboxes;
+using UzonMail.CorePlugin.Services.SendCore.Outboxes;
 
-namespace UZonMail.Pro.Controllers.SystemInfo.Model
+namespace UzonMail.Pro.Controllers.SystemInfo.Model
 {
     public class OutboxPoolInfo
     {

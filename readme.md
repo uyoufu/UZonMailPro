@@ -1,3 +1,3 @@
 #  readme
 
-UZonMail 商业化版本
+UzonMail 商业化版本

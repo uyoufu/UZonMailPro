@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace UZonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
+namespace UzonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
 {
     public class AliHeaderModel
     {

@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using UZonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL;
 
 #nullable disable
 
-namespace UZonMail.ProPlugin.Migrations.PostgreSql
+namespace UzonMail.ProPlugin.Migrations.PostgreSql
 {
     [DbContext(typeof(PostgreSqlContextPro))]
     [Migration("20250731000746_initPostgres")]

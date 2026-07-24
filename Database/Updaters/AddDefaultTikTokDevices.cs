@@ -1,9 +1,9 @@
-using UZonMail.CorePlugin.Database.Upgrade;
-using UZonMail.DB.SQL;
-using UZonMail.ProPlugin.SQL;
-using UZonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.CorePlugin.Database.Upgrade;
+using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.SQL;
+using UzonMail.ProPlugin.SQL.EmailCrawler;
 
-namespace UZonMail.ProPlugin.Database.Updaters
+namespace UzonMail.ProPlugin.Database.Updaters
 {
     public class AddDefaultTikTokDevices(SqlContextPro db) : IDatabaseUpdater
     {

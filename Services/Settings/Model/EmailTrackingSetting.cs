@@ -1,6 +1,6 @@
-using UZonMail.CorePlugin.Services.Settings.Model;
+using UzonMail.CorePlugin.Services.Settings.Model;
 
-namespace UZonMail.ProPlugin.Services.Settings.Model
+namespace UzonMail.ProPlugin.Services.Settings.Model
 {
     /// <summary>
     /// 邮件跟踪设置

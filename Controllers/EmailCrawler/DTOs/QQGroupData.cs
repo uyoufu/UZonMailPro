@@ -1,4 +1,4 @@
-namespace UZonMail.ProPlugin.Controllers.EmailCrawler.DTOs
+namespace UzonMail.ProPlugin.Controllers.EmailCrawler.DTOs
 {
     public class QQGroupData
     {

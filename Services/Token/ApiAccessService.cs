@@ -1,12 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using UZonMail.CorePlugin.Services.UserInfos;
-using UZonMail.DB.SQL;
-using UZonMail.Utils.Web.Exceptions;
-using UZonMail.Utils.Web.Service;
-using UZonMail.ProPlugin.Utils;
+using UzonMail.CorePlugin.Services.UserInfos;
+using UzonMail.DB.SQL;
+using UzonMail.Utils.Web.Exceptions;
+using UzonMail.Utils.Web.Service;
+using UzonMail.ProPlugin.Utils;
 
-namespace UZonMail.ProPlugin.Services.Token
+namespace UzonMail.ProPlugin.Services.Token
 {
     /// <summary>
     /// API 访问服务

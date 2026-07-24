@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace UZonMail.ProPlugin.Migrations.PostgreSQL
+namespace UzonMail.ProPlugin.Migrations.PostgreSQL
 {
     /// <inheritdoc />
     public partial class addIpWarmUp : Migration

@@ -1,15 +1,15 @@
-using UZonMail.Utils.Web.ResponseModel;
+using UzonMail.Utils.Web.ResponseModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Utils;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Utils;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.ProPlugin.Services.License;
+using UzonMail.ProPlugin.Services.License;
 
 
 
 
-namespace UZonMail.Pro.Controllers.License
+namespace UzonMail.Pro.Controllers.License
 {
     /// <summary>
     /// 授权管理

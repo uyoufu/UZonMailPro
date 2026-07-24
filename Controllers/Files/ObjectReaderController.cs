@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.Files;
-using UZonMail.Utils.Web.ResponseModel;
-using UZonMail.ProPlugin.Controllers.Base;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.Files;
+using UzonMail.Utils.Web.ResponseModel;
+using UzonMail.ProPlugin.Controllers.Base;
 
-namespace UZonMail.ProPlugin.Controllers.Files
+namespace UzonMail.ProPlugin.Controllers.Files
 {
     public class ObjectReaderController(SqlContext db) : ControllerBasePro
     {

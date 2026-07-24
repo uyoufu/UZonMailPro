@@ -1,4 +1,4 @@
-namespace UZonMail.ProPlugin.SQL.EmailCrawler
+namespace UzonMail.ProPlugin.SQL.EmailCrawler
 {
     public enum CrawlerType
     {

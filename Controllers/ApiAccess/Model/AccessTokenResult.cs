@@ -1,6 +1,6 @@
-using UZonMail.ProPlugin.SQL.ApiAccess;
+using UzonMail.ProPlugin.SQL.ApiAccess;
 
-namespace UZonMail.ProPlugin.Controllers.ApiAccess.Model
+namespace UzonMail.ProPlugin.Controllers.ApiAccess.Model
 {
     /// <summary>
     /// 生成的访问令牌结果

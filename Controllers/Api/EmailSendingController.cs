@@ -3,17 +3,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UZonMail.CorePlugin.Services.SendCore;
-using UZonMail.CorePlugin.Services.Settings;
-using UZonMail.DB.SQL;
-using UZonMail.DB.SQL.Core.EmailSending;
-using UZonMail.ProPlugin.Controllers.Api.Model;
-using UZonMail.ProPlugin.Controllers.Base;
-using UZonMail.ProPlugin.Services.License;
-using UZonMail.ProPlugin.Utils;
-using UZonMail.Utils.Web.ResponseModel;
+using UzonMail.CorePlugin.Services.SendCore;
+using UzonMail.CorePlugin.Services.Settings;
+using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.EmailSending;
+using UzonMail.ProPlugin.Controllers.Api.Model;
+using UzonMail.ProPlugin.Controllers.Base;
+using UzonMail.ProPlugin.Services.License;
+using UzonMail.ProPlugin.Utils;
+using UzonMail.Utils.Web.ResponseModel;
 
-namespace UZonMail.ProPlugin.Controllers.Api
+namespace UzonMail.ProPlugin.Controllers.Api
 {
     /// <summary>
     /// 邮件发送 Api

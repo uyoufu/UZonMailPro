@@ -1,16 +1,14 @@
-using UZonMail.CorePlugin.Services.SendCore.WaitList;
-
-namespace UZonMail.Pro.Controllers.SystemInfo.Model
+namespace UzonMail.Pro.Controllers.SystemInfo.Model
 {
     public class SendingGroupInfo
     {
         public long UserId { get; private set; }
         public int SendingGroupsCount { get; private set; }
 
-        public SendingGroupInfo(UserGroupTasksPool sendingGroupsPool)
+        public SendingGroupInfo(long userId, int sendingGroupsCount)
         {
-            UserId = sendingGroupsPool.UserId;
-            SendingGroupsCount = sendingGroupsPool.Count;
+            UserId = userId;
+            SendingGroupsCount = sendingGroupsCount;
         }
     }
 }

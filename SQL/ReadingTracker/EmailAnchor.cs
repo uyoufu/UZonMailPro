@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using UZonMail.DB.SQL.Base;
-using UZonMail.DB.SQL.Core.EmailSending;
-using UZonMail.ProPlugin.SQL;
+using UzonMail.DB.SQL.Base;
+using UzonMail.DB.SQL.Core.EmailSending;
+using UzonMail.ProPlugin.SQL;
 
-namespace UZonMail.ProPlugin.SQL.ReadingTracker
+namespace UzonMail.ProPlugin.SQL.ReadingTracker
 {
     /// <summary>
     /// 邮箱锚点
