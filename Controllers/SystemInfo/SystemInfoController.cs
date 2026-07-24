@@ -22,15 +22,15 @@ namespace UzonMail.Pro.Controllers.SystemInfo
         /// <returns></returns>
         [HttpGet("config")]
         [AllowAnonymous]
-        public async Task<ResponseResult<SystemConfig>> GetSystemConfig()
+        public async Task<ResponseResult<SystemOptions>> GetSystemConfig()
         {
             // 判断是否有企业版本授权
             var enterpriseAccess = await licenseAccess.HasEnterpriseLicense();
 
             if (!enterpriseAccess)
-                return SystemConfig.DefaultSystemConfig().ToSuccessResponse();
+                return SystemOptions.DefaultSystemConfig().ToSuccessResponse();
 
-            return SystemConfig.GetSystemConfig(configuration).ToSuccessResponse();
+            return SystemOptions.GetSystemConfig(configuration).ToSuccessResponse();
         }
 
         /// <summary>
