@@ -31,8 +31,7 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
         IConfiguration configuration,
         UnsubscribeService unsubscribeService,
         PermissionService permissionService,
-        AppSettingService settingService,
-        AppSettingsManager settingsManager
+        AppSettingService settingService
     ) : ControllerBasePro
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(UnsubscribeController));
@@ -73,10 +72,7 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
             await settingService.CheckUpdatePermission(userId, type);
 
             var key = nameof(UnsubscribeSetting);
-            var appSetting = await settingService.UpdateAppSetting(setting, key, type);
-
-            // 更新缓存
-            await settingsManager.ResetSetting<UnsubscribeSetting>(appSetting, db);
+            await settingService.UpdateAppSetting(setting, key, type);
 
             return true.ToSuccessResponse();
         }

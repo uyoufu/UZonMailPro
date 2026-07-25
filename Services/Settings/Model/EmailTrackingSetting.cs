@@ -12,7 +12,7 @@ namespace UzonMail.ProPlugin.Services.Settings.Model
         /// </summary>
         public bool? EnableEmailTracker { get; set; }
 
-        protected override void ReadValuesFromJsons()
+        protected override void ReadValuesFromJson()
         {
             EnableEmailTracker = GetBoolValue(nameof(EnableEmailTracker), false);
         }

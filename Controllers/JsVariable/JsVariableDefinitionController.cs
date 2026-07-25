@@ -20,8 +20,11 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
     /// </summary>
     /// <param name="dbPro"></param>
     /// <param name="tokenService"></param>
-    public class JsFunctionDefinitionController(SqlContextPro dbPro, TokenService tokenService)
-        : ControllerBasePro
+    public class JsFunctionDefinitionController(
+        SqlContextPro dbPro,
+        TokenService tokenService,
+        IDBCacheManager cacheManager
+    ) : ControllerBasePro
     {
         [HttpPost]
         public async Task<ResponseResult<JsFunctionDefinition>> UpsertJsFunctionDefinition(
@@ -51,6 +54,7 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
                             .SetProperty(m => m.Name, data.Name)
                             .SetProperty(m => m.FunctionBody, data.FunctionBody)
                 );
+                await cacheManager.InvalidateSourceAsync(JsVariableCache.GetSourceKey(data.UserId));
                 return data.ToSuccessResponse();
             }
 
@@ -58,7 +62,7 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
             await dbPro.SaveChangesAsync();
 
             // 更新缓存
-            DBCacheManager.Global.SetCacheDirty<JsVariableCache>(data.UserId);
+            await cacheManager.InvalidateSourceAsync(JsVariableCache.GetSourceKey(data.UserId));
 
             return data.ToSuccessResponse();
         }
@@ -117,6 +121,7 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
             await dbPro
                 .JsFunctionDefinitions.Where(x => x.UserId == userId && Ids.Contains(x.Id))
                 .ExecuteDeleteAsync();
+            await cacheManager.InvalidateSourceAsync(JsVariableCache.GetSourceKey(userId));
             return true.ToSuccessResponse();
         }
 
@@ -130,10 +135,10 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
             if (definition == null)
                 return ResponseResult<string>.Fail("未找到对应的函数定义");
 
-            var jsVariableCache = await DBCacheManager.Global.GetCache<
-                JsVariableCache,
-                SqlContextPro
-            >(dbPro, userId);
+            var jsVariableCache = await cacheManager.GetCache<JsVariableCache, SqlContextPro>(
+                dbPro,
+                userId
+            );
             var uzonData = UzonData.GetTestUzonData(jsVariableCache);
 
             // 开始测试

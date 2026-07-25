@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using UzonMail.CorePlugin.Services.EmailDecorator;
 using UzonMail.CorePlugin.Services.EmailDecorator.Interfaces;
 using UzonMail.DB.Managers.Cache;
-using UzonMail.DB.SQL;
 using UzonMail.ProPlugin.Services.License;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.JsVariable;
@@ -13,9 +12,9 @@ using UzonMail.ProPlugin.SQL.JsVariable;
 namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
 {
     public class JsVariableDecorator(
-        SqlContext db,
         SqlContextPro dbPro,
-        LicenseAccessService functionAccess
+        LicenseAccessService functionAccess,
+        IDBCacheManager cacheManager
     ) : IContentDecroator, IVariableResolver
     {
         private static ILog _logger = LogManager.GetLogger(typeof(JsVariableDecorator));
@@ -45,10 +44,10 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
                 return originContent;
 
             // 对变量进行替换
-            var jsVariableCache = await DBCacheManager.Global.GetCache<
-                JsVariableCache,
-                SqlContextPro
-            >(dbPro, decoratorParams.SendItemMeta.UserId);
+            var jsVariableCache = await cacheManager.GetCache<JsVariableCache, SqlContextPro>(
+                dbPro,
+                decoratorParams.SendItemMeta.UserId
+            );
             var uzonData = UzonData.GetUzonData(decoratorParams, jsVariableCache);
 
             foreach (var variableName in variableNames)

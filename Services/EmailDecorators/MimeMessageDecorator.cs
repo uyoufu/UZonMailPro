@@ -17,7 +17,8 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
         IServiceProvider serviceProvider,
         SqlContext db,
         SqlContextPro dbPro,
-        LicenseAccessService functionAccess
+        LicenseAccessService functionAccess,
+        IDBCacheManager cacheManager
     ) : IMimeMessageDecroator
     {
         public async Task<MimeMessage> StartDecorating(
@@ -29,7 +30,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
                 return mimeMessage;
 
             var decoratorParams = mimeParams as EmailDecoratorParams;
-            var userInfo = await DBCacheManager.Global.GetCache<UserInfoCache>(
+            var userInfo = await cacheManager.GetCache<UserInfoCache>(
                 db,
                 decoratorParams.SendingItem.UserId
             );

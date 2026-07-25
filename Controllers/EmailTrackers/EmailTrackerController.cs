@@ -20,8 +20,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailTracker
         SqlContext db,
         SqlContextPro dbPro,
         TokenService tokenService,
-        AppSettingService settingService,
-        AppSettingsManager settingsManager
+        AppSettingService settingService
     ) : ControllerBasePro
     {
         private static byte[] _transparentPngBytes =
@@ -259,10 +258,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailTracker
             await settingService.CheckUpdatePermission(userId, type);
 
             var key = nameof(EmailTrackingSetting);
-            var appSetting = await settingService.UpdateAppSetting(trackingSetting, key, type);
-
-            // 更新缓存
-            await settingsManager.ResetSetting<EmailTrackingSetting>(appSetting, db);
+            await settingService.UpdateAppSetting(trackingSetting, key, type);
 
             return true.ToSuccessResponse();
         }

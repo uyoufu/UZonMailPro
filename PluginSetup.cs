@@ -20,9 +20,6 @@ namespace UzonMail.ProPlugin
             services.AddSqlContext<SqlContextPro, PostgreSqlContextPro, SqLiteContextPro>(
                 hostBuilder.Configuration
             );
-
-            // 批量注册服务
-            services.AddServices();
         }
 
         public void ConfigureApp(IApplicationBuilder app) { }

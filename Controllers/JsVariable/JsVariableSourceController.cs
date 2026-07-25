@@ -18,8 +18,11 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
     /// <summary>
     /// js 变量控制器
     /// </summary>
-    public class JsVariableSourceController(SqlContextPro dbPro, TokenService tokenService)
-        : ControllerBasePro
+    public class JsVariableSourceController(
+        SqlContextPro dbPro,
+        TokenService tokenService,
+        IDBCacheManager cacheManager
+    ) : ControllerBasePro
     {
         [HttpPost]
         public async Task<ResponseResult<JsVariableSource>> UpsertJsVariableSource(
@@ -49,6 +52,7 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
                             .SetProperty(m => m.Name, data.Name)
                             .SetProperty(m => m.Value, data.Value)
                 );
+                await cacheManager.InvalidateSourceAsync(JsVariableCache.GetSourceKey(data.UserId));
                 return data.ToSuccessResponse();
             }
 
@@ -56,7 +60,7 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
             await dbPro.SaveChangesAsync();
 
             // 更新缓存
-            DBCacheManager.Global.SetCacheDirty<JsVariableCache>(data.UserId);
+            await cacheManager.InvalidateSourceAsync(JsVariableCache.GetSourceKey(data.UserId));
 
             return data.ToSuccessResponse();
         }
@@ -115,6 +119,7 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
             await dbPro
                 .JsVariableSources.Where(x => x.UserId == userId && Ids.Contains(x.Id))
                 .ExecuteDeleteAsync();
+            await cacheManager.InvalidateSourceAsync(JsVariableCache.GetSourceKey(userId));
             return true.ToSuccessResponse();
         }
     }

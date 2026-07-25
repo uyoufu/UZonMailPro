@@ -13,7 +13,8 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
         SqlContext db,
         SqlContextPro dbPro,
         LicenseAccessService functionAccess,
-        AppSettingsManager settingsManager
+        AppSettingsManager settingsManager,
+        IDBCacheManager cacheManager
     ) : IContentDecroator
     {
         public int Order { get; }
@@ -30,7 +31,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
                 return originBody;
             var decoratorParams = unsubesribeParams as EmailDecoratorParams;
 
-            var userInfo = await DBCacheManager.Global.GetCache<UserInfoCache>(
+            var userInfo = await cacheManager.GetCache<UserInfoCache>(
                 db,
                 decoratorParams!.SendingItem.UserId
             );

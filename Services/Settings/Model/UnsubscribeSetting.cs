@@ -51,7 +51,7 @@ namespace UzonMail.ProPlugin.Services.Settings.Model
         /// </summary>
         public long UnsubscribeButtonId { get; set; } = 1;
 
-        protected override void ReadValuesFromJsons()
+        protected override void ReadValuesFromJson()
         {
             Enable = GetBoolValue(nameof(Enable), false);
             Type = (UnsubscibeType)GetIntValue(nameof(Type), 0);

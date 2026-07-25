@@ -8,8 +8,11 @@ using UzonMail.ProPlugin.SQL;
 
 namespace UzonMail.ProPlugin.Services.Unsubscribe
 {
-    public class UnsubscribeItemFilter(SqlContext sqlContext, SqlContextPro dbPro)
-        : ISendingItemFilter
+    public class UnsubscribeItemFilter(
+        SqlContext sqlContext,
+        SqlContextPro dbPro,
+        IDBCacheManager cacheManager
+    ) : ISendingItemFilter
     {
         public async Task<List<long>> GetInvalidSendingItemIds(List<SendingItem> sendingItems)
         {
@@ -19,7 +22,7 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
             }
 
             // 对于取消订阅的邮件，进行标记
-            var userInfo = await DBCacheManager.Global.GetCache<UserInfoCache>(
+            var userInfo = await cacheManager.GetCache<UserInfoCache>(
                 sqlContext,
                 sendingItems[0].UserId
             );
