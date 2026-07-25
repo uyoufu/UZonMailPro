@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
+using UzonMail.CorePlugin.Services.Settings;
 using UzonMail.DB.SQL;
 using UzonMail.DB.SQL.Core.Files;
 using UzonMail.ProPlugin.Controllers.Base;
@@ -10,7 +11,8 @@ using UzonMail.Utils.Web.ResponseModel;
 
 namespace UzonMail.ProPlugin.Controllers.Files
 {
-    public class ObjectReaderController(SqlContext db) : ControllerBasePro
+    public class ObjectReaderController(SqlContext db, TokenService tokenService)
+        : ControllerBasePro
     {
         private static FileExtensionContentTypeProvider _contentTypeProvider = new();
 
@@ -18,16 +20,19 @@ namespace UzonMail.ProPlugin.Controllers.Files
         [HttpGet("persistent")]
         public async Task<ResponseResult<string>> CreateObjectPersistentReader(long fileUsageId)
         {
+            var userId = tokenService.GetUserSqlId();
             // 查找文件对象
             var fileObject = await db
-                .FileUsages.Where(x => x.Id == fileUsageId)
+                .FileUsages.Where(x => x.Id == fileUsageId && x.OwnerUserId == userId)
                 .FirstOrDefaultAsync();
             if (fileObject == null)
                 return string.Empty.ToFailResponse("文件不存在");
 
             // 判断是否存在 reader
             var existReader = await db
-                .FileReaders.Where(x => x.FileObjectId == fileObject.FileObjectId)
+                .FileReaders.Where(x =>
+                    x.FileObjectId == fileObject.FileObjectId && x.UserId == userId
+                )
                 .FirstOrDefaultAsync();
             if (existReader == null)
             {
@@ -70,7 +75,7 @@ namespace UzonMail.ProPlugin.Controllers.Files
             // 判断是否过期
             if (fileReader.ExpireDate < DateTime.UtcNow)
             {
-                db.FileReaders.Remove(fileReader);
+                fileReader.IsDeleted = true;
                 await db.SaveChangesAsync();
 
                 return NotFound("文件已过期");
