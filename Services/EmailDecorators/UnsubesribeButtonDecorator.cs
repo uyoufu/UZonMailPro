@@ -29,11 +29,9 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
             // 判断是否有企业版本功能
             if (!(await functionAccess.HasEmailTrackingAccess()))
                 return originBody;
-            var decoratorParams = unsubesribeParams as EmailDecoratorParams;
-
             var userInfo = await cacheManager.GetCache<UserInfoCache>(
                 db,
-                decoratorParams!.SendingItem.UserId
+                unsubesribeParams.SendingItem.UserId
             );
 
             // 获取设置
@@ -56,7 +54,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
                 return originBody;
 
             // 生成退订链接
-            unsubscribeUrl += $"&token={decoratorParams.SendingItem.ObjectId}";
+            unsubscribeUrl += $"&token={unsubesribeParams.SendingItem.ObjectId}";
             if (!unsubscribeUrl.Contains('?'))
             {
                 unsubscribeUrl = unsubscribeUrl.Replace("&", "?");

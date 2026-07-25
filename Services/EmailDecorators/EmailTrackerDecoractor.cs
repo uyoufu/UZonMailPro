@@ -26,7 +26,6 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
             string originBody
         )
         {
-            var decoratorParams = trackerParams as EmailDecoratorParams;
             if (string.IsNullOrEmpty(originBody))
                 return originBody;
             // 说明没有设置 API 地址
@@ -43,7 +42,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
             // 判断是否设置了追踪
             var trackingSetting = await settingsManager.GetSetting<EmailTrackingSetting>(
                 db,
-                decoratorParams.SendingItem.UserId
+                trackerParams.SendingItem.UserId
             );
             if (!trackingSetting.IsEnableTracker())
                 return originBody;
@@ -64,7 +63,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
             }
 
             // 新建锚点
-            var sendingItem = decoratorParams.SendingItem;
+            var sendingItem = trackerParams.SendingItem;
             var emailAnchor = await dbPro
                 .EmailAnchors.Where(x => x.SendingItemId == sendingItem.Id)
                 .FirstOrDefaultAsync();
@@ -77,7 +76,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
                     SendingItemId = sendingItem.Id,
                     SendingGroupId = sendingItem.SendingGroupId,
                     InboxEmails = string.Join(",", sendingItem.Inboxes.Select(x => x.Email)),
-                    OutboxEmail = decoratorParams.OutboxEmail
+                    OutboxEmail = trackerParams.OutboxEmail
                 };
                 dbPro.EmailAnchors.Add(emailAnchor);
                 await dbPro.SaveChangesAsync();

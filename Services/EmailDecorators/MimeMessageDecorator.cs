@@ -29,10 +29,9 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
             if (!(await functionAccess.HasUnsubscribeAccess()))
                 return mimeMessage;
 
-            var decoratorParams = mimeParams as EmailDecoratorParams;
             var userInfo = await cacheManager.GetCache<UserInfoCache>(
                 db,
-                decoratorParams.SendingItem.UserId
+                mimeParams.SendingItem.UserId
             );
 
             var unsubscribeSettings = await serviceProvider
@@ -46,7 +45,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
 
             // 生成退订链接
             var unsubscribeUrl = await unsubscribeSettings.GetUnsubscribeUrl(db);
-            unsubscribeUrl += $"&token={decoratorParams.SendingItem.ObjectId}";
+            unsubscribeUrl += $"&token={mimeParams.SendingItem.ObjectId}";
 
             if (!unsubscribeUrl.Contains('?'))
             {
@@ -54,7 +53,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
             }
             var unsubscribeHeader = UnsubscribeHeaderFactory.GetUnsubscribeHeader(
                 serviceProvider,
-                decoratorParams.OutboxEmail
+                mimeParams.OutboxEmail
             );
             unsubscribeHeader.SetHeader(mimeMessage, unsubscribeUrl);
 

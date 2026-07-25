@@ -46,7 +46,7 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
             // 对变量进行替换
             var jsVariableCache = await cacheManager.GetCache<JsVariableCache, SqlContextPro>(
                 dbPro,
-                decoratorParams.SendItemMeta.UserId
+                decoratorParams.SendingItem.UserId
             );
             var uzonData = UzonData.GetUzonData(decoratorParams, jsVariableCache);
 

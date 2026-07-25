@@ -99,16 +99,14 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
             JsVariableCache variableCache
         )
         {
-            var sendItemMeta = decoratorParams.SendItemMeta;
-
             var uzonData = new UzonData()
             {
                 Source = variableCache.Source,
-                Data = sendItemMeta.BodyData ?? new JObject(),
-                Subject = sendItemMeta.Subject,
+                Data = decoratorParams.Variables ?? new JObject(),
+                Subject = decoratorParams.Subject,
                 OutboxEmail = decoratorParams.Outbox.Email,
-                InboxEmail = string.Join(",", sendItemMeta.Inboxes.Select(x => x.Email)),
-                Body = sendItemMeta.HtmlBody,
+                InboxEmail = string.Join(",", decoratorParams.Inboxes.Select(x => x.Email)),
+                Body = decoratorParams.HtmlBody,
 
                 // 完整数据
                 Outbox = new EmailAddress()
@@ -116,10 +114,10 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
                     Email = decoratorParams.Outbox.Email,
                     Name = decoratorParams.Outbox.Name
                 },
-                Inbox = sendItemMeta.Inboxes.First(),
-                Inboxes = sendItemMeta.Inboxes,
-                CC = sendItemMeta.CC ?? [],
-                BCC = sendItemMeta.BCC ?? [],
+                Inbox = decoratorParams.Inboxes.First(),
+                Inboxes = [.. decoratorParams.Inboxes],
+                CC = [.. decoratorParams.CC],
+                BCC = [.. decoratorParams.BCC],
             };
 
             return uzonData;
