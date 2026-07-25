@@ -6,12 +6,10 @@ namespace UzonMail.ProPlugin.SQL
 {
     public class SqLiteContextPro : SqlContextPro
     {
-
         #region 初始化
         // 用于设计时创建 DbContext 实例
-        public SqLiteContextPro(DbContextOptions<SqlContextPro> options) : base(options)
-        {
-        }
+        public SqLiteContextPro(DbContextOptions<SqlContextPro> options)
+            : base(options) { }
 
         private readonly IConfiguration _configuration;
 

@@ -48,26 +48,32 @@ namespace UzonMail.ProPlugin.SQL.EmailCrawler
         /// 是否解析到了额外信息
         /// </summary>
         public bool IsParsed { get; set; }
+
         /// <summary>
         /// 邮箱地址
         /// </summary>
         public string? Email { get; set; }
+
         /// <summary>
         /// 电话号码
         /// </summary>
         public string? Phone { get; set; }
+
         /// <summary>
         /// WhatsApp 号码
         /// </summary>
         public string? WhatsApp { get; set; }
+
         /// <summary>
         /// Instagram 账号
         /// </summary>
         public string? Instagram { get; set; }
+
         /// <summary>
         /// Youtube 频道
         /// </summary>
         public string? Youtube { get; set; }
+
         /// <summary>
         /// Telegram 信息
         /// </summary>

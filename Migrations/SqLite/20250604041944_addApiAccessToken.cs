@@ -15,7 +15,8 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 name: "AccessTokens",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
@@ -31,14 +32,14 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AccessTokens", x => x.Id);
-                });
+                }
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AccessTokens");
+            migrationBuilder.DropTable(name: "AccessTokens");
         }
     }
 }

@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 using UzonMail.DB.SQL.Base;
 
 namespace UzonMail.ProPlugin.SQL.JsVariable
@@ -34,7 +34,7 @@ namespace UzonMail.ProPlugin.SQL.JsVariable
         /// </summary>
         /// <returns></returns>
         public string GetFunctionDefinition()
-        {            
+        {
             // 去掉 function ...) 部分
             var regex = new Regex(".*function.*\\)", RegexOptions.IgnoreCase);
             var body = regex.Replace(FunctionBody, "");

@@ -1,9 +1,10 @@
-using UzonMail.Utils.Http;
 using UzonMail.ProPlugin.Modules.ByteDance.Signer;
+using UzonMail.Utils.Http;
 
 namespace UzonMail.ProPlugin.Services.Crawlers.ByteDance.APIs
 {
-    public class GetRecommendList() : ApiBase(HttpMethod.Get, $"https://www.tiktok.com/api/recommend/item_list/")
+    public class GetRecommendList()
+        : ApiBase(HttpMethod.Get, $"https://www.tiktok.com/api/recommend/item_list/")
     {
         private int _countPerPage = 30;
 

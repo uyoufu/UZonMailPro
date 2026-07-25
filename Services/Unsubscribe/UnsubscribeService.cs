@@ -1,16 +1,17 @@
 using log4net;
 using Microsoft.EntityFrameworkCore;
 using UzonMail.DB.SQL;
-using UzonMail.Utils.Web.Exceptions;
-using UzonMail.Utils.Web.Service;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.Unsubscribes;
+using UzonMail.Utils.Web.Exceptions;
+using UzonMail.Utils.Web.Service;
 
 namespace UzonMail.ProPlugin.Services.Unsubscribe
 {
     public class UnsubscribeService(SqlContext db, SqlContextPro dbPro) : IScopedService
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(UnsubscribeService));
+
         /// <summary>
         /// 开始退订
         /// </summary>
@@ -18,20 +19,26 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
         /// <returns></returns>
         public async Task<bool> Unsubscribe(string sendingItemId, string? host)
         {
-            var sendingItem = await db.SendingItems.AsNoTracking().FirstOrDefaultAsync(x => x.ObjectId == sendingItemId);
+            var sendingItem = await db
+                .SendingItems.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.ObjectId == sendingItemId);
             if (sendingItem == null)
             {
                 var message = "无法解析退订 token";
                 _logger.Error(message);
                 throw new KnownException(message);
             }
-            var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
+            var user = await db
+                .Users.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
 
             var toEmails = sendingItem.ToEmails.Split(',');
             foreach (var toEmail in toEmails)
             {
                 // 添加到退订列表
-                var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x => x.OrganizationId == user.OrganizationId && x.Email == toEmail);
+                var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x =>
+                    x.OrganizationId == user.OrganizationId && x.Email == toEmail
+                );
                 if (existOne != null)
                 {
                     continue;
@@ -57,18 +64,25 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
         /// <returns></returns>
         public async Task<bool> IsUnsubscribed(string sendingItemId)
         {
-            var sendingItem = await db.SendingItems.AsNoTracking().FirstOrDefaultAsync(x => x.ObjectId == sendingItemId);
+            var sendingItem = await db
+                .SendingItems.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.ObjectId == sendingItemId);
             if (sendingItem == null)
             {
                 var message = "无法解析退订 token";
                 _logger.Error(message);
                 throw new KnownException(message);
             }
-            var user = await db.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
+            var user = await db
+                .Users.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
             var toEmails = sendingItem.ToEmails.Split(',');
-            if (toEmails.Length != 1) return false;
+            if (toEmails.Length != 1)
+                return false;
 
-            var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x => x.OrganizationId == user.OrganizationId && x.Email == toEmails[0]);
+            var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x =>
+                x.OrganizationId == user.OrganizationId && x.Email == toEmails[0]
+            );
             return existOne != null;
         }
     }

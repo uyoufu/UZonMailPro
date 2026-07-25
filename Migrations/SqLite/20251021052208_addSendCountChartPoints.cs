@@ -15,15 +15,14 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 table: "IpWarmUpUpPlans",
                 type: "TEXT",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "SendCountChartPoints",
-                table: "IpWarmUpUpPlans");
+            migrationBuilder.DropColumn(name: "SendCountChartPoints", table: "IpWarmUpUpPlans");
         }
     }
 }

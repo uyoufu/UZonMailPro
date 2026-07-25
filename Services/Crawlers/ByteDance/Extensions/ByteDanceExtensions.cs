@@ -11,7 +11,8 @@ namespace UzonMail.ProPlugin.Services.Crawlers.ByteDance.Extensions
         /// <returns></returns>
         public static HttpClient AddUserAgentHeaders(this HttpClient httpClient)
         {
-            httpClient.TryAddHeader("sec-ch-ua", BrowserMock.GetSecChUa())
+            httpClient
+                .TryAddHeader("sec-ch-ua", BrowserMock.GetSecChUa())
                 .TryAddHeader("sec-ch-ua-mbile", "?0")
                 .TryAddHeader("User-Agent", BrowserMock.GetChromeUserAgent())
                 .TryAddHeader("sec-ch-ua-platform", "Windows")

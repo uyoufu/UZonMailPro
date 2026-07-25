@@ -14,7 +14,8 @@ namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
         /// <returns></returns>
         public static string GetMsToken(int randomLength = 107)
         {
-            const string baseStr = "ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789=";
+            const string baseStr =
+                "ABCDEFGHIGKLMNOPQRSTUVWXYZabcdefghigklmnopqrstuvwxyz0123456789=";
             int length = baseStr.Length;
             StringBuilder randomStr = new(randomLength);
             for (int i = 0; i < randomLength; i++)

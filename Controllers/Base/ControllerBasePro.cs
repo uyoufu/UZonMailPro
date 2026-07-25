@@ -9,7 +9,5 @@ namespace UzonMail.ProPlugin.Controllers.Base
     [Authorize]
     [Route("api/pro/[controller]")]
     [ApiController]
-    public class ControllerBasePro : ControllerBase
-    {
-    }
+    public class ControllerBasePro : ControllerBase { }
 }

@@ -12,6 +12,6 @@ namespace UzonMail.ProPlugin.Controllers.IPWarmUp.DTOs
         /// <summary>
         /// 发送数量图表数据点
         /// </summary>
-        public List<double[]> SendCountChartPoints { get; set; } = [ ];
+        public List<double[]> SendCountChartPoints { get; set; } = [];
     }
 }

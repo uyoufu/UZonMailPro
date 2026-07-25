@@ -15,8 +15,10 @@ namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
         /// <returns></returns>
         public JsEngine ExecuteJsFile(string jsPath)
         {
-            if (!File.Exists(jsPath)) throw new Exception("js 文件不存在");
-            if (_executedFiles.ContainsKey(jsPath)) return this;
+            if (!File.Exists(jsPath))
+                throw new Exception("js 文件不存在");
+            if (_executedFiles.ContainsKey(jsPath))
+                return this;
 
             var jsCode = File.ReadAllText(jsPath);
             _jsEngine.Value.Execute(jsCode);

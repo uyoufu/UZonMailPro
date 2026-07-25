@@ -5,8 +5,5 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
     /// <summary>
     /// 远程跟踪器
     /// </summary>
-    public class RemoteTracker: ITransientService
-    {
-
-    }
+    public class RemoteTracker : ITransientService { }
 }

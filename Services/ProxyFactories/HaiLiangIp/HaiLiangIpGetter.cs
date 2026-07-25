@@ -9,7 +9,7 @@ namespace UzonMail.ProPlugin.Services.ProxyFactories.HaiLiangIp
             var protocolParameter = GetParameter("protocol");
             var protocalValue = protocolParameter == null ? "socks5" : protocolParameter.Value;
 
-            AddQuery("type", protocalValue == "http" ? "1":"2");
+            AddQuery("type", protocalValue == "http" ? "1" : "2");
             if (protocolParameter == null)
             {
                 AddQuery("protocol", protocalValue);

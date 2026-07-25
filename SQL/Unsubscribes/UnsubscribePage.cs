@@ -10,7 +10,7 @@ namespace UzonMail.ProPlugin.SQL.Unsubscribes
         /// <summary>
         /// 语言
         /// </summary>
-        public string Language { get; set;}
+        public string Language { get; set; }
 
         /// <summary>
         /// Html 内容

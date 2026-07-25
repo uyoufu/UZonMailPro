@@ -1,5 +1,5 @@
-using log4net;
 using System.Reflection;
+using log4net;
 using UzonMail.Utils.Http;
 
 namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
@@ -11,6 +11,7 @@ namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
     public class TiktokCredentials : ByteDanceCredentials
     {
         private readonly ILog _logger = LogManager.GetLogger(typeof(TiktokCredentials));
+
         /// <summary>
         /// js 路径
         /// </summary>

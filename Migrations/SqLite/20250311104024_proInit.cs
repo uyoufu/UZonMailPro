@@ -15,7 +15,8 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 name: "CrawlerTaskInfos",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<long>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
@@ -37,13 +38,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_CrawlerTaskInfos", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "EmailAnchors",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<long>(type: "INTEGER", nullable: false),
                     SendingGroupId = table.Column<long>(type: "INTEGER", nullable: false),
@@ -61,13 +64,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EmailAnchors", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "IPInfos",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     IP = table.Column<string>(type: "TEXT", nullable: false),
                     Country = table.Column<string>(type: "TEXT", nullable: true),
@@ -88,13 +93,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IPInfos", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "TikTokAuthorDiversifications",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TikTokAuthorId = table.Column<long>(type: "INTEGER", nullable: false),
                     DiversificationId = table.Column<long>(type: "INTEGER", nullable: false),
@@ -106,13 +113,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TikTokAuthorDiversifications", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "TiktokAuthors",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AvatarLarger = table.Column<string>(type: "TEXT", nullable: false),
                     AvatarMedium = table.Column<string>(type: "TEXT", nullable: false),
@@ -160,13 +169,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TiktokAuthors", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "TikTokDevices",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
@@ -183,13 +194,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TikTokDevices", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UnsubscribeButtons",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: true),
@@ -203,13 +216,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UnsubscribeButtons", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UnsubscribeEmails",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Host = table.Column<string>(type: "TEXT", nullable: true),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
@@ -222,13 +237,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UnsubscribeEmails", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UnsubscribePages",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Language = table.Column<string>(type: "TEXT", nullable: false),
                     HtmlContent = table.Column<string>(type: "TEXT", nullable: false),
@@ -242,13 +259,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UnsubscribePages", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "UnsubscribeSettings",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Enable = table.Column<bool>(type: "INTEGER", nullable: false),
                     Type = table.Column<int>(type: "INTEGER", nullable: false),
@@ -263,13 +282,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UnsubscribeSettings", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "EmailVisitHistories",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     IP = table.Column<string>(type: "TEXT", nullable: false),
                     EmailAnchorId = table.Column<long>(type: "INTEGER", nullable: true),
@@ -285,14 +306,17 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                         name: "FK_EmailVisitHistories_EmailAnchors_EmailAnchorId",
                         column: x => x.EmailAnchorId,
                         principalTable: "EmailAnchors",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id"
+                    );
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "CrawlerTaskResults",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CrawlerTaskInfoId = table.Column<long>(type: "INTEGER", nullable: false),
                     TikTokAuthorId = table.Column<long>(type: "INTEGER", nullable: false),
@@ -310,68 +334,58 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                         name: "FK_CrawlerTaskResults_TiktokAuthors_TikTokAuthorId",
                         column: x => x.TikTokAuthorId,
                         principalTable: "TiktokAuthors",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id"
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_CrawlerTaskResults_TikTokAuthorId",
                 table: "CrawlerTaskResults",
-                column: "TikTokAuthorId");
+                column: "TikTokAuthorId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_EmailVisitHistories_EmailAnchorId",
                 table: "EmailVisitHistories",
-                column: "EmailAnchorId");
+                column: "EmailAnchorId"
+            );
 
-            migrationBuilder.CreateIndex(
-                name: "IX_IPInfos_IP",
-                table: "IPInfos",
-                column: "IP");
+            migrationBuilder.CreateIndex(name: "IX_IPInfos_IP", table: "IPInfos", column: "IP");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UnsubscribeEmails_OrganizationId_Email",
                 table: "UnsubscribeEmails",
-                columns: new[] { "OrganizationId", "Email" });
+                columns: new[] { "OrganizationId", "Email" }
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "CrawlerTaskInfos");
+            migrationBuilder.DropTable(name: "CrawlerTaskInfos");
 
-            migrationBuilder.DropTable(
-                name: "CrawlerTaskResults");
+            migrationBuilder.DropTable(name: "CrawlerTaskResults");
 
-            migrationBuilder.DropTable(
-                name: "EmailVisitHistories");
+            migrationBuilder.DropTable(name: "EmailVisitHistories");
 
-            migrationBuilder.DropTable(
-                name: "IPInfos");
+            migrationBuilder.DropTable(name: "IPInfos");
 
-            migrationBuilder.DropTable(
-                name: "TikTokAuthorDiversifications");
+            migrationBuilder.DropTable(name: "TikTokAuthorDiversifications");
 
-            migrationBuilder.DropTable(
-                name: "TikTokDevices");
+            migrationBuilder.DropTable(name: "TikTokDevices");
 
-            migrationBuilder.DropTable(
-                name: "UnsubscribeButtons");
+            migrationBuilder.DropTable(name: "UnsubscribeButtons");
 
-            migrationBuilder.DropTable(
-                name: "UnsubscribeEmails");
+            migrationBuilder.DropTable(name: "UnsubscribeEmails");
 
-            migrationBuilder.DropTable(
-                name: "UnsubscribePages");
+            migrationBuilder.DropTable(name: "UnsubscribePages");
 
-            migrationBuilder.DropTable(
-                name: "UnsubscribeSettings");
+            migrationBuilder.DropTable(name: "UnsubscribeSettings");
 
-            migrationBuilder.DropTable(
-                name: "TiktokAuthors");
+            migrationBuilder.DropTable(name: "TiktokAuthors");
 
-            migrationBuilder.DropTable(
-                name: "EmailAnchors");
+            migrationBuilder.DropTable(name: "EmailAnchors");
         }
     }
 }

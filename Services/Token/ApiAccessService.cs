@@ -2,9 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using UzonMail.CorePlugin.Services.UserInfos;
 using UzonMail.DB.SQL;
+using UzonMail.ProPlugin.Utils;
 using UzonMail.Utils.Web.Exceptions;
 using UzonMail.Utils.Web.Service;
-using UzonMail.ProPlugin.Utils;
 
 namespace UzonMail.ProPlugin.Services.Token
 {

@@ -15,7 +15,8 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 name: "IpWarmUpUpPlans",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     UserId = table.Column<long>(type: "INTEGER", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
@@ -40,13 +41,15 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_IpWarmUpUpPlans", x => x.Id);
-                });
+                }
+            );
 
             migrationBuilder.CreateTable(
                 name: "IpWarmUpUpTasks",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     IPWarmUpPlanId = table.Column<long>(type: "INTEGER", nullable: false),
                     SendingGroupId = table.Column<long>(type: "INTEGER", nullable: false),
@@ -68,23 +71,24 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                         name: "FK_IpWarmUpUpTasks_IpWarmUpUpPlans_IPWarmUpPlanId",
                         column: x => x.IPWarmUpPlanId,
                         principalTable: "IpWarmUpUpPlans",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id"
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_IpWarmUpUpTasks_IPWarmUpPlanId",
                 table: "IpWarmUpUpTasks",
-                column: "IPWarmUpPlanId");
+                column: "IPWarmUpPlanId"
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "IpWarmUpUpTasks");
+            migrationBuilder.DropTable(name: "IpWarmUpUpTasks");
 
-            migrationBuilder.DropTable(
-                name: "IpWarmUpUpPlans");
+            migrationBuilder.DropTable(name: "IpWarmUpUpPlans");
         }
     }
 }

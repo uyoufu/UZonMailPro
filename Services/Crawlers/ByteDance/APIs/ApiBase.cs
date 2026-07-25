@@ -5,12 +5,13 @@ namespace UzonMail.ProPlugin.Services.Crawlers.ByteDance.APIs
 {
     public abstract class ApiBase : FluentHttpRequest
     {
-        public ApiBase(HttpMethod method, string url) : base(method, url)
+        public ApiBase(HttpMethod method, string url)
+            : base(method, url)
         {
             AddNeededHeaders();
         }
 
-        public ApiBase() 
+        public ApiBase()
         {
             AddNeededHeaders();
         }

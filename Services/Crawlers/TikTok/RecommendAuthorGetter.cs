@@ -1,8 +1,7 @@
-
 using log4net;
 using Newtonsoft.Json.Linq;
-using UzonMail.Utils.Json;
 using UzonMail.ProPlugin.Services.Crawlers.ByteDance.APIs;
+using UzonMail.Utils.Json;
 
 namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
 {
@@ -16,13 +15,14 @@ namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
             ResetPage();
 
             var jsonResult = await new GetRecommendList()
-               .WithNeededQueries()
-               .WithBogus()
-               .WithHttpClient(taskParams.HttpClient)
-               .GetJsonAsync();
+                .WithNeededQueries()
+                .WithBogus()
+                .WithHttpClient(taskParams.HttpClient)
+                .GetJsonAsync();
 
             // 提取数据
-            if (jsonResult == null) return;
+            if (jsonResult == null)
+                return;
 
             var itemList = jsonResult.SelectTokenOrDefault<List<JObject>>("itemList", []);
             if (itemList!.Count == 0)

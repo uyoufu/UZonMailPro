@@ -7,15 +7,13 @@ namespace UzonMail.ProPlugin.SQL
     {
         private readonly IConfiguration _configuration;
 
-        internal PostgreSqlContextPro(DbContextOptions<SqlContextPro> options) : base(options)
-        {
-        }
+        internal PostgreSqlContextPro(DbContextOptions<SqlContextPro> options)
+            : base(options) { }
 
         [ActivatorUtilitiesConstructor]
         public PostgreSqlContextPro(IConfiguration configuration)
         {
             _configuration = configuration;
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

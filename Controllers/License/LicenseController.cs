@@ -1,13 +1,10 @@
-using UzonMail.Utils.Web.ResponseModel;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using UzonMail.ProPlugin.Controllers.Base;
-using UzonMail.ProPlugin.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Uamazing.Utils.Web.ResponseModel;
+using UzonMail.ProPlugin.Controllers.Base;
 using UzonMail.ProPlugin.Services.License;
-
-
-
+using UzonMail.ProPlugin.Utils;
+using UzonMail.Utils.Web.ResponseModel;
 
 namespace UzonMail.Pro.Controllers.License
 {
@@ -55,7 +52,7 @@ namespace UzonMail.Pro.Controllers.License
         [Authorize(Roles = "Admin")]
         [HttpDelete()]
         public async Task<ResponseResult<LicenseInfo>> RemoveLicenseInfo()
-        {            
+        {
             // 从服务器请求授权信息
             var result = await licenseManager.RemoveLicense();
             return result.ToSuccessResponse();

@@ -1,13 +1,13 @@
 using log4net;
 using Microsoft.EntityFrameworkCore;
 using UzonMail.DB.SQL;
-using UzonMail.Utils.Http;
-using UzonMail.Utils.Web.Service;
 using UzonMail.ProPlugin.Services.Crawlers.ByteDance.Extensions;
 using UzonMail.ProPlugin.Services.Crawlers.TikTok;
 using UzonMail.ProPlugin.Services.License;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.Utils.Http;
+using UzonMail.Utils.Web.Service;
 
 namespace UzonMail.ProPlugin.Services.Crawlers
 {
@@ -17,7 +17,7 @@ namespace UzonMail.ProPlugin.Services.Crawlers
     /// </summary>
     public abstract class CrawlerTaskBase(IServiceProvider serviceProvider) : IScopedService
     {
-        private readonly static ILog _logger = LogManager.GetLogger(typeof(CrawlerTaskBase));
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(CrawlerTaskBase));
         protected readonly AsyncServiceScope Scope = serviceProvider.CreateAsyncScope();
 
         private CrawlerTaskParams _crawlerTaskParams;
@@ -48,7 +48,10 @@ namespace UzonMail.ProPlugin.Services.Crawlers
             }
 
             var dbPro = scope.ServiceProvider.GetRequiredService<SqlContextPro>();
-            var crawlerTaskInfo = await dbPro.CrawlerTaskInfos.AsNoTracking().Where(x => x.Id == crawlerTaskId).FirstOrDefaultAsync();
+            var crawlerTaskInfo = await dbPro
+                .CrawlerTaskInfos.AsNoTracking()
+                .Where(x => x.Id == crawlerTaskId)
+                .FirstOrDefaultAsync();
 
             if (crawlerTaskInfo?.TikTokDeviceId == 0)
             {
@@ -57,7 +60,10 @@ namespace UzonMail.ProPlugin.Services.Crawlers
             }
 
             // 查找参数
-            var device = await dbPro.TikTokDevices.AsNoTracking().Where(x => x.Id == crawlerTaskInfo.TikTokDeviceId).FirstOrDefaultAsync();
+            var device = await dbPro
+                .TikTokDevices.AsNoTracking()
+                .Where(x => x.Id == crawlerTaskInfo.TikTokDeviceId)
+                .FirstOrDefaultAsync();
             if (device == null)
             {
                 _logger.Warn($"设备信息不存在: {crawlerTaskInfo.TikTokDeviceId}");
@@ -74,7 +80,8 @@ namespace UzonMail.ProPlugin.Services.Crawlers
                 {
                     httpClientHandler.WithProxy(proxyStr);
                 }
-            };
+            }
+            ;
             var httpClient = new HttpClient(httpClientHandler);
             httpClient.AddUserAgentHeaders();
 
@@ -90,8 +97,12 @@ namespace UzonMail.ProPlugin.Services.Crawlers
             RootStep = new RootStep(crawlerTaskId);
 
             // 标记任务开始
-            await dbPro.CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId).ExecuteUpdateAsync(x => x.SetProperty(y => y.Status, CrawlerStatus.Running)
-                .SetProperty(y => y.StartDate, DateTime.UtcNow));
+            await dbPro
+                .CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId)
+                .ExecuteUpdateAsync(x =>
+                    x.SetProperty(y => y.Status, CrawlerStatus.Running)
+                        .SetProperty(y => y.StartDate, DateTime.UtcNow)
+                );
 
             try
             {
@@ -106,15 +117,20 @@ namespace UzonMail.ProPlugin.Services.Crawlers
             {
                 // 任务结束
                 // 计算结果数量
-                var resultCount = await dbPro.CrawlerTaskResults
-                    .Where(x => x.CrawlerTaskInfoId == crawlerTaskId)
+                var resultCount = await dbPro
+                    .CrawlerTaskResults.Where(x => x.CrawlerTaskInfoId == crawlerTaskId)
                     .CountAsync();
 
                 // 标记任务结束
-                await dbPro.CrawlerTaskInfos.Where(x => x.Id == crawlerTaskId && x.Status == CrawlerStatus.Running)
-                    .ExecuteUpdateAsync(x => x.SetProperty(y => y.Status, CrawlerStatus.Stopped)
-                        .SetProperty(y => y.EndDate, DateTime.UtcNow)
-                        .SetProperty(y => y.Count, resultCount));
+                await dbPro
+                    .CrawlerTaskInfos.Where(x =>
+                        x.Id == crawlerTaskId && x.Status == CrawlerStatus.Running
+                    )
+                    .ExecuteUpdateAsync(x =>
+                        x.SetProperty(y => y.Status, CrawlerStatus.Stopped)
+                            .SetProperty(y => y.EndDate, DateTime.UtcNow)
+                            .SetProperty(y => y.Count, resultCount)
+                    );
 
                 httpClient.Dispose();
             }
@@ -122,7 +138,8 @@ namespace UzonMail.ProPlugin.Services.Crawlers
 
         public async Task<bool> RestartAsync(long crawlerTaskId)
         {
-            if (RootStep == null) return false;
+            if (RootStep == null)
+                return false;
 
             RootStep.AddCrawlerTaskId(crawlerTaskId);
             _crawlerTaskParams.CrawlerTaskId = crawlerTaskId;

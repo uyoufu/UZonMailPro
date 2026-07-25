@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using UzonMail.CorePlugin.Services.EmailDecorator.Interfaces;
 using UzonMail.DB.SQL;
-using UzonMail.Utils.Web.Service;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.ReadingTracker;
+using UzonMail.Utils.Web.Service;
 
 namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
 {

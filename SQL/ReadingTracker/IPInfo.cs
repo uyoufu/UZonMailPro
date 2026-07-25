@@ -10,10 +10,12 @@ namespace UzonMail.ProPlugin.SQL.ReadingTracker
         /// 主机
         /// </summary>
         public string IP { get; set; }
+
         /// <summary>
         /// 国家
         /// </summary>
         public string? Country { get; set; }
+
         /// <summary>
         /// 区域
         /// </summary>

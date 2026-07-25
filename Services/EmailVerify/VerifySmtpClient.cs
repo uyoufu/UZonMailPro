@@ -1,18 +1,18 @@
+using System.Globalization;
+using System.Net.Sockets;
+using System.Text;
 using DnsClient;
 using log4net;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.AspNetCore.Builder;
 using MimeKit;
-using System.Globalization;
-using System.Net.Sockets;
-using System.Text;
 
 namespace UzonMail.ProPlugin.Services.EmailVerify
 {
     public class VerifySmtpClient : SmtpClient
     {
-        private readonly static ILog _logger = LogManager.GetLogger(typeof(VerifySmtpClient));
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(VerifySmtpClient));
 
         private bool _existMx = true;
         private bool _isConnected = false;
@@ -86,7 +86,10 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
 
             if (!IsConnected || !_isConnected)
             {
-                return new SmtpResponse(SmtpStatusCode.MailboxUnavailable, "Not connected to SMTP server");
+                return new SmtpResponse(
+                    SmtpStatusCode.MailboxUnavailable,
+                    "Not connected to SMTP server"
+                );
             }
 
             var toDomain = email.Trim().Split('@').Last();

@@ -1,9 +1,9 @@
 using log4net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
-using UzonMail.Utils.Json;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.Utils.Json;
 
 namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
 {
@@ -11,17 +11,24 @@ namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
     /// 爬取粉丝数量
     /// </summary>
     /// <param name="crawlerTaskParams"></param>
-    public class FollowersStep(CrawlerTaskParams crawlerTaskParams, long followingId, JObject followerInfo, long followerId) : RecommendStep(crawlerTaskParams, followerInfo, followerId)
+    public class FollowersStep(
+        CrawlerTaskParams crawlerTaskParams,
+        long followingId,
+        JObject followerInfo,
+        long followerId
+    ) : RecommendStep(crawlerTaskParams, followerInfo, followerId)
     {
-        private readonly static ILog _logger = LogManager.GetLogger(typeof(FollowersStep));
+        private static readonly ILog _logger = LogManager.GetLogger(typeof(FollowersStep));
 
-        private readonly SqlContextPro _db = crawlerTaskParams.ServiceProvider.GetRequiredService<SqlContextPro>();
+        private readonly SqlContextPro _db =
+            crawlerTaskParams.ServiceProvider.GetRequiredService<SqlContextPro>();
 
         protected override async Task ExecuteAsync()
         {
             // 解析粉丝信息
             var authorInfo = followerInfo.SelectTokenOrDefault<TiktokAuthor>("user");
-            if (authorInfo == null) return;
+            if (authorInfo == null)
+                return;
 
             // 保存作者信息
             await SaveAuthor(authorInfo);
@@ -37,7 +44,8 @@ namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
         {
             // 判断是否存在，若存在，则不再保存
             var existOne = await _db.TiktokAuthors.FirstOrDefaultAsync(x => x.Id == authorInfo.Id);
-            if (existOne != null) return;
+            if (existOne != null)
+                return;
 
             _logger.Debug($"保存粉丝 {authorInfo.Nickname}");
 

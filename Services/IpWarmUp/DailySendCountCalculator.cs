@@ -3,7 +3,12 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
     /// <summary>
     /// 每日发件量计算器
     /// </summary>
-    public class DailySendCountCalculator(DateTime startDate, DateTime endDate, int totalInboxes, List<double[]> chartPoints)
+    public class DailySendCountCalculator(
+        DateTime startDate,
+        DateTime endDate,
+        int totalInboxes,
+        List<double[]> chartPoints
+    )
     {
         private static readonly int _minCountForToday = 5;
 
@@ -22,7 +27,10 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
             // 计算今天的百分比
             var percentToday = daysPassed / totalDays;
             // 若没有图表点，则使用 arctan 计算，x 区间为 [-5,5]
-            var percent = chartPoints.Count == 0 ? CalculateArctanPercent(percentToday) : InterpolatePercent(percentToday);
+            var percent =
+                chartPoints.Count == 0
+                    ? CalculateArctanPercent(percentToday)
+                    : InterpolatePercent(percentToday);
 
             var countForToday = (int)Math.Round(percent * (totalInboxes - _minCountForToday));
             return Math.Min(countForToday, totalInboxes);
@@ -48,7 +56,10 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
             var xMin = xValues.Min();
             var xMax = xValues.Max();
 
-            var spline = MathNet.Numerics.Interpolation.CubicSpline.InterpolateNatural(xValues, yValues);
+            var spline = MathNet.Numerics.Interpolation.CubicSpline.InterpolateNatural(
+                xValues,
+                yValues
+            );
             var interpolatedValue = spline.Interpolate((xMax - xMin) * percentX + xMin);
 
             // 确保返回值在 [0,1] 之间

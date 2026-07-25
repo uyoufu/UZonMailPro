@@ -1,6 +1,6 @@
 namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
 {
-    public abstract class SignResult(string requestUrl,string msToken, string signature)
+    public abstract class SignResult(string requestUrl, string msToken, string signature)
     {
         public string MsToken { get; set; } = msToken;
         public string Signature { get; set; } = signature;

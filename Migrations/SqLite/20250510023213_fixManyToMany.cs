@@ -11,8 +11,7 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "UnsubscribeSettings");
+            migrationBuilder.DropTable(name: "UnsubscribeSettings");
         }
 
         /// <inheritdoc />
@@ -22,7 +21,8 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 name: "UnsubscribeSettings",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "INTEGER", nullable: false)
+                    Id = table
+                        .Column<long>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CreateDate = table.Column<DateTime>(type: "TEXT", nullable: false),
                     Enable = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -37,7 +37,8 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UnsubscribeSettings", x => x.Id);
-                });
+                }
+            );
         }
     }
 }

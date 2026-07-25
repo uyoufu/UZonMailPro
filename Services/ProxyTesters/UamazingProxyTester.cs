@@ -1,6 +1,6 @@
 using UzonMail.CorePlugin.Services.SendCore.Proxies.ProxyTesters;
-using UzonMail.Utils.Http.Request;
 using UzonMail.ProPlugin.Services.License;
+using UzonMail.Utils.Http.Request;
 
 namespace UzonMail.ProPlugin.Services.ProxyTesters
 {

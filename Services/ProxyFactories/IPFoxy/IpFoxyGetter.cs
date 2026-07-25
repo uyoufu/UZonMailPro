@@ -16,7 +16,7 @@ namespace UzonMail.ProPlugin.Services.ProxyFactories.IPFoxy
             AddQuery("type", "json");
             return this;
         }
-       
+
         /// <summary>
         /// 指定运营商
         /// 非必须

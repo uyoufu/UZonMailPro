@@ -11,11 +11,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<BaseOutputPath>bin\x64\Debug</BaseOutputPath>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)' == 'Release'">
-		<BaseOutputPath>bin\x64\Release\</BaseOutputPath>
+		<BaseOutputPath>..\..\UzonMailService\bin\Debug\net10.0\Plugins\UzonMailPro</BaseOutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>

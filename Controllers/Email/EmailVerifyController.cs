@@ -6,9 +6,9 @@ using UzonMail.CorePlugin.Services.Settings;
 using UzonMail.DB.SQL;
 using UzonMail.DB.SQL.Core.Emails;
 using UzonMail.DB.Utils;
-using UzonMail.Utils.Web.ResponseModel;
 using UzonMail.ProPlugin.Controllers.Base;
 using UzonMail.ProPlugin.Services.EmailVerify;
+using UzonMail.Utils.Web.ResponseModel;
 
 namespace UzonMail.ProPlugin.Controllers.Email
 {

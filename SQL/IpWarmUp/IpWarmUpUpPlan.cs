@@ -72,7 +72,7 @@ namespace UzonMail.ProPlugin.SQL.IPWarmUp
         /// 若非空，则覆盖模板
         /// </summary>
         public string? Body { get; set; }
-         
+
         /// <summary>
         /// 开始时间
         /// </summary>

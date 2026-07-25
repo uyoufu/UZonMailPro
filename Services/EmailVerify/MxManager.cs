@@ -1,6 +1,6 @@
+using System.Collections.Concurrent;
 using DnsClient;
 using DnsClient.Protocol;
-using System.Collections.Concurrent;
 using UzonMail.Utils.Web.Service;
 
 namespace UzonMail.ProPlugin.Services.EmailVerify
@@ -18,7 +18,8 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
 
         public string GetRandomRecord()
         {
-            if (Records.Count == 0 || !Valid) return string.Empty;
+            if (Records.Count == 0 || !Valid)
+                return string.Empty;
 
             // 随机返回
             var randomIndex = new Random().Next(0, Records.Count);
@@ -68,7 +69,7 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
                 return;
             }
 
-            foreach(var valueTemp in _mxRecords.Values)
+            foreach (var valueTemp in _mxRecords.Values)
             {
                 if (valueTemp.Records.Contains(mxRecordOrDomain))
                 {

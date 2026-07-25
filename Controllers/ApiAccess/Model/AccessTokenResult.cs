@@ -5,7 +5,7 @@ namespace UzonMail.ProPlugin.Controllers.ApiAccess.Model
     /// <summary>
     /// 生成的访问令牌结果
     /// </summary>
-    public class AccessTokenResult: AccessToken
+    public class AccessTokenResult : AccessToken
     {
         public string Token { get; set; }
 

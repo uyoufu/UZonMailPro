@@ -1,6 +1,6 @@
 using Uamazing.Utils.Web.ResponseModel;
-using UzonMail.Utils.Web.Access;
 using UzonMail.ProPlugin.Services.License;
+using UzonMail.Utils.Web.Access;
 
 namespace UzonMail.ProPlugin.Services.Permission
 {
@@ -15,9 +15,10 @@ namespace UzonMail.ProPlugin.Services.Permission
         /// <param name="userIds"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public async Task<Dictionary<long, List<string>>> GenerateUserPermissionCodes(List<long> userIds)
+        public async Task<Dictionary<long, List<string>>> GenerateUserPermissionCodes(
+            List<long> userIds
+        )
         {
-
             var access = new HashSet<string>();
 
             // 隐藏赞助商

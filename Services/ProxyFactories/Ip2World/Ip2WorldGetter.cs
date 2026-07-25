@@ -1,5 +1,5 @@
-using UzonMail.Utils.Http.Request;
 using UzonMail.ProPlugin.Services.ProxyFactories.YDaili;
+using UzonMail.Utils.Http.Request;
 
 namespace UzonMail.ProPlugin.Services.ProxyFactories.Ip2World
 {
@@ -7,7 +7,7 @@ namespace UzonMail.ProPlugin.Services.ProxyFactories.Ip2World
     {
         public Ip2WorldGetter WithIPNumber(int number = 10)
         {
-            AddQuery("num", number.ToString());           
+            AddQuery("num", number.ToString());
             return this;
         }
 
