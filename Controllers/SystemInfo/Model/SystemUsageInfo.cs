@@ -15,8 +15,8 @@ namespace UzonMail.Pro.Controllers.SystemInfo.Model
 
         public int RunningTasksCount { get; private set; }
 
-        public List<OutboxPoolInfo> OutboxPools { get; set; }
-        public List<SendingGroupInfo> UserSendingPools { get; set; }
+        public List<OutboxPoolInfo> OutboxPools { get; set; } = [];
+        public List<SendingGroupInfo> UserSendingPools { get; set; } = [];
 
         public async Task GatherInfomations(ISendRuntimeDiagnostics diagnostics)
         {

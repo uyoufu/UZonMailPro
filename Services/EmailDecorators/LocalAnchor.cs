@@ -7,10 +7,8 @@ using UzonMail.Utils.Web.Service;
 
 namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
 {
-    public class LocalAnchor(SqlContextPro sqlContext, HttpClient httpClient) : ITransientService
+    public class LocalAnchor(SqlContextPro sqlContext) : ITransientService
     {
-        private static readonly string _anchorUrl = "api/pro/email-tracker/image";
-
         /// <summary>
         /// 获取邮件锚点
         /// </summary>

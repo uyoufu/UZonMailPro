@@ -31,8 +31,13 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
             var user = await db
                 .Users.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
+            if (user is null)
+                throw new KnownException("退订邮件所属用户不存在");
 
-            var toEmails = sendingItem.ToEmails.Split(',');
+            var toEmails = (sendingItem.ToEmails ?? string.Empty).Split(
+                ',',
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+            );
             foreach (var toEmail in toEmails)
             {
                 // 添加到退订列表
@@ -76,7 +81,13 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
             var user = await db
                 .Users.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
-            var toEmails = sendingItem.ToEmails.Split(',');
+            if (user is null)
+                throw new KnownException("退订邮件所属用户不存在");
+
+            var toEmails = (sendingItem.ToEmails ?? string.Empty).Split(
+                ',',
+                StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+            );
             if (toEmails.Length != 1)
                 return false;
 

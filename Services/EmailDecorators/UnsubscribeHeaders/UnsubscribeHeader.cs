@@ -10,8 +10,8 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators.UnsubscribeHeaders
     /// </summary>
     public class UnsubscribeHeader
     {
-        public string Domain { get; set; }
-        public string Header { get; set; }
-        public string Description { get; set; }
+        public string Domain { get; set; } = string.Empty;
+        public string Header { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
     }
 }

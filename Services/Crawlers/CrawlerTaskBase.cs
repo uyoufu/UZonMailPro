@@ -20,8 +20,9 @@ namespace UzonMail.ProPlugin.Services.Crawlers
         private static readonly ILog _logger = LogManager.GetLogger(typeof(CrawlerTaskBase));
         protected readonly AsyncServiceScope Scope = serviceProvider.CreateAsyncScope();
 
-        private CrawlerTaskParams _crawlerTaskParams;
-        protected RootStep RootStep { get; private set; }
+        private CrawlerTaskParams? _crawlerTaskParams;
+        private RootStep? _rootStep;
+        protected RootStep RootStep => _rootStep ?? throw new InvalidOperationException("爬虫任务尚未启动");
 
         /// <summary>
         /// 子类重写此方法，执行具体的爬取任务
@@ -53,7 +54,13 @@ namespace UzonMail.ProPlugin.Services.Crawlers
                 .Where(x => x.Id == crawlerTaskId)
                 .FirstOrDefaultAsync();
 
-            if (crawlerTaskInfo?.TikTokDeviceId == 0)
+            if (crawlerTaskInfo is null)
+            {
+                _logger.Warn($"爬虫任务不存在: {crawlerTaskId}");
+                return;
+            }
+
+            if (crawlerTaskInfo.TikTokDeviceId == 0)
             {
                 _logger.Warn("设备信息为空");
                 return;
@@ -71,7 +78,7 @@ namespace UzonMail.ProPlugin.Services.Crawlers
             }
 
             var httpClientHandler = new HttpClientHandler();
-            if (crawlerTaskInfo?.ProxyId > 0)
+            if (crawlerTaskInfo.ProxyId > 0)
             {
                 var db = scope.ServiceProvider.GetRequiredService<SqlContext>();
                 // 开始使用代理
@@ -81,7 +88,6 @@ namespace UzonMail.ProPlugin.Services.Crawlers
                     httpClientHandler.WithProxy(proxyStr);
                 }
             }
-            ;
             var httpClient = new HttpClient(httpClientHandler);
             httpClient.AddUserAgentHeaders();
 
@@ -94,7 +100,7 @@ namespace UzonMail.ProPlugin.Services.Crawlers
                 OdinId = device.OdinId,
                 HttpClient = httpClient,
             };
-            RootStep = new RootStep(crawlerTaskId);
+            _rootStep = new RootStep(crawlerTaskId);
 
             // 标记任务开始
             await dbPro
@@ -138,10 +144,10 @@ namespace UzonMail.ProPlugin.Services.Crawlers
 
         public async Task<bool> RestartAsync(long crawlerTaskId)
         {
-            if (RootStep == null)
+            if (_rootStep is null || _crawlerTaskParams is null)
                 return false;
 
-            RootStep.AddCrawlerTaskId(crawlerTaskId);
+            _rootStep.AddCrawlerTaskId(crawlerTaskId);
             _crawlerTaskParams.CrawlerTaskId = crawlerTaskId;
             return true;
         }

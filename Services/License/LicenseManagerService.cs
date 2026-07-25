@@ -291,6 +291,9 @@ namespace UzonMail.ProPlugin.Services.License
 
             using var streamReader = new StreamReader(stream);
             var privateKey = streamReader.ReadToEnd();
+            if (string.IsNullOrEmpty(responseResult.Data))
+                return null;
+
             // base64 字符串转为 byte[]
             var privateKeyBytes = Convert.FromBase64String(responseResult.Data);
             var jsonString = privateKeyBytes.FromRSA(privateKey);
@@ -377,14 +380,20 @@ namespace UzonMail.ProPlugin.Services.License
             if (File.Exists(fileTokenPath))
             {
                 // 复制到用户配置目录
-                Directory.CreateDirectory(Path.GetDirectoryName(fullTokenPath));
+                var localTokenDirectory =
+                    Path.GetDirectoryName(fullTokenPath)
+                    ?? throw new InvalidOperationException("无法确定设备令牌目录");
+                Directory.CreateDirectory(localTokenDirectory);
                 File.Copy(fileTokenPath, fullTokenPath);
                 return fullTokenPath;
             }
 
             // 若都不存在，直接创建一个
             // 创建目录
-            Directory.CreateDirectory(Path.GetDirectoryName(fileTokenPath));
+            var fallbackTokenDirectory =
+                Path.GetDirectoryName(fileTokenPath)
+                ?? throw new InvalidOperationException("无法确定备用设备令牌目录");
+            Directory.CreateDirectory(fallbackTokenDirectory);
             // 保存内容
             File.WriteAllText(fileTokenPath, Guid.NewGuid().ToString());
 

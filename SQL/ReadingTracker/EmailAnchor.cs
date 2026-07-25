@@ -29,12 +29,12 @@ namespace UzonMail.ProPlugin.SQL.ReadingTracker
         /// <summary>
         /// 发件箱邮箱
         /// </summary>
-        public string OutboxEmail { get; set; }
+        public string OutboxEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// 邮件箱邮箱
         /// </summary>
-        public string InboxEmails { get; set; }
+        public string InboxEmails { get; set; } = string.Empty;
 
         /// <summary>
         /// 访问数量

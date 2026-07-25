@@ -75,8 +75,8 @@ namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
             statsInfo?.SetTo(authorInfo);
 
             // 解析账号
-            var resolver = new SignatureResolver(authorInfo.Signature);
-            resolver?.ResolveFor(authorInfo);
+            if (!string.IsNullOrEmpty(authorInfo.Signature))
+                new SignatureResolver(authorInfo.Signature).ResolveFor(authorInfo);
             await _db.SaveChangesAsync();
 
             // 记录爬取结果

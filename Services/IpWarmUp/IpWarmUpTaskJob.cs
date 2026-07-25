@@ -16,8 +16,7 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
     public class IpWarmUpTaskJob(
         SqlContextPro dbPro,
         SqlContext db,
-        SendingGroupService sendingService,
-        IpWarmUpTaskService warmUpTaskService
+        SendingGroupService sendingService
     ) : IJob, IScopedService
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(IpWarmUpTaskJob));

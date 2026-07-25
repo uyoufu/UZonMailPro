@@ -15,7 +15,7 @@ namespace UzonMail.ProPlugin.SQL.EmailCrawler
         /// <summary>
         /// 名称，必须是唯一的
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 爬虫类型

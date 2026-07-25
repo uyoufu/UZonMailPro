@@ -20,8 +20,9 @@ namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
         public TiktokCredentials()
         {
             // 获取当前程序集路径
-            var assemblyPath = Assembly.GetExecutingAssembly().Location;
-            var assemblyDirectory = Path.GetDirectoryName(assemblyPath);
+            var assemblyDirectory =
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+                ?? throw new InvalidOperationException("无法确定程序集目录");
             _xBogusPath = Path.Combine(assemblyDirectory, "Scripts/JS/x_bogus.js");
             //_logger.Info($"xBogusPath: {_xBogusPath}");
         }

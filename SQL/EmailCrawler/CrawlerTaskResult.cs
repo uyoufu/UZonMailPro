@@ -13,7 +13,7 @@ namespace UzonMail.ProPlugin.SQL.EmailCrawler
         /// 用户 id
         /// </summary>
         public long TikTokAuthorId { get; set; }
-        public TiktokAuthor TiktokAuthor { get; set; }
+        public TiktokAuthor TiktokAuthor { get; set; } = null!;
 
         /// <summary>
         /// 是否存在额外的信息

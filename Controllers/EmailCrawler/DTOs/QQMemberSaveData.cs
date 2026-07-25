@@ -5,11 +5,11 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler.DTOs
         /// <summary>
         /// QQ 群信息
         /// </summary>
-        public QQGroupData Group { get; set; }
+        public QQGroupData Group { get; set; } = new();
 
         /// <summary>
         /// QQ 群成员列表
         /// </summary>
-        public List<QQUserData> Users { get; set; }
+        public List<QQUserData> Users { get; set; } = [];
     }
 }

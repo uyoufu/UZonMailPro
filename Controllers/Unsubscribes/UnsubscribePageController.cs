@@ -130,6 +130,9 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
                 if (sendingItem == null)
                     return ResponseResult<UnsubscribePage>.Fail("Token invalid");
                 var user = await db.Users.FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
+                if (user is null)
+                    return ResponseResult<UnsubscribePage>.Fail("User missing");
+
                 organizationId = user.OrganizationId;
             }
             else

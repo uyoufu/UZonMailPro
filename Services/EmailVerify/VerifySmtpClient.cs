@@ -49,7 +49,7 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
                 _isConnected = true;
                 return true;
             }
-            catch (SslHandshakeException e)
+            catch (SslHandshakeException)
             {
                 // 说明 ssl 连接失败
                 return await ConnectToMx(mxRecord);

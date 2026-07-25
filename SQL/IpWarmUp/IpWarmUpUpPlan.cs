@@ -11,7 +11,7 @@ namespace UzonMail.ProPlugin.SQL.IPWarmUp
         /// <summary>
         /// 计划名称，主要用于区分不同的计划
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 主题

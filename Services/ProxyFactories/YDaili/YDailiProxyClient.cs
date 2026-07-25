@@ -69,10 +69,10 @@ namespace UzonMail.ProPlugin.Services.ProxyFactories.YDaili
                     break;
             }
 
-            var ipList = json!.SelectTokenOrDefault<List<JObject>>("data", []);
+            var ipList = json.SelectTokenOrDefault<List<JObject>>("data", []) ?? [];
             // 将 IP 转换成代理客户端
-            var handlers = ipList!
-                .Select(x => x.SelectTokenOrDefault("IP", ""))
+            var handlers = ipList
+                .Select(x => x.SelectTokenOrDefault("IP", string.Empty) ?? string.Empty)
                 .Where(x => !string.IsNullOrEmpty(x))
                 .Select(x => new Proxy() { ObjectId = x, Url = $"socks5://{x}", })
                 .Select(x =>

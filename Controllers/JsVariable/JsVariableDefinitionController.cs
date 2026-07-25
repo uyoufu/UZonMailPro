@@ -78,7 +78,9 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
             var dbSet = dbPro.JsFunctionDefinitions.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.Name.Contains(filter) || x.Description.Contains(filter));
+                dbSet = dbSet.Where(x =>
+                    x.Name.Contains(filter) || (x.Description ?? string.Empty).Contains(filter)
+                );
             }
             var count = await dbSet.CountAsync();
             return count.ToSuccessResponse();
@@ -100,7 +102,9 @@ namespace UzonMail.ProPlugin.Controllers.JsVariable
             var dbSet = dbPro.JsFunctionDefinitions.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.Name.Contains(filter) || x.Description.Contains(filter));
+                dbSet = dbSet.Where(x =>
+                    x.Name.Contains(filter) || (x.Description ?? string.Empty).Contains(filter)
+                );
             }
 
             var results = await dbSet.Page(pagination).ToListAsync();

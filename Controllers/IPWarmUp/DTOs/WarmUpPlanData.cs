@@ -7,7 +7,7 @@ namespace UzonMail.ProPlugin.Controllers.IPWarmUp.DTOs
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 发送数量图表数据点

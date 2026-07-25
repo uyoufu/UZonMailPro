@@ -12,7 +12,7 @@ namespace UzonMail.ProPlugin.Controllers.Api.Model
         /// 主题
         /// 多个主题使用分号或者换行分隔
         /// </summary>
-        public List<string> Subjects { get; set; }
+        public List<string> Subjects { get; set; } = [];
 
         /// <summary>
         /// 需要使用的模板 Ids
@@ -87,7 +87,7 @@ namespace UzonMail.ProPlugin.Controllers.Api.Model
         /// <summary>
         /// smtp 密码解密 key
         /// </summary>
-        public List<string> SmtpPasswordSecretKeys { get; set; }
+        public List<string> SmtpPasswordSecretKeys { get; set; } = [];
 
         /// <summary>
         /// 批量发送

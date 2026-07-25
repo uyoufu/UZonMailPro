@@ -8,25 +8,25 @@ namespace UzonMail.ProPlugin.SQL.EmailCrawler
     /// </summary>
     public class TiktokAuthor : UserAndOrgId
     {
-        public string AvatarLarger { get; set; }
-        public string AvatarMedium { get; set; }
-        public string AvatarThumb { get; set; }
+        public string AvatarLarger { get; set; } = string.Empty;
+        public string AvatarMedium { get; set; } = string.Empty;
+        public string AvatarThumb { get; set; } = string.Empty;
         public int CommentSetting { get; set; }
         public int DownloadSetting { get; set; }
         public int DueSetting { get; set; }
         public bool Ftc { get; set; }
         public bool IsAdVirtual { get; set; }
         public bool IsEmbedBanned { get; set; }
-        public string Nickname { get; set; }
+        public string Nickname { get; set; } = string.Empty;
         public bool OpenFavorite { get; set; }
         public bool PrivateAccount { get; set; }
         public int Relation { get; set; }
-        public string SecUid { get; set; }
+        public string SecUid { get; set; } = string.Empty;
         public bool Secret { get; set; }
         public string? Signature { get; set; }
         public int StitchSetting { get; set; }
         public bool TtSeller { get; set; }
-        public string UniqueId { get; set; }
+        public string UniqueId { get; set; } = string.Empty;
         public bool Verified { get; set; }
 
         /**

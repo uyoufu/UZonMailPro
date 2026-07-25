@@ -23,31 +23,31 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
         /// <summary>
         /// 主题
         /// </summary>
-        public string Subject { get; set; }
+        public string Subject { get; set; } = string.Empty;
 
         /// <summary>
         /// 发件箱
         /// </summary>
-        public string OutboxEmail { get; set; }
+        public string OutboxEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// 收件箱
         /// </summary>
-        public string InboxEmail { get; set; }
+        public string InboxEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// 邮件正文
         /// </summary>
-        public string Body { get; set; }
+        public string Body { get; set; } = string.Empty;
 
         /// <summary>
         /// 当前日期
         /// </summary>
         public DateTime DateNow { get; set; } = DateTime.UtcNow;
 
-        public EmailAddress Outbox { get; set; }
+        public EmailAddress Outbox { get; set; } = new();
 
-        public EmailAddress Inbox { get; set; }
+        public EmailAddress Inbox { get; set; } = new();
 
         /// <summary>
         /// 收件箱

@@ -57,6 +57,15 @@ namespace UzonMail.ProPlugin.Services.Crawlers
         }
 
         /// <summary>
+        /// 在后台启动 TikTok 邮箱爬虫，并由管理器统一记录执行异常。
+        /// </summary>
+        /// <param name="crawlerTaskInfo">爬虫任务信息。</param>
+        public void StartTikTokEmailCrawlerInBackground(CrawlerTaskInfo crawlerTaskInfo)
+        {
+            _ = Task.Run(() => StartTikTokEmailCrawler(crawlerTaskInfo));
+        }
+
+        /// <summary>
         /// 停止爬虫任务
         /// </summary>
         /// <param name="crawlerTaskId"></param>

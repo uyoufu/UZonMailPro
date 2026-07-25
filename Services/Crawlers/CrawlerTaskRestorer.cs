@@ -29,7 +29,7 @@ namespace UzonMail.ProPlugin.Services.Crawlers
 
             foreach (var task in runnintTasks)
             {
-                crawlerManager.StartTikTokEmailCrawler(task);
+                crawlerManager.StartTikTokEmailCrawlerInBackground(task);
             }
         }
     }

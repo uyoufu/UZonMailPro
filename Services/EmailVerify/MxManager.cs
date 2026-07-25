@@ -7,7 +7,7 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
 {
     public class MxRecords
     {
-        public string Domain { get; set; }
+        public string Domain { get; set; } = string.Empty;
 
         public List<string> Records { get; set; } = [];
 

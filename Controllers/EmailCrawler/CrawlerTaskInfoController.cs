@@ -25,7 +25,6 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
         SqlContextPro dbPro,
         TokenService tokenService,
         CrawlerManager crawlerManager,
-        IHttpClientFactory httpClientFactory,
         DebugConfig debugConfig
     ) : ControllerBasePro
     {
@@ -135,7 +134,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
             if (crawlerTaskInfo.Type == CrawlerType.TikTokEmail)
             {
                 // 启动TikTok爬虫
-                crawlerManager.StartTikTokEmailCrawler(crawlerTaskInfo);
+                crawlerManager.StartTikTokEmailCrawlerInBackground(crawlerTaskInfo);
             }
             else
             {
@@ -175,7 +174,9 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
             var dbSet = dbPro.CrawlerTaskInfos.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.Name.Contains(filter) || x.Description.Contains(filter));
+                dbSet = dbSet.Where(x =>
+                    x.Name.Contains(filter) || (x.Description ?? string.Empty).Contains(filter)
+                );
             }
             var count = await dbSet.CountAsync();
             return count.ToSuccessResponse();
@@ -197,7 +198,9 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
             var dbSet = dbPro.CrawlerTaskInfos.AsNoTracking().Where(x => x.UserId == userId);
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.Name.Contains(filter) || x.Description.Contains(filter));
+                dbSet = dbSet.Where(x =>
+                    x.Name.Contains(filter) || (x.Description ?? string.Empty).Contains(filter)
+                );
             }
 
             var results = await dbSet.Page(pagination).ToListAsync();
@@ -246,7 +249,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
 
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.Email.Contains(filter));
+                dbSet = dbSet.Where(x => (x.Email ?? string.Empty).Contains(filter));
             }
             var count = await dbSet.CountAsync();
             return count.ToSuccessResponse();
@@ -267,12 +270,10 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
         {
             var userId = tokenService.GetUserSqlId();
             // 判断是否属于用户可访问
-            var crawlerTask = dbPro
+            var crawlerTaskExists = await dbPro
                 .CrawlerTaskInfos.AsNoTracking()
-                .Where(x => x.UserId == userId && x.Id == crawlerTaskId)
-                .Select(x => x.Id)
-                .FirstAsync();
-            if (crawlerTask == null)
+                .AnyAsync(x => x.UserId == userId && x.Id == crawlerTaskId);
+            if (!crawlerTaskExists)
                 return ResponseResult<List<TiktokAuthor>>.Fail("未找到爬虫任务");
 
             var dbSet = dbPro
@@ -292,7 +293,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
 
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.Email.Contains(filter));
+                dbSet = dbSet.Where(x => (x.Email ?? string.Empty).Contains(filter));
             }
 
             var results = await dbSet.Page(pagination).ToListAsync();
@@ -362,7 +363,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
                 {
                     EmailGroupId = crawlerTask.OutboxGroupId,
                     Name = x.Nickname,
-                    Email = x.Email,
+                    Email = x.Email ?? string.Empty,
                     Description = $"来源于爬虫任务 {crawlerTask.Name}",
                     UserId = tokenPayloads.UserId,
                     OrganizationId = tokenPayloads.OrganizationId

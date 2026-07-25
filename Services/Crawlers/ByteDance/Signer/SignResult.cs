@@ -4,7 +4,7 @@ namespace UzonMail.ProPlugin.Modules.ByteDance.Signer
     {
         public string MsToken { get; set; } = msToken;
         public string Signature { get; set; } = signature;
-        public string Bogus { get; set; }
+        public string Bogus { get; set; } = string.Empty;
 
         private string _originUrl = requestUrl;
 

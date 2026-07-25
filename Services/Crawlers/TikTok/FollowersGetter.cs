@@ -34,7 +34,7 @@ namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
             _minCursor = jsonResult.SelectTokenOrDefault("minCursor", 0L);
 
             var total = jsonResult.SelectTokenOrDefault("total", 0);
-            var userList = jsonResult.SelectTokenOrDefault<List<JObject>>("userList", []);
+            var userList = jsonResult.SelectTokenOrDefault<List<JObject>>("userList", []) ?? [];
 
             // 若粉丝太少，则不再爬取
             if (total < _minFollowersCount)

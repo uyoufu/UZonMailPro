@@ -11,6 +11,6 @@ namespace UzonMail.ProPlugin.SQL.ReadingTracker
         /// <summary>
         /// IP 地址
         /// </summary>
-        public string IP { get; set; }
+        public string IP { get; set; } = string.Empty;
     }
 }

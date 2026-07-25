@@ -46,15 +46,15 @@ namespace UzonMail.ProPlugin.Services.ProxyFactories.IPFoxy
                 _logger.Error($"代理 {Id} 请求错误: {json.SelectTokenOrDefault("msg", "无法获取代理 ip")}");
             }
 
-            var ipList = json!.SelectTokenOrDefault<List<JObject>>("data", []);
+            var ipList = json.SelectTokenOrDefault<List<JObject>>("data", []) ?? [];
             // 将 IP 转换成代理客户端
-            var handlers = ipList!
+            var handlers = ipList
                 .Select(x =>
                 {
-                    var host = x.SelectTokenOrDefault("host", string.Empty);
-                    var port = x.SelectTokenOrDefault("port", string.Empty);
-                    var user = x.SelectTokenOrDefault("user", string.Empty);
-                    var password = x.SelectTokenOrDefault("password", string.Empty);
+                    var host = x.SelectTokenOrDefault("host", string.Empty) ?? string.Empty;
+                    var port = x.SelectTokenOrDefault("port", string.Empty) ?? string.Empty;
+                    var user = x.SelectTokenOrDefault("user", string.Empty) ?? string.Empty;
+                    var password = x.SelectTokenOrDefault("password", string.Empty) ?? string.Empty;
 
                     return new
                     {

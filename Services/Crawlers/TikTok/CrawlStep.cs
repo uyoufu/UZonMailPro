@@ -15,8 +15,6 @@ namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
         private readonly HashSet<long> _crawlerTaskIds = [];
         private static readonly object _lock = new();
 
-        protected CrawlerTaskParams CrawlerTaskParams { get; }
-
         /// <summary>
         /// 表示作者的 Id
         /// </summary>
@@ -32,12 +30,13 @@ namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
             Key = Guid.NewGuid().ToString();
         }
 
-        private Task _executeTask;
+        private Task? _executeTask;
 
         /// <summary>
         /// 执行的任务
         /// </summary>
-        public virtual Task ExecuteTask => _executeTask;
+        public virtual Task ExecuteTask =>
+            _executeTask ?? throw new InvalidOperationException("爬取步骤尚未启动");
 
         /// <summary>
         /// 添加爬虫任务 ID

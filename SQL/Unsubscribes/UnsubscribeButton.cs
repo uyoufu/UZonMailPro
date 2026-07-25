@@ -10,7 +10,7 @@ namespace UzonMail.ProPlugin.SQL.Unsubscribes
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// 描述
@@ -21,6 +21,6 @@ namespace UzonMail.ProPlugin.SQL.Unsubscribes
         /// 退定按钮 Html
         /// 行内样式
         /// </summary>
-        public string ButtonHtml { get; set; }
+        public string ButtonHtml { get; set; } = string.Empty;
     }
 }

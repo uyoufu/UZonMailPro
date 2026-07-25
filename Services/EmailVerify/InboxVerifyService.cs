@@ -150,16 +150,14 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
                     inboxStatus = InboxStatus.Unkown;
                 }
 
+                inbox.Status = inboxStatus;
+                inbox.ValidFailReason = response.Response;
+
                 // 保存到数据库中
                 await db.Inboxes.UpdateAsync(
                     x => x.Id == inbox.Id,
                     x =>
-                        x.SetProperty(
-                                y => y.Status,
-                                response.StatusCode == SmtpStatusCode.Ok
-                                    ? InboxStatus.Valid
-                                    : InboxStatus.Invalid
-                            )
+                        x.SetProperty(y => y.Status, inboxStatus)
                             .SetProperty(y => y.ValidFailReason, response.Response)
                 );
 

@@ -18,6 +18,6 @@ namespace UzonMail.ProPlugin.SQL.Unsubscribes
         /// <summary>
         /// 退订邮箱
         /// </summary>
-        public string Email { get; set; }
+        public string Email { get; set; } = string.Empty;
     }
 }

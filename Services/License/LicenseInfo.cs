@@ -10,7 +10,7 @@ namespace UzonMail.ProPlugin.Services.License
         /// <summary>
         /// 授权码
         /// </summary>
-        public string LicenseKey { get; set; }
+        public string LicenseKey { get; set; } = string.Empty;
 
         /// <summary>
         /// 激活时间

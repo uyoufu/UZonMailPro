@@ -10,12 +10,12 @@ namespace UzonMail.ProPlugin.SQL.Unsubscribes
         /// <summary>
         /// 语言
         /// </summary>
-        public string Language { get; set; }
+        public string Language { get; set; } = string.Empty;
 
         /// <summary>
         /// Html 内容
         /// </summary>
-        public string HtmlContent { get; set; }
+        public string HtmlContent { get; set; } = string.Empty;
 
         /// <summary>
         /// 是否是默认的退订页面

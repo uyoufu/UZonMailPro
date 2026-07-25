@@ -9,7 +9,7 @@ namespace UzonMail.ProPlugin.SQL.ReadingTracker
         /// <summary>
         /// 主机
         /// </summary>
-        public string IP { get; set; }
+        public string IP { get; set; } = string.Empty;
 
         /// <summary>
         /// 国家

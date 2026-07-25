@@ -11,7 +11,7 @@ namespace UzonMail.ProPlugin.SQL
         public SqLiteContextPro(DbContextOptions<SqlContextPro> options)
             : base(options) { }
 
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration? _configuration;
 
         [ActivatorUtilitiesConstructor]
         public SqLiteContextPro(IConfiguration configuration)
@@ -22,6 +22,12 @@ namespace UzonMail.ProPlugin.SQL
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
+            if (options.IsConfigured)
+                return;
+
+            if (_configuration is null)
+                throw new InvalidOperationException("SQLite 数据库配置不可用");
+
             SqlContextHelper.ConfiguringSqLite(options, _configuration);
         }
     }

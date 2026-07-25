@@ -27,7 +27,6 @@ namespace UzonMail.ProPlugin.Services.Crawlers.TikTok
         }
 
         private static readonly ILog _logger = LogManager.GetLogger(typeof(TikTokEmailCrawler));
-        private readonly int _delayMilliseconds = 1000;
 
         /// <summary>
         /// 执行具体的爬取任务

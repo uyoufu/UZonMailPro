@@ -4,13 +4,13 @@ namespace UzonMail.ProPlugin.SQL.EmailCrawler
 {
     public class TikTokDevice : UserAndOrgId
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         public string? Description { get; set; }
 
-        public string DeviceId { get; set; }
+        public string DeviceId { get; set; } = string.Empty;
 
-        public string OdinId { get; set; }
+        public string OdinId { get; set; } = string.Empty;
 
         /// <summary>
         /// 是否共享

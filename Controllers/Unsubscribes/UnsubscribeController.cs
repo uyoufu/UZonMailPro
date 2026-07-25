@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UzonMail.CorePlugin.Services.Permission;
 using UzonMail.CorePlugin.Services.Settings;
 using UzonMail.DB.SQL;
 using UzonMail.DB.SQL.Core.Settings;
@@ -30,7 +29,6 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
         TokenService tokenService,
         IConfiguration configuration,
         UnsubscribeService unsubscribeService,
-        PermissionService permissionService,
         AppSettingService settingService
     ) : ControllerBasePro
     {
@@ -53,7 +51,8 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
                 return new UnsubscribeSetting().ToSuccessResponse();
             }
 
-            return settings.Json!.ToObject<UnsubscribeSetting>()!.ToSuccessResponse();
+            var setting = settings.Json?.ToObject<UnsubscribeSetting>() ?? new UnsubscribeSetting();
+            return setting.ToSuccessResponse();
         }
 
         /// <summary>
@@ -99,8 +98,11 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
             // 获取 email
             var email = tokenPayloads.SelectTokenOrDefault("email", string.Empty);
             var organizationId = tokenPayloads.SelectTokenOrDefault("organizationId", "0");
-            var longOrganizationId = long.Parse(organizationId);
-            if (string.IsNullOrEmpty(email) || longOrganizationId == 0)
+            if (
+                string.IsNullOrEmpty(email)
+                || !long.TryParse(organizationId, out var longOrganizationId)
+                || longOrganizationId == 0
+            )
             {
                 var message = "无法解析退订 token";
                 _logger.Error(message);
@@ -127,9 +129,14 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
             var sendingItem = await db
                 .SendingItems.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.ObjectId == token);
+            if (sendingItem is null)
+                return ResponseResult<UnsubscribePayloads>.Fail("无法解析退订 token");
+
             var user = await db
                 .Users.AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == sendingItem.UserId);
+            if (user is null)
+                return ResponseResult<UnsubscribePayloads>.Fail("退订邮件所属用户不存在");
 
             // 从 token 中解析出 email 和 organizationId
             var tokenPayloads = new UnsubscribePayloads(sendingItem)
@@ -185,7 +192,9 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
                 .Where(x => x.OrganizationId == organizationId);
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.Email.Contains(filter) || x.Host.Contains(filter));
+                dbSet = dbSet.Where(x =>
+                    x.Email.Contains(filter) || (x.Host ?? string.Empty).Contains(filter)
+                );
             }
             var count = await dbSet.CountAsync();
             return count.ToSuccessResponse();
@@ -209,7 +218,9 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes
                 .Where(x => x.OrganizationId == organizationId);
             if (!string.IsNullOrEmpty(filter))
             {
-                dbSet = dbSet.Where(x => x.Email.Contains(filter) || x.Host.Contains(filter));
+                dbSet = dbSet.Where(x =>
+                    x.Email.Contains(filter) || (x.Host ?? string.Empty).Contains(filter)
+                );
             }
 
             var results = await dbSet.Page(pagination).ToListAsync();

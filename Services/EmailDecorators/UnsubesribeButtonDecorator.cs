@@ -61,6 +61,9 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
             }
 
             var butotnHtml = unsubscribeSetting.UnsubscribeButtonHtml;
+            if (string.IsNullOrEmpty(butotnHtml))
+                return originBody;
+
             // 将 src="" 替换为退订链接
             var regex = _matchHref();
             var buttonResult = regex.Replace(butotnHtml, $"href=\"{unsubscribeUrl}\"");

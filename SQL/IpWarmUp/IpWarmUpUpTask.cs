@@ -12,7 +12,7 @@ namespace UzonMail.ProPlugin.SQL.IPWarmUp
         /// 计划 id
         /// </summary>
         public long IPWarmUpPlanId { get; set; }
-        public IpWarmUpUpPlan IPWarmUpPlan { get; set; }
+        public IpWarmUpUpPlan IPWarmUpPlan { get; set; } = null!;
 
         /// <summary>
         /// 实际发送组的 Id
@@ -47,6 +47,6 @@ namespace UzonMail.ProPlugin.SQL.IPWarmUp
         /// <summary>
         /// 成功或者失败的消息体
         /// </summary>
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
     }
 }
