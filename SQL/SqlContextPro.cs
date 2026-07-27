@@ -6,6 +6,7 @@ using UzonMail.DB.SQL.Core.Settings;
 using UzonMail.DB.SQL.EntityConfigs;
 using UzonMail.ProPlugin.SQL.ApiAccess;
 using UzonMail.ProPlugin.SQL.EmailCrawler;
+using UzonMail.ProPlugin.SQL.EmailVerify;
 using UzonMail.ProPlugin.SQL.IPWarmUp;
 using UzonMail.ProPlugin.SQL.JsVariable;
 using UzonMail.ProPlugin.SQL.ReadingTracker;
@@ -113,6 +114,11 @@ namespace UzonMail.ProPlugin.SQL
 
         // 访问令牌控制
         public DbSet<AccessToken> AccessTokens { get; set; } // 访问令牌
+
+        // 收件箱验证
+        public DbSet<InboxVerificationSnapshot> InboxVerificationSnapshots { get; set; }
+        public DbSet<MxDomainCache> MxDomainCaches { get; set; }
+        public DbSet<MxDomainRecord> MxDomainRecords { get; set; }
 
         // ip 预热
         public DbSet<IpWarmUpUpPlan> IpWarmUpUpPlans { get; set; } // 预热计划

@@ -1,20 +1,18 @@
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Uamazing.Utils.Web.ResponseModel;
-using UzonMail.CorePlugin.Database.Validators;
+using UzonMail.CorePlugin.Services.EmailVerification;
 using UzonMail.CorePlugin.Services.Settings;
-using UzonMail.DB.SQL;
-using UzonMail.DB.SQL.Core.Emails;
-using UzonMail.DB.Utils;
 using UzonMail.ProPlugin.Controllers.Base;
-using UzonMail.ProPlugin.Services.EmailVerify;
+using UzonMail.ProPlugin.Controllers.Email.DTOs;
+using UzonMail.ProPlugin.Services.License;
 using UzonMail.Utils.Web.ResponseModel;
 
 namespace UzonMail.ProPlugin.Controllers.Email
 {
     public class EmailVerifyController(
-        SqlContext db,
-        InboxVerifyService inboxVerify,
+        InboxVerificationService inboxVerificationService,
+        LicenseAccessService licenseAccessService,
         TokenService tokenService
     ) : ControllerBasePro
     {
@@ -23,19 +21,47 @@ namespace UzonMail.ProPlugin.Controllers.Email
         /// </summary>
         /// <param name="groupId"></param>
         /// <returns></returns>
+        [HttpPut("groups/{groupId:long}/verify")]
         [HttpPut("groups/{groupId:long}/verify-invalid-inboxes")]
-        public async Task<ResponseResult<bool>> VerifyAllInvalidInboxInGroup(long groupId)
+        public async Task<ResponseResult<InboxVerificationBatchSummary>> VerifyInboxGroup(
+            long groupId
+        )
         {
-            // 判断是否属于自己的组
-            var userId = tokenService.GetUserSqlId();
-            var inboxes = db
-                .Inboxes.AsNoTracking()
-                .Where(x =>
-                    x.EmailGroupId == groupId && x.UserId == userId /*&& x.Status != InboxStatus.Valid*/
+            if (!await licenseAccessService.HasProLicense())
+            {
+                return ResponseResult<InboxVerificationBatchSummary>.Fail(
+                    "当前功能仅专业版及以上版本可用",
+                    HttpStatusCode.Unauthorized
                 );
+            }
 
-            await inboxVerify.Validate(userId, new QueryPaginator<Inbox>(inboxes));
-            return true.ToSuccessResponse();
+            var userId = tokenService.GetUserSqlId();
+            var result = await inboxVerificationService.VerifyGroupAsync(userId, groupId);
+            return result.ToSuccessResponse();
+        }
+
+        /// <summary>
+        /// 验证指定收件箱。
+        /// </summary>
+        [HttpPut("inboxes/verify")]
+        public async Task<ResponseResult<InboxVerificationBatchSummary>> VerifyInboxes(
+            [FromBody] VerifyInboxesRequest request
+        )
+        {
+            if (!await licenseAccessService.HasProLicense())
+            {
+                return ResponseResult<InboxVerificationBatchSummary>.Fail(
+                    "当前功能仅专业版及以上版本可用",
+                    HttpStatusCode.Unauthorized
+                );
+            }
+
+            var userId = tokenService.GetUserSqlId();
+            var result = await inboxVerificationService.VerifyInboxesAsync(
+                userId,
+                request.InboxIds
+            );
+            return result.ToSuccessResponse();
         }
     }
 }

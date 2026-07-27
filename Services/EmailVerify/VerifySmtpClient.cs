@@ -94,9 +94,12 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
 
             var toDomain = email.Trim().Split('@').Last();
             var temFromDomains = fromDomains.Where(x => x != toDomain).Take(10).ToList();
-            var fromDomain = temFromDomains
-                .Skip(new Random().Next(0, temFromDomains.Count))
-                .FirstOrDefault();
+            var fromDomain =
+                temFromDomains.Count > 0
+                    ? temFromDomains[Random.Shared.Next(temFromDomains.Count)]
+                    : fromDomains.FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(fromDomain))
+                return new SmtpResponse(SmtpStatusCode.MailboxUnavailable, "未提供可用的发件域名");
 
             // 发送 HELO 命令
             var heloCmd = $"HELO {fromDomain}";
