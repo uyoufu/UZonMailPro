@@ -12,6 +12,7 @@ using UzonMail.ProPlugin.SQL.ApiAccess;
 using UzonMail.Utils.Web.Exceptions;
 using UzonMail.Utils.Web.PagingQuery;
 using UzonMail.Utils.Web.ResponseModel;
+using UzonMail.Utils.Resources.Langs;
 
 namespace UzonMail.ProPlugin.Controllers.ApiAccess
 {
@@ -36,18 +37,18 @@ namespace UzonMail.ProPlugin.Controllers.ApiAccess
             // 验证数据
             if (string.IsNullOrEmpty(data.Name))
             {
-                return ResponseResult<AccessToken>.Fail("令牌名称不能为空");
+                return ResponseResult<AccessToken>.Fail(new LocalizedApiError(ApiErrorKey.InvalidRequest));
             }
 
             if (data.ExpireDate <= DateTime.UtcNow)
             {
-                return ResponseResult<AccessToken>.Fail("令牌过期时间必须大于当前时间");
+                return ResponseResult<AccessToken>.Fail(new LocalizedApiError(ApiErrorKey.InvalidRequest));
             }
 
             // 判断是否有 redis 服务
             if (!cacheService.IsRedis && !debugConfig.IsDemo)
             {
-                throw new KnownException("当前功能需要启用 Redis 缓存");
+                throw new KnownException(new LocalizedApiError(ApiErrorKey.OperationNotAllowed));
             }
 
             // 若存在 id, 则更新
@@ -59,7 +60,7 @@ namespace UzonMail.ProPlugin.Controllers.ApiAccess
                     .FirstOrDefault();
                 if (existOne == null)
                 {
-                    return ResponseResult<AccessToken>.Fail("令牌不存在");
+                    return ResponseResult<AccessToken>.Fail(new LocalizedApiError(ApiErrorKey.ResourceNotFound));
                 }
 
                 existOne.Name = data.Name;
