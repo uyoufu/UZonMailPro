@@ -1,45 +1,38 @@
-# ¿ª·¢ÎÄµµ
+# å¼€å‘æ–‡æ¡£
 
-## Êı¾İÇ¨ÒÆ
+## æ•°æ®è¿ç§»
 
-### ½Å±¾Ç¨ÒÆ
+### è„šæœ¬è¿ç§»
 
 ``` powershell
 z D:\Develop\Personal\UZonMailProPlugins\UZonMailProPlugin\Scripts
 ./add-migrations.ps1 -Name xxx
 ```
 
-### ÊÖ¶¯Ö´ĞĞ
+### æ‰‹åŠ¨æ‰§è¡Œ
 
 
 z D:\Develop\Personal\UZonMailProPlugins\UZonMailProPlugin
 
-1. Mysql
 
-dotnet ef migrations add fixAnchorCallbackFail --context MysqlContextPro --output-dir Migrations/Mysql -v
+1. SqLite
 
-2. SqLite
+dotnet ef migrations add addInboxVerification --context SqLiteContextPro --output-dir Migrations/SqLite -v
 
-dotnet ef migrations add fixAnchorCallbackFail --context SqLiteContextPro --output-dir Migrations/SqLite -v
-
-3. PostgreSQL
+2. PostgreSQL
 
 dotnet ef migrations add fixAnchorCallbackFail --context PostgreSqlContextPro --output-dir Migrations/PostgreSql -v
 
-## È¡ÏûÊı¾İÇ¨ÒÆ
+## å–æ¶ˆæ•°æ®è¿ç§»
 
-1. Mysql
-
-dotnet ef migrations remove --context MysqlContextPro -v
-
-2. SqLite
+1. SqLite
 
 dotnet ef migrations remove --context SqLiteContextPro -v
 
-3. PostgreSQL
+2. PostgreSQL
 
 dotnet ef migrations remove --context PostgreSqlContextPro -v
 
-## Ê¹ÓÃ×¢Òâ
+## ä½¿ç”¨æ³¨æ„
 
-1. ÔÚµ±Ç°ÏîÄ¿µÄÊı¾İ¿â±í model ÖĞ£¬²»ÒªÌí¼Ó·Çµ±Ç°ÏîÄ¿µÄµ¼º½ÊôĞÔ£¬·ñÔò»áµ¼ÖÂÇ¨ÒÆ±¨´í
+1. åœ¨å½“å‰é¡¹ç›®çš„æ•°æ®åº“è¡¨ model ä¸­ï¼Œä¸è¦æ·»åŠ éå½“å‰é¡¹ç›®çš„å¯¼èˆªå±æ€§ï¼Œå¦åˆ™ä¼šå¯¼è‡´è¿ç§»æŠ¥é”™
