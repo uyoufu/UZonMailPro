@@ -9,10 +9,10 @@ using UzonMail.ProPlugin.Controllers.Base;
 using UzonMail.ProPlugin.Services.Token;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.ApiAccess;
+using UzonMail.Utils.Resources.Langs;
 using UzonMail.Utils.Web.Exceptions;
 using UzonMail.Utils.Web.PagingQuery;
 using UzonMail.Utils.Web.ResponseModel;
-using UzonMail.Utils.Resources.Langs;
 
 namespace UzonMail.ProPlugin.Controllers.ApiAccess
 {
@@ -37,12 +37,16 @@ namespace UzonMail.ProPlugin.Controllers.ApiAccess
             // 验证数据
             if (string.IsNullOrEmpty(data.Name))
             {
-                return ResponseResult<AccessToken>.Fail(new LocalizedApiError(ApiErrorKey.InvalidRequest));
+                return ResponseResult<AccessToken>.Fail(
+                    new LocalizedApiError(ApiErrorKey.InvalidRequest)
+                );
             }
 
             if (data.ExpireDate <= DateTime.UtcNow)
             {
-                return ResponseResult<AccessToken>.Fail(new LocalizedApiError(ApiErrorKey.InvalidRequest));
+                return ResponseResult<AccessToken>.Fail(
+                    new LocalizedApiError(ApiErrorKey.InvalidRequest)
+                );
             }
 
             // 判断是否有 redis 服务
@@ -60,7 +64,9 @@ namespace UzonMail.ProPlugin.Controllers.ApiAccess
                     .FirstOrDefault();
                 if (existOne == null)
                 {
-                    return ResponseResult<AccessToken>.Fail(new LocalizedApiError(ApiErrorKey.ResourceNotFound));
+                    return ResponseResult<AccessToken>.Fail(
+                        new LocalizedApiError(ApiErrorKey.ResourceNotFound)
+                    );
                 }
 
                 existOne.Name = data.Name;
