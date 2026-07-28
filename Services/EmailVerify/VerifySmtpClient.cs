@@ -1,12 +1,8 @@
-using System.Globalization;
 using System.Net.Sockets;
 using System.Text;
-using DnsClient;
 using log4net;
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.AspNetCore.Builder;
-using MimeKit;
 
 namespace UzonMail.ProPlugin.Services.EmailVerify
 {
@@ -79,19 +75,6 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
         /// <returns></returns>
         public async Task<SmtpResponse> CheckExist(string email, List<string> fromDomains)
         {
-            if (!_existMx)
-            {
-                return new SmtpResponse(SmtpStatusCode.MailboxUnavailable, "No MX record found");
-            }
-
-            if (!IsConnected || !_isConnected)
-            {
-                return new SmtpResponse(
-                    SmtpStatusCode.MailboxUnavailable,
-                    "Not connected to SMTP server"
-                );
-            }
-
             var toDomain = email.Trim().Split('@').Last();
             var temFromDomains = fromDomains.Where(x => x != toDomain).Take(10).ToList();
             var fromDomain =
@@ -101,35 +84,47 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
             if (string.IsNullOrWhiteSpace(fromDomain))
                 return new SmtpResponse(SmtpStatusCode.MailboxUnavailable, "未提供可用的发件域名");
 
-            // 发送 HELO 命令
+            return (await ProbeRecipientAsync(email, fromDomain)).Response;
+        }
+
+        /// <summary>
+        /// 探测收件人地址并保留 SMTP 拒绝所在的命令阶段
+        /// </summary>
+        public async Task<SmtpProbeResult> ProbeRecipientAsync(string email, string fromDomain)
+        {
+            if (!_existMx)
+                return CreateUnavailableResult("No MX record found");
+
+            if (!IsConnected || !_isConnected)
+                return CreateUnavailableResult("Not connected to SMTP server");
+
             var heloCmd = $"HELO {fromDomain}";
             var helloResponse = await SendCommandAsync(heloCmd);
             if (helloResponse.StatusCode != SmtpStatusCode.Ok)
-                return helloResponse;
+                return new SmtpProbeResult(SmtpProbeStage.Helo, helloResponse);
 
-            // 发送 MAIL FROM 命令
-            // 生成随机 a-zA-Z 字符串 6 位
             var randomName = RandomName(6);
             var mailFromCmd = $"MAIL FROM:<{randomName}@{fromDomain}>";
             var mailFromResponse = await SendCommandAsync(mailFromCmd);
             if (mailFromResponse.StatusCode != SmtpStatusCode.Ok)
-                return mailFromResponse;
+                return new SmtpProbeResult(SmtpProbeStage.MailFrom, mailFromResponse);
 
-            // 发送 RCPT TO 命令
             var rcptToCmd = $"RCPT TO:<{email}>";
             var rcptToResponse = await SendCommandAsync(rcptToCmd);
 
-            return rcptToResponse;
+            return new SmtpProbeResult(SmtpProbeStage.Recipient, rcptToResponse);
         }
+
+        private static SmtpProbeResult CreateUnavailableResult(string reason) =>
+            new(SmtpProbeStage.Helo, new SmtpResponse(SmtpStatusCode.MailboxUnavailable, reason));
 
         private static string RandomName(int length)
         {
             var chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
-            var random = new Random();
             var name = new StringBuilder();
             for (int i = 0; i < length; i++)
             {
-                name.Append(chars[random.Next(chars.Length)]);
+                name.Append(chars[Random.Shared.Next(chars.Length)]);
             }
             return name.ToString();
         }

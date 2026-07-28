@@ -94,8 +94,6 @@ public sealed class ProInboxVerificationEvidence(
             "mailinator.com",
             "tempmail.com"
         };
-    private static readonly HashSet<string> LongLivedDomains =
-        new(StringComparer.OrdinalIgnoreCase) { "gmail.com", "qq.com" };
     private static readonly ConcurrentDictionary<string, CachedMxResult> MemoryMxCache = [];
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> MxLocks = [];
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> SnapshotLocks = [];
@@ -115,7 +113,10 @@ public sealed class ProInboxVerificationEvidence(
                 .InboxVerificationSnapshots.Include(x => x.MxDomainCache)
                 .ThenInclude(x => x!.Records)
                 .FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedEmail, cancellationToken);
-            if (snapshot?.ExpiresAtUtc > DateTime.UtcNow)
+            if (
+                snapshot != null
+                && InboxVerificationSnapshotPolicy.CanReuse(snapshot, DateTime.UtcNow)
+            )
                 return ToReport(request, snapshot);
 
             var syntax = ValidateSyntax(normalizedEmail);
@@ -345,42 +346,14 @@ public sealed class ProInboxVerificationEvidence(
 
             try
             {
-                var targetResponse = await client.CheckExist(email, [domain]);
-                var targetStatus = (int)targetResponse.StatusCode;
-                if (targetStatus is 550 or 551 or 553)
-                    return new SmtpVerificationEvidence(
-                        InboxVerificationState.Invalid,
-                        targetResponse.Response,
-                        true,
-                        false,
-                        false,
-                        false,
-                        true
-                    );
-                if (targetStatus == 552)
-                    return new SmtpVerificationEvidence(
-                        InboxVerificationState.Unknown,
-                        targetResponse.Response,
-                        true,
-                        true,
-                        false,
-                        false,
-                        false
-                    );
-                if (targetStatus is < 200 or >= 300)
-                    return new SmtpVerificationEvidence(
-                        InboxVerificationState.Unknown,
-                        targetResponse.Response,
-                        true,
-                        false,
-                        false,
-                        false,
-                        false
-                    );
+                var targetProbe = await client.ProbeRecipientAsync(email, domain);
+                var targetEvidence = SmtpVerificationEvidenceClassifier.Classify(targetProbe);
+                if (targetEvidence.State != InboxVerificationState.Valid)
+                    return targetEvidence;
 
                 var randomEmail = $"uzon-verification-{Guid.NewGuid():N}@{domain}";
-                var catchAllResponse = await client.CheckExist(randomEmail, [domain]);
-                if ((int)catchAllResponse.StatusCode is >= 200 and < 300)
+                var catchAllProbe = await client.ProbeRecipientAsync(randomEmail, domain);
+                if (SmtpVerificationEvidenceClassifier.IsRecipientAccepted(catchAllProbe))
                     return new SmtpVerificationEvidence(
                         InboxVerificationState.Unknown,
                         "目标域为 catch-all",
@@ -391,15 +364,7 @@ public sealed class ProInboxVerificationEvidence(
                         false
                     );
 
-                return new SmtpVerificationEvidence(
-                    InboxVerificationState.Valid,
-                    null,
-                    true,
-                    false,
-                    false,
-                    true,
-                    false
-                );
+                return targetEvidence;
             }
             finally
             {
@@ -451,8 +416,14 @@ public sealed class ProInboxVerificationEvidence(
     {
         snapshot.State = state;
         snapshot.FailureReason = failureReason;
-        snapshot.VerifiedAtUtc = DateTime.UtcNow;
-        snapshot.ExpiresAtUtc = GetSnapshotExpiration(syntax.Domain);
+        var utcNow = DateTime.UtcNow;
+        snapshot.VerifiedAtUtc = utcNow;
+        snapshot.ExpiresAtUtc = InboxVerificationSnapshotPolicy.GetExpiresAtUtc(
+            syntax.Domain,
+            state,
+            options.Value,
+            utcNow
+        );
         snapshot.SyntaxDomain = syntax.Domain;
         snapshot.SyntaxUsername = syntax.Username;
         snapshot.SyntaxSuggestion = syntax.Suggestion;
@@ -522,14 +493,6 @@ public sealed class ProInboxVerificationEvidence(
             [evidence],
             snapshot.FailureReason
         );
-    }
-
-    private DateTime GetSnapshotExpiration(string domain)
-    {
-        var lifetime = LongLivedDomains.Contains(domain)
-            ? options.Value.LongLivedDomainSnapshotLifetime
-            : options.Value.DefaultSnapshotLifetime;
-        return DateTime.UtcNow + lifetime;
     }
 
     private static string? GetDomainSuggestion(string domain)

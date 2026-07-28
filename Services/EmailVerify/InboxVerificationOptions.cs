@@ -12,6 +12,8 @@ public sealed class InboxVerificationOptions : IAppOptions
 
     public TimeSpan LongLivedDomainSnapshotLifetime { get; set; } = TimeSpan.FromDays(365);
 
+    public TimeSpan UnknownSnapshotLifetime { get; set; } = TimeSpan.FromDays(1);
+
     public TimeSpan MxCacheLifetime { get; set; } = TimeSpan.FromHours(24);
 
     public TimeSpan SmtpTimeout { get; set; } = TimeSpan.FromSeconds(10);
