@@ -40,7 +40,7 @@
 	<ItemGroup>		
 	  <PackageReference Include="DeviceId" Version="6.11.0" />		
 	  <PackageReference Include="DnsClient" Version="1.8.0" />		
-	  <PackageReference Include="Jint" Version="4.15.0" />		
+	  <PackageReference Include="Jint" Version="4.15.3" />		
 	  <PackageReference Include="MathNet.Numerics" Version="5.0.0" />		
 	  <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="10.0.10" />		
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
