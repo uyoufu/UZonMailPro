@@ -1,6 +1,8 @@
 using log4net;
 using Microsoft.EntityFrameworkCore;
+using UzonMail.CorePlugin.Services.EmailReceiving.Application;
 using UzonMail.DB.SQL;
+using UzonMail.DB.SQL.Core.EmailReceiving;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.Unsubscribes;
 using UzonMail.Utils.Web.Exceptions;
@@ -8,7 +10,11 @@ using UzonMail.Utils.Web.Service;
 
 namespace UzonMail.ProPlugin.Services.Unsubscribe
 {
-    public class UnsubscribeService(SqlContext db, SqlContextPro dbPro) : IScopedService
+    public class UnsubscribeService(
+        SqlContext db,
+        SqlContextPro dbPro,
+        IRecipientSuppressionService recipientSuppressionService
+    ) : IScopedService
     {
         private static readonly ILog _logger = LogManager.GetLogger(typeof(UnsubscribeService));
 
@@ -59,6 +65,16 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
                 dbPro.UnsubscribeEmails.Add(unsubscribeEmail);
             }
             await dbPro.SaveChangesAsync();
+            foreach (var toEmail in toEmails)
+            {
+                await recipientSuppressionService.SuppressAsync(
+                    user.OrganizationId,
+                    toEmail,
+                    RecipientSuppressionReason.Unsubscribe,
+                    sendingItem.UserId,
+                    "Professional unsubscribe callback"
+                );
+            }
             return true;
         }
 
@@ -91,10 +107,11 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
             if (toEmails.Length != 1)
                 return false;
 
-            var existOne = await dbPro.UnsubscribeEmails.FirstOrDefaultAsync(x =>
-                x.OrganizationId == user.OrganizationId && x.Email == toEmails[0]
+            var suppressedEmails = await recipientSuppressionService.GetSuppressedEmailsAsync(
+                user.OrganizationId,
+                toEmails
             );
-            return existOne != null;
+            return suppressedEmails.Count > 0;
         }
     }
 }
