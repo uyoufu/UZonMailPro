@@ -31,7 +31,7 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
                 return [];
 
             var unsubscribedSendingItemIds = sendingItems
-                .Where(x => x.Inboxes.Any(i => unsubscribedEmails.Contains(i.Email)))
+                .Where(x => x.Recipients.Any(i => unsubscribedEmails.Contains(i.Email)))
                 .Select(x => x.Id)
                 .ToList();
             if (unsubscribedSendingItemIds.Count > 0)

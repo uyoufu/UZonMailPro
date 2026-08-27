@@ -30,14 +30,14 @@ namespace UzonMail.ProPlugin.SQL.IPWarmUp
         public DateTime EndDate { get; set; }
 
         /// <summary>
-        /// 当前任务的发件箱数量
+        /// 当前任务的发件账户数量
         /// </summary>
-        public int OutboxesCount { get; set; }
+        public int SenderAccountCount { get; set; }
 
         /// <summary>
-        /// 收件箱数量
+        /// 收件联系人数量
         /// </summary>
-        public int InboxesCount { get; set; }
+        public int RecipientCount { get; set; }
 
         /// <summary>
         /// 成功数据

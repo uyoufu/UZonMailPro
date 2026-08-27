@@ -6,7 +6,7 @@ namespace UzonMail.ProPlugin.Services.EmailVerify;
 /// <summary>
 /// 管理收件箱验证快照的复用与有效期策略
 /// </summary>
-public static class InboxVerificationSnapshotPolicy
+public static class RecipientContactVerificationSnapshotPolicy
 {
     private const string SpfCheckFailedMarker = "SPF check failed";
     private static readonly HashSet<string> LongLivedDomains =
@@ -15,7 +15,7 @@ public static class InboxVerificationSnapshotPolicy
     /// <summary>
     /// 判断现有快照是否可以直接复用
     /// </summary>
-    public static bool CanReuse(InboxVerificationSnapshot snapshot, DateTime utcNow)
+    public static bool CanReuse(RecipientContactVerificationSnapshot snapshot, DateTime utcNow)
     {
         return snapshot.ExpiresAtUtc > utcNow && !IsLegacySpfFailure(snapshot);
     }
@@ -25,12 +25,12 @@ public static class InboxVerificationSnapshotPolicy
     /// </summary>
     public static DateTime GetExpiresAtUtc(
         string domain,
-        InboxVerificationState state,
-        InboxVerificationOptions options,
+        RecipientContactVerificationState state,
+        RecipientContactVerificationOptions options,
         DateTime utcNow
     )
     {
-        if (state == InboxVerificationState.Unknown)
+        if (state == RecipientContactVerificationState.Unknown)
             return utcNow + options.UnknownSnapshotLifetime;
 
         var lifetime = IsLongLivedDomain(domain)
@@ -39,9 +39,9 @@ public static class InboxVerificationSnapshotPolicy
         return utcNow + lifetime;
     }
 
-    private static bool IsLegacySpfFailure(InboxVerificationSnapshot snapshot)
+    private static bool IsLegacySpfFailure(RecipientContactVerificationSnapshot snapshot)
     {
-        return snapshot.State == InboxVerificationState.Invalid
+        return snapshot.State == RecipientContactVerificationState.Invalid
             && snapshot.FailureReason?.Contains(
                 SpfCheckFailedMarker,
                 StringComparison.OrdinalIgnoreCase

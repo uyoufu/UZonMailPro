@@ -31,7 +31,7 @@ public static class SmtpVerificationEvidenceClassifier
         // 收件服务商可能因发件域 SPF 或反滥用策略在 RCPT TO 前拒绝，尚未评估目标地址是否存在
         if (probeResult.Stage != SmtpProbeStage.Recipient)
             return new SmtpVerificationEvidence(
-                InboxVerificationState.Unknown,
+                RecipientContactVerificationState.Unknown,
                 probeResult.Response.Response,
                 true,
                 false,
@@ -43,7 +43,7 @@ public static class SmtpVerificationEvidenceClassifier
         var statusCode = (int)probeResult.Response.StatusCode;
         if (statusCode is 550 or 551 or 553)
             return new SmtpVerificationEvidence(
-                InboxVerificationState.Invalid,
+                RecipientContactVerificationState.Invalid,
                 probeResult.Response.Response,
                 true,
                 false,
@@ -53,7 +53,7 @@ public static class SmtpVerificationEvidenceClassifier
             );
         if (statusCode == 552)
             return new SmtpVerificationEvidence(
-                InboxVerificationState.Unknown,
+                RecipientContactVerificationState.Unknown,
                 probeResult.Response.Response,
                 true,
                 true,
@@ -63,7 +63,7 @@ public static class SmtpVerificationEvidenceClassifier
             );
         if (statusCode is < 200 or >= 300)
             return new SmtpVerificationEvidence(
-                InboxVerificationState.Unknown,
+                RecipientContactVerificationState.Unknown,
                 probeResult.Response.Response,
                 true,
                 false,
@@ -73,7 +73,7 @@ public static class SmtpVerificationEvidenceClassifier
             );
 
         return new SmtpVerificationEvidence(
-            InboxVerificationState.Valid,
+            RecipientContactVerificationState.Valid,
             null,
             true,
             false,

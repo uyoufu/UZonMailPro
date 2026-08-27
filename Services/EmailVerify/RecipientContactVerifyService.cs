@@ -16,7 +16,7 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
     /// <summary>
     /// 收件箱验证
     /// </summary>
-    public class InboxVerifyService(
+    public class RecipientContactVerifyService(
         SqlContext db,
         IHubContext<UzonMailHub, IUzonMailClient> hub,
         MxManager mxManager,
@@ -24,15 +24,15 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
         IServiceProvider serviceProvider
     ) : IScopedService
     {
-        private readonly ILog _logger = LogManager.GetLogger(typeof(InboxVerifyService));
+        private readonly ILog _logger = LogManager.GetLogger(typeof(RecipientContactVerifyService));
 
         /// <summary>
         /// 验证收件箱是否有效
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="inboxes">必须是被跟踪的ef对象</param>
+        /// <param name="recipientContacts">必须是被跟踪的ef对象</param>
         /// <returns></returns>
-        public async Task Validate(long userId, QueryPaginator<Inbox> queryPaginator)
+        public async Task Validate(long userId, QueryPaginator<RecipientContact> queryPaginator)
         {
             // 获取所有的发件域名
             var fromDomains = await db.SmtpInfos.Select(x => x.Domain).ToListAsync();
@@ -52,8 +52,8 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
             queryPaginator.SetPageSize(1000);
             while (true)
             {
-                var inboxes = await queryPaginator.GetPage().ToListAsync();
-                if (inboxes == null || inboxes.Count == 0)
+                var recipientContacts = await queryPaginator.GetPage().ToListAsync();
+                if (recipientContacts == null || recipientContacts.Count == 0)
                 {
                     break;
                 }
@@ -62,9 +62,9 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
                 {
                     // 创建 scope
                     using var scope = serviceProvider.CreateAsyncScope();
-                    await ValidateInboxes(
+                    await ValidateRecipientContacts(
                         fromDomains,
-                        inboxes,
+                        recipientContacts,
                         client,
                         userId,
                         scope.ServiceProvider
@@ -76,9 +76,9 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
             await Task.WhenAll(tasks);
         }
 
-        private async Task ValidateInboxes(
+        private async Task ValidateRecipientContacts(
             List<string> fromDomains,
-            List<Inbox> inboxes,
+            List<RecipientContact> recipientContacts,
             IUzonMailClient hubClient,
             long userId,
             IServiceProvider provider
@@ -87,20 +87,23 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
             Dictionary<string, VerifySmtpClient> smtpClients = [];
 
             // 获取 smtp 服务器信息
-            foreach (var inbox in inboxes)
+            foreach (var recipientContact in recipientContacts)
             {
-                var toDomain = inbox.Email.Trim().Split('@')[1];
+                var toDomain = recipientContact.Email.Trim().Split('@')[1];
 
                 var mxRecord = await mxManager.GetRandomMxRecord(toDomain);
                 if (string.IsNullOrEmpty(mxRecord))
                 {
-                    _logger.Info($"获取 MX 记录失败，邮箱: {inbox.Email}");
+                    _logger.Info($"获取 MX 记录失败，邮箱: {recipientContact.Email}");
                     // 标记为不可用
-                    await db.Inboxes.UpdateAsync(
-                        x => x.Id == inbox.Id,
+                    await db.RecipientContacts.UpdateAsync(
+                        x => x.Id == recipientContact.Id,
                         x =>
-                            x.SetProperty(y => y.Status, InboxStatus.Invalid)
-                                .SetProperty(y => y.ValidFailReason, "获取 MX 记录失败")
+                            x.SetProperty(
+                                    y => y.ValidationStatus,
+                                    RecipientValidationStatus.Invalid
+                                )
+                                .SetProperty(y => y.ValidationFailureReason, "获取 MX 记录失败")
                     );
                     continue;
                 }
@@ -116,53 +119,57 @@ namespace UzonMail.ProPlugin.Services.EmailVerify
                 {
                     // 说明获取到，但是无法连接，状态未知
                     _logger.Info($"MX 连接失败{mxRecord}");
-                    await db.Inboxes.UpdateAsync(
-                        x => x.Id == inbox.Id,
+                    await db.RecipientContacts.UpdateAsync(
+                        x => x.Id == recipientContact.Id,
                         x =>
-                            x.SetProperty(y => y.Status, InboxStatus.Unkown)
-                                .SetProperty(y => y.ValidFailReason, "MX 连接失败")
+                            x.SetProperty(
+                                    y => y.ValidationStatus,
+                                    RecipientValidationStatus.Unknown
+                                )
+                                .SetProperty(y => y.ValidationFailureReason, "MX 连接失败")
                     );
                     continue;
                 }
 
-                var response = await client.CheckExist(inbox.Email, fromDomains);
+                var response = await client.CheckExist(recipientContact.Email, fromDomains);
 
                 _logger.Debug(
-                    $"验证邮箱 {inbox.Email} 的结果: {response.StatusCode} - {response.Response}"
+                    $"验证邮箱 {recipientContact.Email} 的结果: {response.StatusCode} - {response.Response}"
                 );
-                InboxStatus inboxStatus = InboxStatus.None;
+                RecipientValidationStatus recipientContactStatus =
+                    RecipientValidationStatus.Unverified;
                 if (response.StatusCode == SmtpStatusCode.Ok)
                 {
-                    inboxStatus = InboxStatus.Valid;
+                    recipientContactStatus = RecipientValidationStatus.Valid;
                 }
                 else if (response.StatusCode == SmtpStatusCode.MailboxUnavailable)
                 {
                     var responseMsg = response.Response;
                     if (responseMsg.Contains("5.7.1"))
-                        inboxStatus = InboxStatus.Unkown;
+                        recipientContactStatus = RecipientValidationStatus.Unknown;
                     if (responseMsg.Contains("SPF"))
-                        inboxStatus = InboxStatus.Unkown;
+                        recipientContactStatus = RecipientValidationStatus.Unknown;
                     else
-                        inboxStatus = InboxStatus.Invalid;
+                        recipientContactStatus = RecipientValidationStatus.Invalid;
                 }
                 else
                 {
-                    inboxStatus = InboxStatus.Unkown;
+                    recipientContactStatus = RecipientValidationStatus.Unknown;
                 }
 
-                inbox.Status = inboxStatus;
-                inbox.ValidFailReason = response.Response;
+                recipientContact.ValidationStatus = recipientContactStatus;
+                recipientContact.ValidationFailureReason = response.Response;
 
                 // 保存到数据库中
-                await db.Inboxes.UpdateAsync(
-                    x => x.Id == inbox.Id,
+                await db.RecipientContacts.UpdateAsync(
+                    x => x.Id == recipientContact.Id,
                     x =>
-                        x.SetProperty(y => y.Status, inboxStatus)
-                            .SetProperty(y => y.ValidFailReason, response.Response)
+                        x.SetProperty(y => y.ValidationStatus, recipientContactStatus)
+                            .SetProperty(y => y.ValidationFailureReason, response.Response)
                 );
 
                 // 推送更新
-                await hubClient.InboxStatusChanged(inbox);
+                await hubClient.RecipientContactStatusChanged(recipientContact);
 
                 await client.DisconnectAsync(true);
             }

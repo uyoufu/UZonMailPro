@@ -1,13 +1,12 @@
-using UzonMail.CorePlugin.Database.Upgrade;
-using UzonMail.DB.SQL;
+using UzonMail.CorePlugin.Database.Initializers;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.EmailCrawler;
 
 namespace UzonMail.ProPlugin.Database.Updaters
 {
-    public class AddDefaultTikTokDevices(SqlContextPro db) : IDatabaseUpdater
+    public class AddDefaultTikTokDevices(SqlContextPro db) : IDbInitializer
     {
-        public Version Version => new(0, 11, 1, 0);
+        public string Name => nameof(AddDefaultTikTokDevices);
 
         public async Task ExecuteAsync()
         {

@@ -40,7 +40,7 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
             if (user is null)
                 throw new KnownException("退订邮件所属用户不存在");
 
-            var toEmails = (sendingItem.ToEmails ?? string.Empty).Split(
+            var toEmails = (sendingItem.RecipientEmails ?? string.Empty).Split(
                 ',',
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
             );
@@ -100,7 +100,7 @@ namespace UzonMail.ProPlugin.Services.Unsubscribe
             if (user is null)
                 throw new KnownException("退订邮件所属用户不存在");
 
-            var toEmails = (sendingItem.ToEmails ?? string.Empty).Split(
+            var toEmails = (sendingItem.RecipientEmails ?? string.Empty).Split(
                 ',',
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
             );

@@ -116,7 +116,7 @@ namespace UzonMail.ProPlugin.SQL
         public DbSet<AccessToken> AccessTokens { get; set; } // 访问令牌
 
         // 收件箱验证
-        public DbSet<InboxVerificationSnapshot> InboxVerificationSnapshots { get; set; }
+        public DbSet<RecipientContactVerificationSnapshot> RecipientContactVerificationSnapshots { get; set; }
         public DbSet<MxDomainCache> MxDomainCaches { get; set; }
         public DbSet<MxDomainRecord> MxDomainRecords { get; set; }
 

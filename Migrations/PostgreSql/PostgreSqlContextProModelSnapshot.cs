@@ -9,7 +9,7 @@ using UzonMail.ProPlugin.SQL;
 
 #nullable disable
 
-namespace UzonMail.ProPlugin.Migrations.PostgreSql
+namespace UzonMail.ProPlugin.Migrations.PostgreSQL
 {
     [DbContext(typeof(PostgreSqlContextPro))]
     partial class PostgreSqlContextProModelSnapshot : ModelSnapshot
@@ -74,24 +74,6 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         });
                 });
 
-            modelBuilder.Entity("OutboxSendingGroup", b =>
-                {
-                    b.Property<long>("OutboxesId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("SendingGroupId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("OutboxesId", "SendingGroupId");
-
-                    b.HasIndex("SendingGroupId");
-
-                    b.ToTable("OutboxSendingGroup", t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
-                });
-
             modelBuilder.Entity("PermissionCodeRole", b =>
                 {
                     b.Property<long>("PermissionCodesId")
@@ -123,6 +105,24 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.HasIndex("UserRolesId");
 
                     b.ToTable("RoleUserRoles", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("SenderAccountSendingGroup", b =>
+                {
+                    b.Property<long>("SenderAccountsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SendingGroupId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("SenderAccountsId", "SendingGroupId");
+
+                    b.HasIndex("SendingGroupId");
+
+                    b.ToTable("SenderAccountSendingGroup", t =>
                         {
                             t.ExcludeFromMigrations();
                         });
@@ -165,6 +165,1037 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         });
                 });
 
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailbox", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Attributes")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HierarchyDelimiter")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("HighestModSequence")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSubscribed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSynchronizationEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastSuccessfulSyncAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastSyncError")
+                        .HasColumnType("text");
+
+                    b.Property<int>("LastSyncStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long?>("ParentId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ReceivingAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RemoteFullName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("RemoteMessageCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RemoteUnreadCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SpecialUse")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("UidNext")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UidValidity")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("ReceivingAccountId");
+
+                    b.ToTable("ImapMailbox", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailboxSyncCheckpoint", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ImapMailboxId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastCommittedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("LastCommittedModSequence")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("LastCommittedUid")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("LastFullReconciliationAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long>("SynchronizationGeneration")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UidValidity")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ImapMailboxId")
+                        .IsUnique();
+
+                    b.ToTable("ImapMailboxSyncCheckpoint", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAddress", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("AddressType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("IncomingMailMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailMessageId");
+
+                    b.ToTable("IncomingMailAddress", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysis", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AnalyzerVersion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("BounceType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CompletedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FailureReason")
+                        .HasColumnType("text");
+
+                    b.Property<long>("IncomingMailMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("InputContentSha256")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<string>("ResultSummary")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Source")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("SpamScore")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("StartedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailMessageId");
+
+                    b.ToTable("IncomingMailAnalysis", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysisClassification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Classification")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Confidence")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("IncomingMailAnalysisId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailAnalysisId");
+
+                    b.ToTable("IncomingMailAnalysisClassification", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailClassificationEvidence", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("EvidenceType")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("IncomingMailAnalysisId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<string>("Summary")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ValueSha256")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailAnalysisId");
+
+                    b.ToTable("IncomingMailClassificationEvidence", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailCurrentClassification", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("AppliedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Classification")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal>("Confidence")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("IncomingMailAnalysisId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IncomingMailMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailAnalysisId");
+
+                    b.HasIndex("IncomingMailMessageId");
+
+                    b.ToTable("IncomingMailCurrentClassification", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailDeliveryStatus", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Action")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DiagnosticCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EnhancedStatusCode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FinalRecipient")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FinalRecipientEmail")
+                        .HasColumnType("text");
+
+                    b.Property<long>("IncomingMailAnalysisId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("MimePartPath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<string>("OriginalRecipient")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RemoteMta")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailAnalysisId");
+
+                    b.ToTable("IncomingMailDeliveryStatus", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailFeedbackReport", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("FeedbackType")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("IncomingMailAnalysisId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("MimePartPath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<string>("OriginalRecipient")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OriginalRecipientEmail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ReportedDomain")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailAnalysisId");
+
+                    b.ToTable("IncomingMailFeedbackReport", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailKeyword", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("IncomingMailLocationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Keyword")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailLocationId");
+
+                    b.ToTable("IncomingMailKeyword", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailLocation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FirstSeenAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Flags")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("ImapMailboxId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IncomingMailMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPresentOnServer")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastSynchronizedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("ModSequence")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long>("ReceivingAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("Uid")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("UidValidity")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ImapMailboxId");
+
+                    b.HasIndex("IncomingMailMessageId");
+
+                    b.ToTable("IncomingMailLocation", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AnalysisSummary")
+                        .HasColumnType("text");
+
+                    b.Property<int>("AttachmentCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("BodyContentStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContentSha256")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CurrentBounceType")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CurrentClassificationUpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CurrentPrimaryClassification")
+                        .HasColumnType("integer");
+
+                    b.Property<decimal?>("CurrentSpamScore")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("InlineResourceCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("InternetMessageId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("InternetMessageIdKey")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastAnalyzedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<DateTime>("ReceivedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("ReceivingAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("SentAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("Size")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceivingAccountId");
+
+                    b.ToTable("IncomingMailMessage", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMimePart", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("ContentDisposition")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContentId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ContentSha256")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("DeclaredSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DownloadedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("FetchStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text");
+
+                    b.Property<long?>("FileUsageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("IncomingMailMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LastFetchError")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MediaType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MimePartPath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<string>("ParentMimePartPath")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PartKind")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileUsageId");
+
+                    b.HasIndex("IncomingMailMessageId");
+
+                    b.ToTable("IncomingMailMimePart", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailReference", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("IncomingMailMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("InternetMessageId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReferenceType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailMessageId");
+
+                    b.ToTable("IncomingMailReference", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailSendingItemLink", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<decimal>("Confidence")
+                        .HasColumnType("numeric");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("IncomingMailMessageId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("LinkType")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MatchMethod")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MatchReason")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<DateTime?>("ReviewedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long?>("ReviewedByUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SendingItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("SendingItemRecipientId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IncomingMailMessageId");
+
+                    b.HasIndex("SendingItemId");
+
+                    b.HasIndex("SendingItemRecipientId");
+
+                    b.ToTable("IncomingMailSendingItemLink", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("AuthenticationMethod")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ContentRetentionDays")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("EmailAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastConnectedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastError")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastSuccessfulSyncAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LastSyncAttemptAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("NextSyncAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<int>("Protocol")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailAccountId")
+                        .IsUnique();
+
+                    b.ToTable("ReceivingAccount", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccountPrimarySender", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long>("ReceivingAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ReceivingAccountSenderLinkId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceivingAccountId")
+                        .IsUnique();
+
+                    b.HasIndex("ReceivingAccountSenderLinkId");
+
+                    b.ToTable("ReceivingAccountPrimarySender", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccountSenderLink", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long>("ReceivingAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("SenderAccountId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceivingAccountId");
+
+                    b.HasIndex("SenderAccountId");
+
+                    b.ToTable("ReceivingAccountSenderLink", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
             modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailSending.EmailAddress", b =>
                 {
                     b.Property<long>("Id")
@@ -194,7 +1225,22 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("_id");
 
+                    b.Property<long?>("SendingItemId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("SendingItemId1")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("SendingItemId2")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("SendingItemId");
+
+                    b.HasIndex("SendingItemId1");
+
+                    b.HasIndex("SendingItemId2");
 
                     b.ToTable("EmailAddress", t =>
                         {
@@ -225,16 +1271,6 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Property<string>("Data")
                         .HasColumnType("text");
 
-                    b.Property<string>("InboxGroups")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Inboxes")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("InboxesCount")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -252,13 +1288,17 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("_id");
 
-                    b.Property<string>("OutboxGroups")
+                    b.PrimitiveCollection<string>("ProxyIds")
                         .HasColumnType("text");
 
-                    b.Property<int>("OutboxesCount")
+                    b.Property<string>("RecipientContactGroups")
+                        .HasColumnType("text");
+
+                    b.Property<int>("RecipientCount")
                         .HasColumnType("integer");
 
-                    b.PrimitiveCollection<string>("ProxyIds")
+                    b.Property<string>("Recipients")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("ResumeAtUtc")
@@ -272,6 +1312,12 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
 
                     b.Property<DateTime>("SendStartDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("SenderAccountCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SenderAccountGroups")
+                        .HasColumnType("text");
 
                     b.Property<int>("SendingType")
                         .HasColumnType("integer");
@@ -311,7 +1357,7 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         });
                 });
 
-            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.Outbox", b =>
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailSending.SendingItem", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -319,8 +1365,341 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<int>("ConnectionSecurity")
+                    b.Property<string>("Content")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("EmailTemplateId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("EnableEmailTracker")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("InternetMessageId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("InternetMessageIdKey")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHardBounce")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsSendingBatch")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long>("OrganizationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ProxyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("ReadDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReceiptId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RecipientEmails")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("SendDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SendResult")
+                        .HasColumnType("text");
+
+                    b.Property<long>("SenderAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SenderEmail")
+                        .HasColumnType("text");
+
+                    b.Property<long>("SendingGroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("Status")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Subject")
+                        .HasColumnType("text");
+
+                    b.Property<int>("TriedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SendingGroupId");
+
+                    b.ToTable("SendingItem", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailSending.SendingItemRecipient", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long>("OrganizationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("RecipientContactId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RecipientEmail")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("SendDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("SenderEmail")
+                        .HasColumnType("text");
+
+                    b.Property<long>("SendingItemId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SendingItemRecipient", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.EmailAccount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Domain")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedEmail")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long>("OrganizationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Remark")
+                        .HasColumnType("text");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailAccount", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.EmailAccountOAuthCredential", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime?>("AccessTokenExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("ApplicationSource")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("AuthorizedScopes")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClientId")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CredentialUpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("EmailAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("EncryptedAccessToken")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EncryptedClientSecret")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EncryptedRefreshToken")
+                        .HasColumnType("text");
+
+                    b.Property<string>("EncryptionKeyVersion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<int>("Provider")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TenantId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TokenEndpoint")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailAccountId")
+                        .IsUnique();
+
+                    b.ToTable("EmailAccountOAuthCredential", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.EmailGroup", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("Category")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Extra")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Icon")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<long>("Order")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ParentId")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmailGroup", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.RecipientContact", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp with time zone");
@@ -344,16 +1723,20 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Property<bool>("IsHidden")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsValid")
-                        .HasColumnType("boolean");
+                    b.Property<DateTime>("LastDeliveredAtUtc")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("LinkCount")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("LastSuccessDeliveryDate")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("MaxSendCountPerDay")
-                        .HasColumnType("integer");
+                    b.Property<long>("MinimumCooldownHours")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedEmail")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ObjectId")
@@ -361,15 +1744,70 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("_id");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<long>("ProxyId")
+                    b.Property<long>("OrganizationId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("Remark")
                         .HasColumnType("text");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("ValidationFailureReason")
+                        .HasColumnType("text");
+
+                    b.Property<int>("ValidationStatus")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmailGroupId");
+
+                    b.ToTable("RecipientContact", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.SenderAccount", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("AuthenticationMethod")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<long>("EmailAccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("EmailGroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MaxSendCountPerDay")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<int>("Protocol")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("ProxyId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ReplyToEmails")
                         .HasColumnType("text");
@@ -380,26 +1818,10 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Property<int>("SentTotalToday")
                         .HasColumnType("integer");
 
-                    b.Property<string>("SmtpHost")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("SmtpPort")
-                        .HasColumnType("integer");
-
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("integer");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ValidFailReason")
+                    b.Property<string>("ValidationFailureReason")
                         .HasColumnType("text");
 
                     b.Property<int>("Weight")
@@ -407,13 +1829,73 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email");
+                    b.HasIndex("EmailAccountId")
+                        .IsUnique();
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("EmailGroupId");
 
-                    b.HasIndex("UserId", "EmailGroupId", "IsValid", "Id");
+                    b.ToTable("SenderAccount", t =>
+                        {
+                            t.ExcludeFromMigrations();
+                        });
+                });
 
-                    b.ToTable("Outbox", t =>
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.SenderAccountSmtpCredential", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<int>("ConnectionSecurity")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CredentialUpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("EncryptedPassword")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EncryptionKeyVersion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Host")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("LoginName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<int>("Port")
+                        .HasColumnType("integer");
+
+                    b.Property<long>("SenderAccountId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SenderAccountId")
+                        .IsUnique();
+
+                    b.ToTable("SenderAccountSmtpCredential", t =>
                         {
                             t.ExcludeFromMigrations();
                         });
@@ -613,6 +2095,12 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Property<long>("ReferenceCount")
                         .HasColumnType("bigint");
 
+                    b.Property<int>("Scope")
+                        .HasColumnType("integer");
+
+                    b.Property<long?>("SendingItemId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -620,6 +2108,8 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.HasIndex("FileObjectId");
 
                     b.HasIndex("OwnerUserId");
+
+                    b.HasIndex("SendingItemId");
 
                     b.ToTable("FileUsage", t =>
                         {
@@ -1027,10 +2517,10 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("_id");
 
-                    b.Property<long>("OutboxGroupId")
+                    b.Property<long>("ProxyId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("ProxyId")
+                    b.Property<long>("RecipientContactGroupId")
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("StartDate")
@@ -1070,7 +2560,7 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Property<bool>("ExistExtraInfo")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsAttachingInbox")
+                    b.Property<bool>("IsAttachingRecipientContact")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
@@ -1325,93 +2815,6 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.ToTable("TiktokAuthors");
                 });
 
-            modelBuilder.Entity("UzonMail.ProPlugin.SQL.EmailVerify.InboxVerificationSnapshot", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<bool>("CanConnectSmtp")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("ExpiresAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FailureReason")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("HasFullInbox")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsB2C")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsCatchAll")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeliverable")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDisabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDisposable")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsHidden")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsRoleAccount")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsValidSyntax")
-                        .HasColumnType("boolean");
-
-                    b.Property<long?>("MxDomainCacheId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("NormalizedEmail")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("ObjectId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("_id");
-
-                    b.Property<int>("State")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SyntaxDomain")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SyntaxSuggestion")
-                        .HasColumnType("text");
-
-                    b.Property<string>("SyntaxUsername")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("VerifiedAtUtc")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MxDomainCacheId");
-
-                    b.HasIndex("NormalizedEmail")
-                        .IsUnique();
-
-                    b.ToTable("InboxVerificationSnapshots");
-                });
-
             modelBuilder.Entity("UzonMail.ProPlugin.SQL.EmailVerify.MxDomainCache", b =>
                 {
                     b.Property<long>("Id")
@@ -1497,6 +2900,93 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.ToTable("MxDomainRecords");
                 });
 
+            modelBuilder.Entity("UzonMail.ProPlugin.SQL.EmailVerify.RecipientContactVerificationSnapshot", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<bool>("CanConnectSmtp")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FailureReason")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("HasFullRecipientContact")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsB2C")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsCatchAll")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeliverable")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDisabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDisposable")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsRoleAccount")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsValidSyntax")
+                        .HasColumnType("boolean");
+
+                    b.Property<long?>("MxDomainCacheId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("NormalizedEmail")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ObjectId")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("_id");
+
+                    b.Property<int>("State")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("SyntaxDomain")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SyntaxSuggestion")
+                        .HasColumnType("text");
+
+                    b.Property<string>("SyntaxUsername")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("VerifiedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MxDomainCacheId");
+
+                    b.HasIndex("NormalizedEmail")
+                        .IsUnique();
+
+                    b.ToTable("RecipientContactVerificationSnapshots");
+                });
+
             modelBuilder.Entity("UzonMail.ProPlugin.SQL.IPWarmUp.IpWarmUpUpPlan", b =>
                 {
                     b.Property<long>("Id")
@@ -1529,10 +3019,6 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.PrimitiveCollection<string>("InboxIds")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -1548,11 +3034,15 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("_id");
 
-                    b.PrimitiveCollection<string>("OutboxIds")
+                    b.PrimitiveCollection<string>("RecipientContactIds")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("SendCountChartPoints")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.PrimitiveCollection<string>("SenderAccountIds")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -1598,9 +3088,6 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Property<long>("IPWarmUpPlanId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("InboxesCount")
-                        .HasColumnType("integer");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -1616,7 +3103,10 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("_id");
 
-                    b.Property<int>("OutboxesCount")
+                    b.Property<int>("RecipientCount")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("SenderAccountCount")
                         .HasColumnType("integer");
 
                     b.Property<long>("SendingGroupId")
@@ -1739,10 +3229,6 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Property<DateTime>("FirstVisitDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("InboxEmails")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
@@ -1757,7 +3243,11 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasColumnType("text")
                         .HasColumnName("_id");
 
-                    b.Property<string>("OutboxEmail")
+                    b.Property<string>("RecipientEmails")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SenderEmail")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -2038,21 +3528,6 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OutboxSendingGroup", b =>
-                {
-                    b.HasOne("UzonMail.DB.SQL.Core.Emails.Outbox", null)
-                        .WithMany()
-                        .HasForeignKey("OutboxesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingGroup", null)
-                        .WithMany()
-                        .HasForeignKey("SendingGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("PermissionCodeRole", b =>
                 {
                     b.HasOne("UzonMail.DB.SQL.Core.Permission.PermissionCode", null)
@@ -2081,6 +3556,366 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasForeignKey("UserRolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SenderAccountSendingGroup", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.Emails.SenderAccount", null)
+                        .WithMany()
+                        .HasForeignKey("SenderAccountsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingGroup", null)
+                        .WithMany()
+                        .HasForeignKey("SendingGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailbox", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailbox", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccount", "ReceivingAccount")
+                        .WithMany("Mailboxes")
+                        .HasForeignKey("ReceivingAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("ReceivingAccount");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailboxSyncCheckpoint", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailbox", "ImapMailbox")
+                        .WithOne("SyncCheckpoint")
+                        .HasForeignKey("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailboxSyncCheckpoint", "ImapMailboxId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ImapMailbox");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAddress", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", "IncomingMailMessage")
+                        .WithMany("Addresses")
+                        .HasForeignKey("IncomingMailMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailMessage");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysis", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", "IncomingMailMessage")
+                        .WithMany("Analyses")
+                        .HasForeignKey("IncomingMailMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailMessage");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysisClassification", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysis", "IncomingMailAnalysis")
+                        .WithMany("Classifications")
+                        .HasForeignKey("IncomingMailAnalysisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailAnalysis");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailClassificationEvidence", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysis", "IncomingMailAnalysis")
+                        .WithMany("Evidences")
+                        .HasForeignKey("IncomingMailAnalysisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailAnalysis");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailCurrentClassification", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysis", "IncomingMailAnalysis")
+                        .WithMany()
+                        .HasForeignKey("IncomingMailAnalysisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", "IncomingMailMessage")
+                        .WithMany("CurrentClassifications")
+                        .HasForeignKey("IncomingMailMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailAnalysis");
+
+                    b.Navigation("IncomingMailMessage");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailDeliveryStatus", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysis", "IncomingMailAnalysis")
+                        .WithMany("DeliveryStatuses")
+                        .HasForeignKey("IncomingMailAnalysisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailAnalysis");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailFeedbackReport", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysis", "IncomingMailAnalysis")
+                        .WithMany("FeedbackReports")
+                        .HasForeignKey("IncomingMailAnalysisId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailAnalysis");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailKeyword", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailLocation", "IncomingMailLocation")
+                        .WithMany("Keywords")
+                        .HasForeignKey("IncomingMailLocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailLocation");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailLocation", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailbox", "ImapMailbox")
+                        .WithMany("MessageLocations")
+                        .HasForeignKey("ImapMailboxId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", "IncomingMailMessage")
+                        .WithMany("Locations")
+                        .HasForeignKey("IncomingMailMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ImapMailbox");
+
+                    b.Navigation("IncomingMailMessage");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccount", "ReceivingAccount")
+                        .WithMany()
+                        .HasForeignKey("ReceivingAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReceivingAccount");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMimePart", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.Files.FileUsage", "FileUsage")
+                        .WithMany()
+                        .HasForeignKey("FileUsageId");
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", "IncomingMailMessage")
+                        .WithMany("MimeParts")
+                        .HasForeignKey("IncomingMailMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FileUsage");
+
+                    b.Navigation("IncomingMailMessage");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailReference", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", "IncomingMailMessage")
+                        .WithMany("References")
+                        .HasForeignKey("IncomingMailMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomingMailMessage");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailSendingItemLink", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", "IncomingMailMessage")
+                        .WithMany("SendingItemLinks")
+                        .HasForeignKey("IncomingMailMessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingItem", "SendingItem")
+                        .WithMany()
+                        .HasForeignKey("SendingItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingItemRecipient", "SendingItemRecipient")
+                        .WithMany()
+                        .HasForeignKey("SendingItemRecipientId");
+
+                    b.Navigation("IncomingMailMessage");
+
+                    b.Navigation("SendingItem");
+
+                    b.Navigation("SendingItemRecipient");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccount", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.Emails.EmailAccount", "EmailAccount")
+                        .WithOne("ReceivingAccount")
+                        .HasForeignKey("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccount", "EmailAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EmailAccount");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccountPrimarySender", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccount", "ReceivingAccount")
+                        .WithOne("PrimarySender")
+                        .HasForeignKey("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccountPrimarySender", "ReceivingAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccountSenderLink", "ReceivingAccountSenderLink")
+                        .WithMany()
+                        .HasForeignKey("ReceivingAccountSenderLinkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReceivingAccount");
+
+                    b.Navigation("ReceivingAccountSenderLink");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccountSenderLink", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccount", "ReceivingAccount")
+                        .WithMany("SenderLinks")
+                        .HasForeignKey("ReceivingAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UzonMail.DB.SQL.Core.Emails.SenderAccount", "SenderAccount")
+                        .WithMany()
+                        .HasForeignKey("SenderAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReceivingAccount");
+
+                    b.Navigation("SenderAccount");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailSending.EmailAddress", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingItem", null)
+                        .WithMany("BCC")
+                        .HasForeignKey("SendingItemId");
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingItem", null)
+                        .WithMany("CC")
+                        .HasForeignKey("SendingItemId1");
+
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingItem", null)
+                        .WithMany("Recipients")
+                        .HasForeignKey("SendingItemId2");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailSending.SendingItem", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingGroup", "SendingGroup")
+                        .WithMany()
+                        .HasForeignKey("SendingGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SendingGroup");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.EmailAccountOAuthCredential", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.Emails.EmailAccount", "EmailAccount")
+                        .WithOne("OAuthCredential")
+                        .HasForeignKey("UzonMail.DB.SQL.Core.Emails.EmailAccountOAuthCredential", "EmailAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EmailAccount");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.EmailGroup", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.Organization.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.RecipientContact", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.Emails.EmailGroup", "EmailGroup")
+                        .WithMany("RecipientContacts")
+                        .HasForeignKey("EmailGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EmailGroup");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.SenderAccount", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.Emails.EmailAccount", "EmailAccount")
+                        .WithOne("SenderAccount")
+                        .HasForeignKey("UzonMail.DB.SQL.Core.Emails.SenderAccount", "EmailAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UzonMail.DB.SQL.Core.Emails.EmailGroup", "EmailGroup")
+                        .WithMany("SenderAccounts")
+                        .HasForeignKey("EmailGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("EmailAccount");
+
+                    b.Navigation("EmailGroup");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.SenderAccountSmtpCredential", b =>
+                {
+                    b.HasOne("UzonMail.DB.SQL.Core.Emails.SenderAccount", "SenderAccount")
+                        .WithOne("SmtpCredential")
+                        .HasForeignKey("UzonMail.DB.SQL.Core.Emails.SenderAccountSmtpCredential", "SenderAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("SenderAccount");
                 });
 
             modelBuilder.Entity("UzonMail.DB.SQL.Core.Files.FileCategory", b =>
@@ -2131,6 +3966,10 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("UzonMail.DB.SQL.Core.EmailSending.SendingItem", null)
+                        .WithMany("Attachments")
+                        .HasForeignKey("SendingItemId");
+
                     b.Navigation("Category");
 
                     b.Navigation("FileObject");
@@ -2174,16 +4013,6 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     b.Navigation("TiktokAuthor");
                 });
 
-            modelBuilder.Entity("UzonMail.ProPlugin.SQL.EmailVerify.InboxVerificationSnapshot", b =>
-                {
-                    b.HasOne("UzonMail.ProPlugin.SQL.EmailVerify.MxDomainCache", "MxDomainCache")
-                        .WithMany()
-                        .HasForeignKey("MxDomainCacheId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("MxDomainCache");
-                });
-
             modelBuilder.Entity("UzonMail.ProPlugin.SQL.EmailVerify.MxDomainRecord", b =>
                 {
                     b.HasOne("UzonMail.ProPlugin.SQL.EmailVerify.MxDomainCache", "MxDomainCache")
@@ -2191,6 +4020,16 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .HasForeignKey("MxDomainCacheId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("MxDomainCache");
+                });
+
+            modelBuilder.Entity("UzonMail.ProPlugin.SQL.EmailVerify.RecipientContactVerificationSnapshot", b =>
+                {
+                    b.HasOne("UzonMail.ProPlugin.SQL.EmailVerify.MxDomainCache", "MxDomainCache")
+                        .WithMany()
+                        .HasForeignKey("MxDomainCacheId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("MxDomainCache");
                 });
@@ -2204,6 +4043,89 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                         .IsRequired();
 
                     b.Navigation("IPWarmUpPlan");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ImapMailbox", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("MessageLocations");
+
+                    b.Navigation("SyncCheckpoint");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailAnalysis", b =>
+                {
+                    b.Navigation("Classifications");
+
+                    b.Navigation("DeliveryStatuses");
+
+                    b.Navigation("Evidences");
+
+                    b.Navigation("FeedbackReports");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailLocation", b =>
+                {
+                    b.Navigation("Keywords");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.IncomingMailMessage", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Analyses");
+
+                    b.Navigation("CurrentClassifications");
+
+                    b.Navigation("Locations");
+
+                    b.Navigation("MimeParts");
+
+                    b.Navigation("References");
+
+                    b.Navigation("SendingItemLinks");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailReceiving.ReceivingAccount", b =>
+                {
+                    b.Navigation("Mailboxes");
+
+                    b.Navigation("PrimarySender");
+
+                    b.Navigation("SenderLinks");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.EmailSending.SendingItem", b =>
+                {
+                    b.Navigation("Attachments");
+
+                    b.Navigation("BCC");
+
+                    b.Navigation("CC");
+
+                    b.Navigation("Recipients");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.EmailAccount", b =>
+                {
+                    b.Navigation("OAuthCredential");
+
+                    b.Navigation("ReceivingAccount");
+
+                    b.Navigation("SenderAccount");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.EmailGroup", b =>
+                {
+                    b.Navigation("RecipientContacts");
+
+                    b.Navigation("SenderAccounts");
+                });
+
+            modelBuilder.Entity("UzonMail.DB.SQL.Core.Emails.SenderAccount", b =>
+                {
+                    b.Navigation("SmtpCredential");
                 });
 
             modelBuilder.Entity("UzonMail.DB.SQL.Core.Files.FileCategory", b =>

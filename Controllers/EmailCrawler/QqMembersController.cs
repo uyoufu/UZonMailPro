@@ -19,12 +19,12 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
     public class QqMembersController(SqlContext db, TokenService tokenService) : ControllerBasePro
     {
         /// <summary>
-        /// 保存 QQ 群成员为收件箱
+        /// 保存 QQ 群成员为收件联系人
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        [HttpPut("as-inbox")]
-        public async Task<ResponseResult<bool>> SaveQQMemberAsInbox(
+        [HttpPut("as-recipient-contacts")]
+        public async Task<ResponseResult<bool>> SaveQQMembersAsRecipientContacts(
             [FromBody] QQMemberSaveData data
         )
         {
@@ -34,7 +34,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
             var existGroup = await db
                 .EmailGroups.Where(x =>
                     x.UserId == userId
-                    && x.Type == EmailGroupType.InBox
+                    && x.Category == EmailGroupCategory.Recipient
                     && x.Extra == data.Group.GroupId.ToString()
                 )
                 .FirstOrDefaultAsync();
@@ -44,7 +44,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
                 existGroup = new EmailGroup
                 {
                     UserId = userId,
-                    Type = EmailGroupType.InBox,
+                    Category = EmailGroupCategory.Recipient,
                     Name = data.Group.GroupName,
                     Extra = data.Group.GroupId.ToString(),
                     IsDefault = false,
@@ -55,7 +55,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
 
             // 获取已经存在邮件列表
             var existEmails = await db
-                .Inboxes.Where(x => x.UserId == userId && x.EmailGroupId == existGroup.Id)
+                .RecipientContacts.Where(x => x.UserId == userId && x.EmailGroupId == existGroup.Id)
                 .Select(x => x.Email)
                 .ToListAsync();
 
@@ -67,14 +67,15 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
             // 添加新成员
             foreach (var member in newQQ)
             {
-                var inbox = new Inbox
+                var recipientContact = new RecipientContact
                 {
                     UserId = userId,
+                    OrganizationId = tokenService.GetOrganizationId(),
                     EmailGroupId = existGroup.Id,
                     Email = $"{member.UserId}@qq.com",
                     Name = member.Nickname
                 };
-                db.Inboxes.Add(inbox);
+                db.RecipientContacts.Add(recipientContact);
             }
             await db.SaveChangesAsync();
 

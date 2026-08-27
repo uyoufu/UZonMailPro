@@ -14,55 +14,55 @@ namespace UzonMail.ProPlugin.Services.EmailVerify;
 /// 语法验证证据。
 /// </summary>
 public sealed record SyntaxVerificationEvidence(
-    InboxVerificationState State,
+    RecipientContactVerificationState State,
     string? FailureReason,
     string Domain,
     string Username,
     bool IsValidSyntax,
     string? Suggestion
-) : InboxVerificationEvidence(State, FailureReason);
+) : RecipientContactVerificationEvidence(State, FailureReason);
 
 /// <summary>
 /// MX 验证证据。
 /// </summary>
 public sealed record MxVerificationEvidence(
-    InboxVerificationState State,
+    RecipientContactVerificationState State,
     string? FailureReason,
     bool AcceptsMail,
     IReadOnlyList<string> Records
-) : InboxVerificationEvidence(State, FailureReason);
+) : RecipientContactVerificationEvidence(State, FailureReason);
 
 /// <summary>
 /// SMTP 验证证据。
 /// </summary>
 public sealed record SmtpVerificationEvidence(
-    InboxVerificationState State,
+    RecipientContactVerificationState State,
     string? FailureReason,
     bool CanConnectSmtp,
-    bool HasFullInbox,
+    bool HasFullRecipientContact,
     bool IsCatchAll,
     bool IsDeliverable,
     bool IsDisabled
-) : InboxVerificationEvidence(State, FailureReason);
+) : RecipientContactVerificationEvidence(State, FailureReason);
 
 /// <summary>
 /// 收件箱风险属性证据。
 /// </summary>
 public sealed record MiscVerificationEvidence(
-    InboxVerificationState State,
+    RecipientContactVerificationState State,
     string? FailureReason,
     bool IsDisposable,
     bool IsRoleAccount,
     bool IsB2C
-) : InboxVerificationEvidence(State, FailureReason);
+) : RecipientContactVerificationEvidence(State, FailureReason);
 
 /// <summary>
 /// Pro 收件箱验证器，按成本串行执行语法、杂项、MX 与 SMTP 检查。
 /// </summary>
-public sealed class ProInboxVerificationEvidence(
+public sealed class ProRecipientContactVerificationEvidence(
     SqlContextPro db,
-    IOptions<InboxVerificationOptions> options
-) : IInboxVerifier, IScopedService<IInboxVerifier>
+    IOptions<RecipientContactVerificationOptions> options
+) : IRecipientContactVerifier, IScopedService<IRecipientContactVerifier>
 {
     private static readonly HashSet<string> RoleAccounts =
         new(StringComparer.OrdinalIgnoreCase)
@@ -99,8 +99,8 @@ public sealed class ProInboxVerificationEvidence(
     private static readonly ConcurrentDictionary<string, SemaphoreSlim> SnapshotLocks = [];
 
     /// <inheritdoc />
-    public async Task<InboxVerificationReport> VerifyAsync(
-        InboxVerificationRequest request,
+    public async Task<RecipientContactVerificationReport> VerifyAsync(
+        RecipientContactVerificationRequest request,
         CancellationToken cancellationToken = default
     )
     {
@@ -110,12 +110,12 @@ public sealed class ProInboxVerificationEvidence(
         try
         {
             var snapshot = await db
-                .InboxVerificationSnapshots.Include(x => x.MxDomainCache)
+                .RecipientContactVerificationSnapshots.Include(x => x.MxDomainCache)
                 .ThenInclude(x => x!.Records)
                 .FirstOrDefaultAsync(x => x.NormalizedEmail == normalizedEmail, cancellationToken);
             if (
                 snapshot != null
-                && InboxVerificationSnapshotPolicy.CanReuse(snapshot, DateTime.UtcNow)
+                && RecipientContactVerificationSnapshotPolicy.CanReuse(snapshot, DateTime.UtcNow)
             )
                 return ToReport(request, snapshot);
 
@@ -124,16 +124,21 @@ public sealed class ProInboxVerificationEvidence(
             MxVerificationEvidence mx;
             SmtpVerificationEvidence smtp;
 
-            if (syntax.State != InboxVerificationState.Valid)
+            if (syntax.State != RecipientContactVerificationState.Valid)
             {
-                mx = new MxVerificationEvidence(InboxVerificationState.NotChecked, null, false, []);
+                mx = new MxVerificationEvidence(
+                    RecipientContactVerificationState.NotChecked,
+                    null,
+                    false,
+                    []
+                );
                 smtp = CreateNotCheckedSmtpEvidence();
             }
             else
             {
                 mx = await GetMxEvidenceAsync(syntax.Domain, cancellationToken);
                 smtp =
-                    mx.State == InboxVerificationState.Valid
+                    mx.State == RecipientContactVerificationState.Valid
                         ? await ValidateSmtpAsync(
                             normalizedEmail,
                             syntax.Domain,
@@ -144,13 +149,16 @@ public sealed class ProInboxVerificationEvidence(
             }
 
             var state = MergeState(syntax.State, mx.State, smtp.State);
-            var failureReason = new InboxVerificationEvidence[] { syntax, mx, smtp }
+            var failureReason = new RecipientContactVerificationEvidence[] { syntax, mx, smtp }
                 .Select(x => x.FailureReason)
                 .FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
-            snapshot ??= new InboxVerificationSnapshot { NormalizedEmail = normalizedEmail };
+            snapshot ??= new RecipientContactVerificationSnapshot
+            {
+                NormalizedEmail = normalizedEmail
+            };
             ApplySnapshot(snapshot, state, failureReason, syntax, misc, mx, smtp);
             if (snapshot.Id == 0)
-                db.InboxVerificationSnapshots.Add(snapshot);
+                db.RecipientContactVerificationSnapshots.Add(snapshot);
 
             try
             {
@@ -161,7 +169,7 @@ public sealed class ProInboxVerificationEvidence(
                 // 跨实例并发创建时，以已提交的最新快照为准，避免重复网络探测后暴露唯一键错误
                 db.Entry(snapshot).State = EntityState.Detached;
                 var persistedSnapshot = await db
-                    .InboxVerificationSnapshots.Include(x => x.MxDomainCache)
+                    .RecipientContactVerificationSnapshots.Include(x => x.MxDomainCache)
                     .ThenInclude(x => x!.Records)
                     .FirstOrDefaultAsync(
                         x => x.NormalizedEmail == normalizedEmail,
@@ -192,7 +200,7 @@ public sealed class ProInboxVerificationEvidence(
                 && mailAddress.Host.Contains('.');
             if (!isValid)
                 return new SyntaxVerificationEvidence(
-                    InboxVerificationState.Invalid,
+                    RecipientContactVerificationState.Invalid,
                     "邮箱格式不正确",
                     string.Empty,
                     string.Empty,
@@ -203,7 +211,7 @@ public sealed class ProInboxVerificationEvidence(
             var domain = mailAddress.Host.ToLowerInvariant();
             var username = mailAddress.User;
             return new SyntaxVerificationEvidence(
-                InboxVerificationState.Valid,
+                RecipientContactVerificationState.Valid,
                 null,
                 domain,
                 username,
@@ -214,7 +222,7 @@ public sealed class ProInboxVerificationEvidence(
         catch (FormatException)
         {
             return new SyntaxVerificationEvidence(
-                InboxVerificationState.Invalid,
+                RecipientContactVerificationState.Invalid,
                 "邮箱格式不正确",
                 string.Empty,
                 string.Empty,
@@ -226,9 +234,9 @@ public sealed class ProInboxVerificationEvidence(
 
     private static MiscVerificationEvidence CreateMiscEvidence(SyntaxVerificationEvidence syntax)
     {
-        if (syntax.State != InboxVerificationState.Valid)
+        if (syntax.State != RecipientContactVerificationState.Valid)
             return new MiscVerificationEvidence(
-                InboxVerificationState.NotChecked,
+                RecipientContactVerificationState.NotChecked,
                 null,
                 false,
                 false,
@@ -236,7 +244,7 @@ public sealed class ProInboxVerificationEvidence(
             );
 
         return new MiscVerificationEvidence(
-            InboxVerificationState.Valid,
+            RecipientContactVerificationState.Valid,
             null,
             DisposableDomains.Contains(syntax.Domain),
             RoleAccounts.Contains(syntax.Username),
@@ -309,7 +317,7 @@ public sealed class ProInboxVerificationEvidence(
             catch (Exception exception) when (exception is not OperationCanceledException)
             {
                 var evidence = new MxVerificationEvidence(
-                    InboxVerificationState.Unknown,
+                    RecipientContactVerificationState.Unknown,
                     "无法查询 MX 记录",
                     false,
                     []
@@ -348,14 +356,14 @@ public sealed class ProInboxVerificationEvidence(
             {
                 var targetProbe = await client.ProbeRecipientAsync(email, domain);
                 var targetEvidence = SmtpVerificationEvidenceClassifier.Classify(targetProbe);
-                if (targetEvidence.State != InboxVerificationState.Valid)
+                if (targetEvidence.State != RecipientContactVerificationState.Valid)
                     return targetEvidence;
 
                 var randomEmail = $"uzon-verification-{Guid.NewGuid():N}@{domain}";
                 var catchAllProbe = await client.ProbeRecipientAsync(randomEmail, domain);
                 if (SmtpVerificationEvidenceClassifier.IsRecipientAccepted(catchAllProbe))
                     return new SmtpVerificationEvidence(
-                        InboxVerificationState.Unknown,
+                        RecipientContactVerificationState.Unknown,
                         "目标域为 catch-all",
                         true,
                         false,
@@ -374,7 +382,7 @@ public sealed class ProInboxVerificationEvidence(
         }
 
         return new SmtpVerificationEvidence(
-            InboxVerificationState.Unknown,
+            RecipientContactVerificationState.Unknown,
             "无法连接目标 SMTP 服务器",
             false,
             false,
@@ -385,28 +393,32 @@ public sealed class ProInboxVerificationEvidence(
     }
 
     private static SmtpVerificationEvidence CreateNotCheckedSmtpEvidence() =>
-        new(InboxVerificationState.NotChecked, null, false, false, false, false, false);
+        new(RecipientContactVerificationState.NotChecked, null, false, false, false, false, false);
 
-    private static InboxVerificationState MergeState(params InboxVerificationState[] states)
+    private static RecipientContactVerificationState MergeState(
+        params RecipientContactVerificationState[] states
+    )
     {
-        if (states.Contains(InboxVerificationState.Invalid))
-            return InboxVerificationState.Invalid;
-        if (states.All(x => x == InboxVerificationState.Valid))
-            return InboxVerificationState.Valid;
-        return InboxVerificationState.Unknown;
+        if (states.Contains(RecipientContactVerificationState.Invalid))
+            return RecipientContactVerificationState.Invalid;
+        if (states.All(x => x == RecipientContactVerificationState.Valid))
+            return RecipientContactVerificationState.Valid;
+        return RecipientContactVerificationState.Unknown;
     }
 
     private static MxVerificationEvidence ToMxEvidence(MxDomainCache cache) =>
         new(
-            cache.AcceptsMail ? InboxVerificationState.Valid : InboxVerificationState.Invalid,
+            cache.AcceptsMail
+                ? RecipientContactVerificationState.Valid
+                : RecipientContactVerificationState.Invalid,
             cache.FailureReason,
             cache.AcceptsMail,
             cache.Records.OrderBy(x => x.Priority).Select(x => x.Host).ToList()
         );
 
     private void ApplySnapshot(
-        InboxVerificationSnapshot snapshot,
-        InboxVerificationState state,
+        RecipientContactVerificationSnapshot snapshot,
+        RecipientContactVerificationState state,
         string? failureReason,
         SyntaxVerificationEvidence syntax,
         MiscVerificationEvidence misc,
@@ -418,7 +430,7 @@ public sealed class ProInboxVerificationEvidence(
         snapshot.FailureReason = failureReason;
         var utcNow = DateTime.UtcNow;
         snapshot.VerifiedAtUtc = utcNow;
-        snapshot.ExpiresAtUtc = InboxVerificationSnapshotPolicy.GetExpiresAtUtc(
+        snapshot.ExpiresAtUtc = RecipientContactVerificationSnapshotPolicy.GetExpiresAtUtc(
             syntax.Domain,
             state,
             options.Value,
@@ -432,7 +444,7 @@ public sealed class ProInboxVerificationEvidence(
         snapshot.IsRoleAccount = misc.IsRoleAccount;
         snapshot.IsB2C = misc.IsB2C;
         snapshot.CanConnectSmtp = smtp.CanConnectSmtp;
-        snapshot.HasFullInbox = smtp.HasFullInbox;
+        snapshot.HasFullRecipientContact = smtp.HasFullRecipientContact;
         snapshot.IsCatchAll = smtp.IsCatchAll;
         snapshot.IsDeliverable = smtp.IsDeliverable;
         snapshot.IsDisabled = smtp.IsDisabled;
@@ -441,14 +453,16 @@ public sealed class ProInboxVerificationEvidence(
             : null;
     }
 
-    private InboxVerificationReport ToReport(
-        InboxVerificationRequest request,
-        InboxVerificationSnapshot snapshot
+    private RecipientContactVerificationReport ToReport(
+        RecipientContactVerificationRequest request,
+        RecipientContactVerificationSnapshot snapshot
     )
     {
         var mxCache = snapshot.MxDomainCache;
         var syntax = new SyntaxVerificationEvidence(
-            snapshot.IsValidSyntax ? InboxVerificationState.Valid : InboxVerificationState.Invalid,
+            snapshot.IsValidSyntax
+                ? RecipientContactVerificationState.Valid
+                : RecipientContactVerificationState.Invalid,
             snapshot.IsValidSyntax ? null : snapshot.FailureReason,
             snapshot.SyntaxDomain ?? string.Empty,
             snapshot.SyntaxUsername ?? string.Empty,
@@ -456,7 +470,7 @@ public sealed class ProInboxVerificationEvidence(
             snapshot.SyntaxSuggestion
         );
         var misc = new MiscVerificationEvidence(
-            InboxVerificationState.Valid,
+            RecipientContactVerificationState.Valid,
             null,
             snapshot.IsDisposable,
             snapshot.IsRoleAccount,
@@ -464,8 +478,8 @@ public sealed class ProInboxVerificationEvidence(
         );
         var mx = new MxVerificationEvidence(
             mxCache?.AcceptsMail == true
-                ? InboxVerificationState.Valid
-                : InboxVerificationState.NotChecked,
+                ? RecipientContactVerificationState.Valid
+                : RecipientContactVerificationState.NotChecked,
             mxCache?.FailureReason,
             mxCache?.AcceptsMail == true,
             mxCache?.Records.OrderBy(x => x.Priority).Select(x => x.Host).ToList() ?? []
@@ -474,12 +488,12 @@ public sealed class ProInboxVerificationEvidence(
             snapshot.State,
             snapshot.FailureReason,
             snapshot.CanConnectSmtp,
-            snapshot.HasFullInbox,
+            snapshot.HasFullRecipientContact,
             snapshot.IsCatchAll,
             snapshot.IsDeliverable,
             snapshot.IsDisabled
         );
-        var evidence = new ProInboxVerificationResult(
+        var evidence = new ProRecipientContactVerificationResult(
             snapshot.State,
             snapshot.FailureReason,
             syntax,
@@ -487,7 +501,7 @@ public sealed class ProInboxVerificationEvidence(
             smtp,
             misc
         );
-        return new InboxVerificationReport(
+        return new RecipientContactVerificationReport(
             request,
             snapshot.State,
             [evidence],
@@ -515,11 +529,11 @@ public sealed class ProInboxVerificationEvidence(
 /// <summary>
 /// Pro 验证器组合产生的完整强类型证据。
 /// </summary>
-public sealed record ProInboxVerificationResult(
-    InboxVerificationState State,
+public sealed record ProRecipientContactVerificationResult(
+    RecipientContactVerificationState State,
     string? FailureReason,
     SyntaxVerificationEvidence Syntax,
     MxVerificationEvidence Mx,
     SmtpVerificationEvidence Smtp,
     MiscVerificationEvidence Misc
-) : InboxVerificationEvidence(State, FailureReason);
+) : RecipientContactVerificationEvidence(State, FailureReason);

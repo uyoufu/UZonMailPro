@@ -5,8 +5,8 @@ namespace UzonMail.ProPlugin.Services.EmailVerify;
 /// <summary>
 /// 收件箱验证快照与网络探测配置。
 /// </summary>
-[OptionName("InboxVerification")]
-public sealed class InboxVerificationOptions : IAppOptions
+[OptionName("RecipientContactVerification")]
+public sealed class RecipientContactVerificationOptions : IAppOptions
 {
     public TimeSpan DefaultSnapshotLifetime { get; set; } = TimeSpan.FromDays(30);
 

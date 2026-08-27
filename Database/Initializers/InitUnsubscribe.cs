@@ -1,9 +1,4 @@
-using Microsoft.EntityFrameworkCore;
 using UzonMail.CorePlugin.Database.Initializers;
-using UzonMail.CorePlugin.Database.Upgrade;
-using UzonMail.CorePlugin.Services.EmailReceiving.Application;
-using UzonMail.DB.SQL;
-using UzonMail.DB.SQL.Core.EmailReceiving;
 using UzonMail.ProPlugin.SQL;
 using UzonMail.ProPlugin.SQL.Unsubscribes;
 
@@ -12,17 +7,12 @@ namespace UzonMail.ProPlugin.Database.Initializers
     /// <summary>
     /// 系统默认调用
     /// </summary>
-    public class InitUnsubscribe(
-        SqlContext db,
-        SqlContextPro dbPro,
-        IRecipientSuppressionService recipientSuppressionService
-    ) : IDbInitializer
+    public class InitUnsubscribe(SqlContextPro dbPro) : IDbInitializer
     {
         public string Name => nameof(InitUnsubscribe);
 
         public async Task ExecuteAsync()
         {
-            await MigrateRecipientSuppressionsAsync();
             if (dbPro.UnsubscribePages.Any())
                 return;
 
@@ -49,38 +39,6 @@ namespace UzonMail.ProPlugin.Database.Initializers
             };
             dbPro.UnsubscribePages.Add(unsubscribePage);
             await dbPro.SaveChangesAsync();
-        }
-
-        private async Task MigrateRecipientSuppressionsAsync()
-        {
-            var unsubscribeEmails = await dbPro
-                .UnsubscribeEmails.AsNoTracking()
-                .Select(unsubscribe => new { unsubscribe.OrganizationId, unsubscribe.Email })
-                .Distinct()
-                .ToListAsync();
-            if (unsubscribeEmails.Count == 0)
-                return;
-            var organizationIds = unsubscribeEmails
-                .Select(unsubscribe => unsubscribe.OrganizationId)
-                .Distinct()
-                .ToArray();
-            var actorUserIds = await db
-                .Users.AsNoTracking()
-                .Where(user => organizationIds.Contains(user.OrganizationId))
-                .GroupBy(user => user.OrganizationId)
-                .ToDictionaryAsync(group => group.Key, group => group.Min(user => user.Id));
-            foreach (var unsubscribeEmail in unsubscribeEmails)
-            {
-                if (!actorUserIds.TryGetValue(unsubscribeEmail.OrganizationId, out var actorUserId))
-                    continue;
-                await recipientSuppressionService.SuppressAsync(
-                    unsubscribeEmail.OrganizationId,
-                    unsubscribeEmail.Email,
-                    RecipientSuppressionReason.Unsubscribe,
-                    actorUserId,
-                    "Migrated from Professional unsubscribe list"
-                );
-            }
         }
     }
 }

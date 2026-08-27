@@ -1,13 +1,14 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace UzonMail.ProPlugin.Migrations.PostgreSql
+namespace UzonMail.ProPlugin.Migrations.PostgreSQL
 {
     /// <inheritdoc />
-    public partial class initPostgres : Migration
+    public partial class InitialSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,7 +76,7 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     ),
                     TikTokDeviceId = table.Column<long>(type: "bigint", nullable: false),
                     Count = table.Column<int>(type: "integer", nullable: false),
-                    OutboxGroupId = table.Column<long>(type: "bigint", nullable: false),
+                    RecipientContactGroupId = table.Column<long>(type: "bigint", nullable: false),
                     _id = table.Column<string>(type: "text", nullable: false),
                     CreateDate = table.Column<DateTime>(
                         type: "timestamp with time zone",
@@ -103,8 +104,8 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     SendingGroupId = table.Column<long>(type: "bigint", nullable: false),
                     SendingItemId = table.Column<long>(type: "bigint", nullable: false),
-                    OutboxEmail = table.Column<string>(type: "text", nullable: false),
-                    InboxEmails = table.Column<string>(type: "text", nullable: false),
+                    SenderEmail = table.Column<string>(type: "text", nullable: false),
+                    RecipientEmails = table.Column<string>(type: "text", nullable: false),
                     VisitedCount = table.Column<int>(type: "integer", nullable: false),
                     FirstVisitDate = table.Column<DateTime>(
                         type: "timestamp with time zone",
@@ -189,6 +190,52 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
             );
 
             migrationBuilder.CreateTable(
+                name: "IpWarmUpUpPlans",
+                columns: table => new
+                {
+                    Id = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Subjects = table.Column<List<string>>(type: "text[]", nullable: false),
+                    TemplateIds = table.Column<string>(type: "text", nullable: false),
+                    SenderAccountIds = table.Column<string>(type: "text", nullable: false),
+                    RecipientContactIds = table.Column<string>(type: "text", nullable: false),
+                    CcIds = table.Column<string>(type: "text", nullable: false),
+                    BccIds = table.Column<string>(type: "text", nullable: false),
+                    AttachmentIds = table.Column<string>(type: "text", nullable: false),
+                    Data = table.Column<string>(type: "text", nullable: true),
+                    SendCountChartPoints = table.Column<string>(type: "text", nullable: false),
+                    Body = table.Column<string>(type: "text", nullable: true),
+                    StartDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    EndDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    TasksCount = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
+                    _id = table.Column<string>(type: "text", nullable: false),
+                    CreateDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsHidden = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IpWarmUpUpPlans", x => x.Id);
+                }
+            );
+
+            migrationBuilder.CreateTable(
                 name: "JsFunctionDefinitions",
                 columns: table => new
                 {
@@ -243,6 +290,41 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_JsVariableSources", x => x.Id);
+                }
+            );
+
+            migrationBuilder.CreateTable(
+                name: "MxDomainCaches",
+                columns: table => new
+                {
+                    Id = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    Domain = table.Column<string>(type: "text", nullable: false),
+                    AcceptsMail = table.Column<bool>(type: "boolean", nullable: false),
+                    FailureReason = table.Column<string>(type: "text", nullable: true),
+                    CheckedAtUtc = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    ExpiresAtUtc = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    _id = table.Column<string>(type: "text", nullable: false),
+                    CreateDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsHidden = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MxDomainCaches", x => x.Id);
                 }
             );
 
@@ -479,6 +561,137 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
             );
 
             migrationBuilder.CreateTable(
+                name: "IpWarmUpUpTasks",
+                columns: table => new
+                {
+                    Id = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    IPWarmUpPlanId = table.Column<long>(type: "bigint", nullable: false),
+                    SendingGroupId = table.Column<long>(type: "bigint", nullable: false),
+                    StartDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    EndDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    SenderAccountCount = table.Column<int>(type: "integer", nullable: false),
+                    RecipientCount = table.Column<int>(type: "integer", nullable: false),
+                    SuccessCount = table.Column<int>(type: "integer", nullable: false),
+                    Message = table.Column<string>(type: "text", nullable: false),
+                    _id = table.Column<string>(type: "text", nullable: false),
+                    CreateDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsHidden = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_IpWarmUpUpTasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_IpWarmUpUpTasks_IpWarmUpUpPlans_IPWarmUpPlanId",
+                        column: x => x.IPWarmUpPlanId,
+                        principalTable: "IpWarmUpUpPlans",
+                        principalColumn: "Id"
+                    );
+                }
+            );
+
+            migrationBuilder.CreateTable(
+                name: "MxDomainRecords",
+                columns: table => new
+                {
+                    Id = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    MxDomainCacheId = table.Column<long>(type: "bigint", nullable: false),
+                    Host = table.Column<string>(type: "text", nullable: false),
+                    Priority = table.Column<int>(type: "integer", nullable: false),
+                    _id = table.Column<string>(type: "text", nullable: false),
+                    CreateDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsHidden = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MxDomainRecords", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_MxDomainRecords_MxDomainCaches_MxDomainCacheId",
+                        column: x => x.MxDomainCacheId,
+                        principalTable: "MxDomainCaches",
+                        principalColumn: "Id"
+                    );
+                }
+            );
+
+            migrationBuilder.CreateTable(
+                name: "RecipientContactVerificationSnapshots",
+                columns: table => new
+                {
+                    Id = table
+                        .Column<long>(type: "bigint", nullable: false)
+                        .Annotation(
+                            "Npgsql:ValueGenerationStrategy",
+                            NpgsqlValueGenerationStrategy.IdentityByDefaultColumn
+                        ),
+                    NormalizedEmail = table.Column<string>(type: "text", nullable: false),
+                    State = table.Column<int>(type: "integer", nullable: false),
+                    FailureReason = table.Column<string>(type: "text", nullable: true),
+                    VerifiedAtUtc = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    ExpiresAtUtc = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    SyntaxDomain = table.Column<string>(type: "text", nullable: true),
+                    SyntaxUsername = table.Column<string>(type: "text", nullable: true),
+                    SyntaxSuggestion = table.Column<string>(type: "text", nullable: true),
+                    IsValidSyntax = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDisposable = table.Column<bool>(type: "boolean", nullable: false),
+                    IsRoleAccount = table.Column<bool>(type: "boolean", nullable: false),
+                    IsB2C = table.Column<bool>(type: "boolean", nullable: false),
+                    MxDomainCacheId = table.Column<long>(type: "bigint", nullable: true),
+                    CanConnectSmtp = table.Column<bool>(type: "boolean", nullable: false),
+                    HasFullRecipientContact = table.Column<bool>(type: "boolean", nullable: false),
+                    IsCatchAll = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeliverable = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDisabled = table.Column<bool>(type: "boolean", nullable: false),
+                    _id = table.Column<string>(type: "text", nullable: false),
+                    CreateDate = table.Column<DateTime>(
+                        type: "timestamp with time zone",
+                        nullable: false
+                    ),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    IsHidden = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipientContactVerificationSnapshots", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RecipientContactVerificationSnapshots_MxDomainCaches_MxDoma~",
+                        column: x => x.MxDomainCacheId,
+                        principalTable: "MxDomainCaches",
+                        principalColumn: "Id"
+                    );
+                }
+            );
+
+            migrationBuilder.CreateTable(
                 name: "CrawlerTaskResults",
                 columns: table => new
                 {
@@ -491,7 +704,10 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
                     CrawlerTaskInfoId = table.Column<long>(type: "bigint", nullable: false),
                     TikTokAuthorId = table.Column<long>(type: "bigint", nullable: false),
                     ExistExtraInfo = table.Column<bool>(type: "boolean", nullable: false),
-                    IsAttachingInbox = table.Column<bool>(type: "boolean", nullable: false),
+                    IsAttachingRecipientContact = table.Column<bool>(
+                        type: "boolean",
+                        nullable: false
+                    ),
                     _id = table.Column<string>(type: "text", nullable: false),
                     CreateDate = table.Column<DateTime>(
                         type: "timestamp with time zone",
@@ -527,9 +743,41 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
             migrationBuilder.CreateIndex(name: "IX_IPInfos_IP", table: "IPInfos", column: "IP");
 
             migrationBuilder.CreateIndex(
+                name: "IX_IpWarmUpUpTasks_IPWarmUpPlanId",
+                table: "IpWarmUpUpTasks",
+                column: "IPWarmUpPlanId"
+            );
+
+            migrationBuilder.CreateIndex(
                 name: "IX_JsFunctionDefinitions_UserId_Name",
                 table: "JsFunctionDefinitions",
                 columns: new[] { "UserId", "Name" },
+                unique: true
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MxDomainCaches_Domain",
+                table: "MxDomainCaches",
+                column: "Domain",
+                unique: true
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MxDomainRecords_MxDomainCacheId",
+                table: "MxDomainRecords",
+                column: "MxDomainCacheId"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipientContactVerificationSnapshots_MxDomainCacheId",
+                table: "RecipientContactVerificationSnapshots",
+                column: "MxDomainCacheId"
+            );
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipientContactVerificationSnapshots_NormalizedEmail",
+                table: "RecipientContactVerificationSnapshots",
+                column: "NormalizedEmail",
                 unique: true
             );
 
@@ -553,9 +801,15 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
 
             migrationBuilder.DropTable(name: "IPInfos");
 
+            migrationBuilder.DropTable(name: "IpWarmUpUpTasks");
+
             migrationBuilder.DropTable(name: "JsFunctionDefinitions");
 
             migrationBuilder.DropTable(name: "JsVariableSources");
+
+            migrationBuilder.DropTable(name: "MxDomainRecords");
+
+            migrationBuilder.DropTable(name: "RecipientContactVerificationSnapshots");
 
             migrationBuilder.DropTable(name: "TikTokAuthorDiversifications");
 
@@ -572,6 +826,10 @@ namespace UzonMail.ProPlugin.Migrations.PostgreSql
             migrationBuilder.DropTable(name: "EmailAnchors");
 
             migrationBuilder.DropTable(name: "EmailVisitHistories");
+
+            migrationBuilder.DropTable(name: "IpWarmUpUpPlans");
+
+            migrationBuilder.DropTable(name: "MxDomainCaches");
         }
     }
 }

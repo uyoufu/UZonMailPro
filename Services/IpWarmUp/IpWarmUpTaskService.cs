@@ -32,8 +32,8 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
         {
             var userId = tokenService.GetUserSqlId();
 
-            var outboxSet = new HashSet<long>(plandData.Outboxes!.Select(x => x.Id));
-            var inboxSet = new HashSet<long>(plandData.Inboxes!.Select(x => x.Id));
+            var senderAccountSet = new HashSet<long>(plandData.SenderAccounts!.Select(x => x.Id));
+            var recipientContactSet = new HashSet<long>(plandData.Recipients!.Select(x => x.Id));
 
             // 将 sendingGroup 转换成 IpWarmUpPlan 保存
             var plan = new IpWarmUpUpPlan()
@@ -54,25 +54,28 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
             };
 
             // 获取组中的发件箱
-            if (plandData.OutboxGroups != null && plandData.OutboxGroups.Count > 0)
+            if (plandData.SenderAccountGroups != null && plandData.SenderAccountGroups.Count > 0)
             {
-                var outboxes = await db
-                    .Outboxes.AsNoTracking()
-                    .Where(x => plandData.OutboxGroups.Select(x => x.Id).Contains(x.Id))
+                var senderAccounts = await db
+                    .SenderAccounts.AsNoTracking()
+                    .Where(x => plandData.SenderAccountGroups.Select(x => x.Id).Contains(x.Id))
                     .Select(x => new { x.Id })
                     .ToListAsync();
-                outboxes.ForEach(x => outboxSet.Add(x.Id));
+                senderAccounts.ForEach(x => senderAccountSet.Add(x.Id));
             }
 
             // 获取组中的收件箱
-            if (plandData.InboxGroups != null && plandData.InboxGroups.Count > 0)
+            if (
+                plandData.RecipientContactGroups != null
+                && plandData.RecipientContactGroups.Count > 0
+            )
             {
-                var inboxes = await db
-                    .Inboxes.AsNoTracking()
-                    .Where(x => plandData.InboxGroups.Select(x => x.Id).Contains(x.Id))
+                var recipientContacts = await db
+                    .RecipientContacts.AsNoTracking()
+                    .Where(x => plandData.RecipientContactGroups.Select(x => x.Id).Contains(x.Id))
                     .Select(x => new { x.Id })
                     .ToListAsync();
-                inboxes.ForEach(x => inboxSet.Add(x.Id));
+                recipientContacts.ForEach(x => recipientContactSet.Add(x.Id));
             }
 
             // 添加数据中的发件箱和收件箱
@@ -83,35 +86,35 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
 
                 // 获取数据中的收件箱
                 // 若不存在，则创建
-                foreach (var inbox in excelData.InboxSet)
+                foreach (var recipientContact in excelData.RecipientEmails)
                 {
-                    var existInbox = await db
-                        .Inboxes.AsNoTracking()
-                        .Where(x => x.UserId == userId && x.Email == inbox)
+                    var existRecipientContact = await db
+                        .RecipientContacts.AsNoTracking()
+                        .Where(x => x.UserId == userId && x.Email == recipientContact)
                         .Select(x => new { x.Id })
                         .FirstOrDefaultAsync();
-                    if (existInbox != null)
+                    if (existRecipientContact != null)
                     {
-                        inboxSet.Add(existInbox.Id);
+                        recipientContactSet.Add(existRecipientContact.Id);
                         continue;
                     }
 
                     // 添加新的收件箱
-                    var newInbox = new Inbox()
+                    var newRecipientContact = new RecipientContact()
                     {
                         UserId = userId,
-                        Email = inbox,
+                        Email = recipientContact,
                         Name = "",
                         CreateDate = DateTime.UtcNow
                     };
-                    await db.Inboxes.AddAsync(newInbox);
+                    await db.RecipientContacts.AddAsync(newRecipientContact);
                     await db.SaveChangesAsync();
-                    inboxSet.Add(newInbox.Id);
+                    recipientContactSet.Add(newRecipientContact.Id);
                 }
             }
 
-            plan.OutboxIds = [.. outboxSet];
-            plan.InboxIds = [.. inboxSet];
+            plan.SenderAccountIds = [.. senderAccountSet];
+            plan.RecipientContactIds = [.. recipientContactSet];
 
             // 添加发送图表
             plan.SendCountChartPoints = plandData.SendCountChartPoints;

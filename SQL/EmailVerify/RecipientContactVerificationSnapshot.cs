@@ -8,11 +8,11 @@ namespace UzonMail.ProPlugin.SQL.EmailVerify;
 /// 按邮箱共享的持久化验证快照
 /// </summary>
 [Index(nameof(NormalizedEmail), IsUnique = true)]
-public sealed class InboxVerificationSnapshot : SqlId
+public sealed class RecipientContactVerificationSnapshot : SqlId
 {
     public string NormalizedEmail { get; set; } = string.Empty;
 
-    public InboxVerificationState State { get; set; }
+    public RecipientContactVerificationState State { get; set; }
 
     public string? FailureReason { get; set; }
 
@@ -40,7 +40,7 @@ public sealed class InboxVerificationSnapshot : SqlId
 
     public bool CanConnectSmtp { get; set; }
 
-    public bool HasFullInbox { get; set; }
+    public bool HasFullRecipientContact { get; set; }
 
     public bool IsCatchAll { get; set; }
 

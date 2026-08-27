@@ -301,12 +301,14 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
         }
 
         /// <summary>
-        /// 保存爬虫结果到收件箱
+        /// 保存爬虫结果到收件联系人组
         /// </summary>
         /// <param name="crawlerTaskId"></param>
         /// <returns></returns>
-        [HttpPost("{crawlerTaskId:long}/inbox-group")]
-        public async Task<ResponseResult<long>> SaveCrawlerResultsAaInbox(long crawlerTaskId)
+        [HttpPost("{crawlerTaskId:long}/recipient-contact-group")]
+        public async Task<ResponseResult<long>> SaveCrawlerResultsAsRecipientContacts(
+            long crawlerTaskId
+        )
         {
             var tokenPayloads = tokenService.GetTokenPayloads();
 
@@ -321,29 +323,28 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
             }
 
             // 开始另存
-            // 创建发件箱组
-            if (crawlerTask.OutboxGroupId == 0)
+            // 每个爬虫任务复用同一个结果联系人组。
+            if (crawlerTask.RecipientContactGroupId == 0)
             {
-                // 新建发件箱组
-                var outboxGroup = new EmailGroup()
+                var recipientContactGroup = new EmailGroup()
                 {
                     UserId = crawlerTask.UserId,
                     Name = $"爬虫结果:{crawlerTask.Name}",
                     Description = $"来源于爬虫任务 {crawlerTask.Name}",
-                    Type = EmailGroupType.InBox,
+                    Category = EmailGroupCategory.Recipient,
                 };
-                await db.EmailGroups.AddAsync(outboxGroup);
+                await db.EmailGroups.AddAsync(recipientContactGroup);
                 await db.SaveChangesAsync();
 
-                crawlerTask.OutboxGroupId = outboxGroup.Id;
+                crawlerTask.RecipientContactGroupId = recipientContactGroup.Id;
             }
 
-            // 保存收件箱
+            // 保存尚未归档的收件联系人。
             var tiktokAuthors = await dbPro
                 .CrawlerTaskResults.AsNoTracking()
                 .Where(x => x.CrawlerTaskInfoId == crawlerTaskId)
                 .Where(x => x.ExistExtraInfo)
-                .Where(x => !x.IsAttachingInbox)
+                .Where(x => !x.IsAttachingRecipientContact)
                 .Include(x => x.TiktokAuthor)
                 .Select(x => new TiktokAuthor()
                 {
@@ -355,13 +356,13 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
                 .ToListAsync();
             if (tiktokAuthors.Count == 0)
             {
-                return crawlerTask.OutboxGroupId.ToSuccessResponse();
+                return crawlerTask.RecipientContactGroupId.ToSuccessResponse();
             }
 
-            var inboxes = tiktokAuthors
-                .Select(x => new Inbox()
+            var recipientContacts = tiktokAuthors
+                .Select(x => new RecipientContact()
                 {
-                    EmailGroupId = crawlerTask.OutboxGroupId,
+                    EmailGroupId = crawlerTask.RecipientContactGroupId,
                     Name = x.Nickname,
                     Email = x.Email ?? string.Empty,
                     Description = $"来源于爬虫任务 {crawlerTask.Name}",
@@ -372,26 +373,28 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
                 .ToList();
 
             // 若不存在，则添加
-            foreach (var inbox in inboxes)
+            foreach (var recipientContact in recipientContacts)
             {
                 var existOne = await db
-                    .Inboxes.AsNoTracking()
-                    .Where(x => x.Email == inbox.Email && x.UserId == inbox.UserId)
+                    .RecipientContacts.AsNoTracking()
+                    .Where(x =>
+                        x.Email == recipientContact.Email && x.UserId == recipientContact.UserId
+                    )
                     .Select(x => new { x.Id })
                     .FirstOrDefaultAsync();
                 if (existOne != null)
                     continue;
-                await db.Inboxes.AddAsync(inbox);
+                await db.RecipientContacts.AddAsync(recipientContact);
             }
-            // 标记已经转换成 outbox
+            // 标记已经转换成收件联系人，避免重复导入。
             await dbPro.CrawlerTaskResults.UpdateAsync(
                 x => x.CrawlerTaskInfoId == crawlerTaskId,
-                x => x.SetProperty(y => y.IsAttachingInbox, true)
+                x => x.SetProperty(y => y.IsAttachingRecipientContact, true)
             );
             await dbPro.SaveChangesAsync();
             await db.SaveChangesAsync();
 
-            return crawlerTask.OutboxGroupId.ToSuccessResponse();
+            return crawlerTask.RecipientContactGroupId.ToSuccessResponse();
         }
     }
 }

@@ -25,17 +25,17 @@ namespace UzonMail.ProPlugin.SQL.IPWarmUp
         public List<long> TemplateIds { get; set; } = [];
 
         /// <summary>
-        /// 发件箱列表
-        /// 数据中的发件箱不应添加到此处，系统会自动从数据中提取
+        /// 发件账户列表
+        /// 数据中的发件账户不应添加到此处，系统会自动从数据中提取
         /// </summary>
         [JsonField]
-        public List<long> OutboxIds { get; set; } = [];
+        public List<long> SenderAccountIds { get; set; } = [];
 
         /// <summary>
-        /// 收件箱列表
+        /// 收件联系人列表
         /// </summary>
         [JsonField]
-        public List<long> InboxIds { get; set; } = [];
+        public List<long> RecipientContactIds { get; set; } = [];
 
         /// <summary>
         /// 抄送 ids

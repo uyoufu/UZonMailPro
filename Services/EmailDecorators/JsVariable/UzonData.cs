@@ -28,12 +28,12 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
         /// <summary>
         /// 发件箱
         /// </summary>
-        public string OutboxEmail { get; set; } = string.Empty;
+        public string SenderEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// 收件箱
         /// </summary>
-        public string InboxEmail { get; set; } = string.Empty;
+        public string RecipientEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// 邮件正文
@@ -45,14 +45,14 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
         /// </summary>
         public DateTime DateNow { get; set; } = DateTime.UtcNow;
 
-        public EmailAddress Outbox { get; set; } = new();
+        public EmailAddress SenderAccount { get; set; } = new();
 
-        public EmailAddress Inbox { get; set; } = new();
+        public EmailAddress RecipientContact { get; set; } = new();
 
         /// <summary>
         /// 收件箱
         /// </summary>
-        public List<EmailAddress> Inboxes { get; set; } = [];
+        public List<EmailAddress> RecipientContacts { get; set; } = [];
 
         /// <summary>
         /// 抄送人
@@ -75,12 +75,23 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
             {
                 Source = variableCache.Source,
                 Subject = "Default Subject",
-                OutboxEmail = "out@test.com",
-                InboxEmail = "in@test.com",
+                SenderEmail = "out@test.com",
+                RecipientEmail = "in@test.com",
                 Body = "This is a test email body.",
-                Outbox = new EmailAddress() { Email = "out@test.com", Name = "outbox" },
-                Inbox = new EmailAddress() { Email = "in@test.com", Name = "inbox" },
-                Inboxes = [new EmailAddress() { Email = "in@test.com", Name = "inbox" }],
+                SenderAccount = new EmailAddress()
+                {
+                    Email = "out@test.com",
+                    Name = "senderAccount"
+                },
+                RecipientContact = new EmailAddress()
+                {
+                    Email = "in@test.com",
+                    Name = "recipientContact"
+                },
+                RecipientContacts =
+                [
+                    new EmailAddress() { Email = "in@test.com", Name = "recipientContact" }
+                ],
                 CC = [],
                 BCC = [],
             };
@@ -104,18 +115,18 @@ namespace UzonMail.ProPlugin.Services.EmailDecorators.JsVariable
                 Source = variableCache.Source,
                 Data = decoratorParams.Variables ?? new JObject(),
                 Subject = decoratorParams.Subject,
-                OutboxEmail = decoratorParams.Outbox.Email,
-                InboxEmail = string.Join(",", decoratorParams.Inboxes.Select(x => x.Email)),
+                SenderEmail = decoratorParams.SenderAccount.Email,
+                RecipientEmail = string.Join(",", decoratorParams.Recipients.Select(x => x.Email)),
                 Body = decoratorParams.HtmlBody,
 
                 // 完整数据
-                Outbox = new EmailAddress()
+                SenderAccount = new EmailAddress()
                 {
-                    Email = decoratorParams.Outbox.Email,
-                    Name = decoratorParams.Outbox.Name
+                    Email = decoratorParams.SenderAccount.Email,
+                    Name = decoratorParams.SenderAccount.Name
                 },
-                Inbox = decoratorParams.Inboxes.First(),
-                Inboxes = [.. decoratorParams.Inboxes],
+                RecipientContact = decoratorParams.Recipients.First(),
+                RecipientContacts = [.. decoratorParams.Recipients],
                 CC = [.. decoratorParams.CC],
                 BCC = [.. decoratorParams.BCC],
             };

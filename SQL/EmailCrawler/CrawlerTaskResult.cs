@@ -21,8 +21,8 @@ namespace UzonMail.ProPlugin.SQL.EmailCrawler
         public bool ExistExtraInfo { get; set; }
 
         /// <summary>
-        /// 是否关联了收件箱
+        /// 是否已转换为收件联系人
         /// </summary>
-        public bool IsAttachingInbox { get; set; }
+        public bool IsAttachingRecipientContact { get; set; }
     }
 }

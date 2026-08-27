@@ -15,7 +15,7 @@ namespace UzonMail.Pro.Controllers.SystemInfo.Model
 
         public int RunningTasksCount { get; private set; }
 
-        public List<OutboxPoolInfo> OutboxPools { get; set; } = [];
+        public List<SenderAccountPoolInfo> SenderAccountPools { get; set; } = [];
         public List<SendingGroupInfo> UserSendingPools { get; set; } = [];
 
         public async Task GatherInfomations(ISendRuntimeDiagnostics diagnostics)
@@ -24,11 +24,11 @@ namespace UzonMail.Pro.Controllers.SystemInfo.Model
             MemoryUsage = Process.GetCurrentProcess().WorkingSet64 / 1024 / 1024;
 
             var snapshot = diagnostics.GetSnapshot();
-            OutboxPools =
+            SenderAccountPools =
             [
                 .. snapshot
-                    .Outboxes.GroupBy(x => x.Key.UserId)
-                    .Select(x => new OutboxPoolInfo(x.Key, x.Count()))
+                    .SenderAccounts.GroupBy(x => x.Key.UserId)
+                    .Select(x => new SenderAccountPoolInfo(x.Key, x.Count()))
             ];
             RunningTasksCount = snapshot.RunningTasksCount;
 

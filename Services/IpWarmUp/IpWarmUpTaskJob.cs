@@ -110,17 +110,19 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
                             .ToListAsync()
                         : [],
 
-                // 获取 outbox
-                Outboxes =
-                    plan.OutboxIds.Count > 0
-                        ? await db.Outboxes.Where(x => plan.OutboxIds.Contains(x.Id)).ToListAsync()
+                // 获取 senderAccount
+                SenderAccounts =
+                    plan.SenderAccountIds.Count > 0
+                        ? await db
+                            .SenderAccounts.Where(x => plan.SenderAccountIds.Contains(x.Id))
+                            .ToListAsync()
                         : [],
 
                 // 获取 cc
                 CcBoxes =
                     plan.CcIds.Count > 0
                         ? await db
-                            .Inboxes.Where(x => plan.CcIds.Contains(x.Id))
+                            .RecipientContacts.Where(x => plan.CcIds.Contains(x.Id))
                             .Select(x => new EmailAddress()
                             {
                                 Id = x.Id,
@@ -135,7 +137,7 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
                 BccBoxes =
                     plan.BccIds.Count > 0
                         ? await db
-                            .Inboxes.Where(x => plan.BccIds.Contains(x.Id))
+                            .RecipientContacts.Where(x => plan.BccIds.Contains(x.Id))
                             .Select(x => new EmailAddress()
                             {
                                 Id = x.Id,
@@ -155,11 +157,11 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
                         : [],
             };
 
-            // 获取 inbox
+            // 获取 recipientContact
             var countCalculator = new DailySendCountCalculator(
                 plan.StartDate,
                 plan.EndDate,
-                plan.InboxIds.Count,
+                plan.RecipientContactIds.Count,
                 plan.SendCountChartPoints
             );
             var todaySendCount = countCalculator.GetCountForToday();
@@ -169,9 +171,12 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
             }
 
             // 随机生成收件箱索引
-            var randInboxIds = FisherYatesSample(plan.InboxIds, todaySendCount);
-            sendingGroup.Inboxes = await db
-                .Inboxes.Where(x => randInboxIds.Contains(x.Id))
+            var randRecipientContactIds = FisherYatesSample(
+                plan.RecipientContactIds,
+                todaySendCount
+            );
+            sendingGroup.Recipients = await db
+                .RecipientContacts.Where(x => randRecipientContactIds.Contains(x.Id))
                 .Select(x => new EmailAddress()
                 {
                     Id = x.Id,
@@ -180,8 +185,8 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
                     Name = x.Name
                 })
                 .ToListAsync();
-            sendingGroup.TotalCount = sendingGroup.Inboxes.Count;
-            _logger.Info($"IP 预热计划 {plan.Id} 今日发送量为 {randInboxIds.Count}");
+            sendingGroup.TotalCount = sendingGroup.Recipients.Count;
+            _logger.Info($"IP 预热计划 {plan.Id} 今日发送量为 {randRecipientContactIds.Count}");
 
             // 获取数据
             if (plan.Data != null)
@@ -189,12 +194,17 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
                 var newArr = new JArray();
                 foreach (var row in plan.Data)
                 {
-                    var inbox = row.SelectTokenOrDefault("inbox", string.Empty);
-                    if (string.IsNullOrEmpty(inbox))
+                    var recipientContact = row.SelectTokenOrDefault(
+                        "recipientContact",
+                        string.Empty
+                    );
+                    if (string.IsNullOrEmpty(recipientContact))
                         continue;
 
-                    var existInbox = sendingGroup.Inboxes.FirstOrDefault(x => x.Email == inbox);
-                    if (existInbox != null)
+                    var existRecipientContact = sendingGroup.Recipients.FirstOrDefault(x =>
+                        x.Email == recipientContact
+                    );
+                    if (existRecipientContact != null)
                     {
                         newArr.Add(row.DeepClone());
                     }
@@ -212,9 +222,9 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
                 IPWarmUpPlanId = plan.Id,
                 CreateDate = DateTime.UtcNow,
                 SendingGroupId = newSendingGroup.Id,
-                InboxesCount = sendingGroup.Inboxes.Count,
-                OutboxesCount = sendingGroup.Outboxes.Count,
-                Message = $"计划第 {plan.TasksCount + 1} 次发送，发送到 {sendingGroup.Inboxes.Count} 个收件箱",
+                RecipientCount = sendingGroup.Recipients.Count,
+                SenderAccountCount = sendingGroup.SenderAccounts.Count,
+                Message = $"计划第 {plan.TasksCount + 1} 次发送，发送到 {sendingGroup.Recipients.Count} 个收件箱",
             };
             dbPro.IpWarmUpUpTasks.Add(planTask);
 

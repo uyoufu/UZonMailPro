@@ -75,8 +75,8 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
                     UserId = sendingItem.UserId,
                     SendingItemId = sendingItem.Id,
                     SendingGroupId = sendingItem.SendingGroupId,
-                    InboxEmails = string.Join(",", sendingItem.Inboxes.Select(x => x.Email)),
-                    OutboxEmail = trackerParams.OutboxEmail
+                    RecipientEmails = string.Join(",", sendingItem.Recipients.Select(x => x.Email)),
+                    SenderEmail = trackerParams.SenderEmail
                 };
                 dbPro.EmailAnchors.Add(emailAnchor);
                 await dbPro.SaveChangesAsync();

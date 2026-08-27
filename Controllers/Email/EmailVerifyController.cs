@@ -11,7 +11,7 @@ using UzonMail.Utils.Web.ResponseModel;
 namespace UzonMail.ProPlugin.Controllers.Email
 {
     public class EmailVerifyController(
-        InboxVerificationService inboxVerificationService,
+        RecipientContactVerificationService recipientContactVerificationService,
         LicenseAccessService licenseAccessService,
         TokenService tokenService
     ) : ControllerBasePro
@@ -22,44 +22,46 @@ namespace UzonMail.ProPlugin.Controllers.Email
         /// <param name="groupId"></param>
         /// <returns></returns>
         [HttpPut("groups/{groupId:long}/verify")]
-        [HttpPut("groups/{groupId:long}/verify-invalid-inboxes")]
-        public async Task<ResponseResult<InboxVerificationBatchSummary>> VerifyInboxGroup(
-            long groupId
-        )
+        public async Task<
+            ResponseResult<RecipientContactVerificationBatchSummary>
+        > VerifyRecipientContactGroup(long groupId)
         {
             if (!await licenseAccessService.HasProLicense())
             {
-                return ResponseResult<InboxVerificationBatchSummary>.Fail(
+                return ResponseResult<RecipientContactVerificationBatchSummary>.Fail(
                     "当前功能仅专业版及以上版本可用",
                     HttpStatusCode.Unauthorized
                 );
             }
 
             var userId = tokenService.GetUserSqlId();
-            var result = await inboxVerificationService.VerifyGroupAsync(userId, groupId);
+            var result = await recipientContactVerificationService.VerifyGroupAsync(
+                userId,
+                groupId
+            );
             return result.ToSuccessResponse();
         }
 
         /// <summary>
-        /// 验证指定收件箱。
+        /// 验证指定收件联系人。
         /// </summary>
-        [HttpPut("inboxes/verify")]
-        public async Task<ResponseResult<InboxVerificationBatchSummary>> VerifyInboxes(
-            [FromBody] VerifyInboxesRequest request
-        )
+        [HttpPut("recipient-contacts/verify")]
+        public async Task<
+            ResponseResult<RecipientContactVerificationBatchSummary>
+        > VerifyRecipientContacts([FromBody] VerifyRecipientContactsRequest request)
         {
             if (!await licenseAccessService.HasProLicense())
             {
-                return ResponseResult<InboxVerificationBatchSummary>.Fail(
+                return ResponseResult<RecipientContactVerificationBatchSummary>.Fail(
                     "当前功能仅专业版及以上版本可用",
                     HttpStatusCode.Unauthorized
                 );
             }
 
             var userId = tokenService.GetUserSqlId();
-            var result = await inboxVerificationService.VerifyInboxesAsync(
+            var result = await recipientContactVerificationService.VerifyRecipientsAsync(
                 userId,
-                request.InboxIds
+                request.RecipientContactIds
             );
             return result.ToSuccessResponse();
         }

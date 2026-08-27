@@ -17,7 +17,7 @@ z D:\Develop\Personal\UZonMailProPlugins\UZonMailProPlugin
 
 1. SqLite
 
-dotnet ef migrations add addInboxVerification --context SqLiteContextPro --output-dir Migrations/SqLite -v
+dotnet ef migrations add addRecipientContactVerification --context SqLiteContextPro --output-dir Migrations/SqLite -v
 
 2. PostgreSQL
 

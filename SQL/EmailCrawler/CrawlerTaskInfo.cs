@@ -63,8 +63,8 @@ namespace UzonMail.ProPlugin.SQL.EmailCrawler
         public int Count { get; set; }
 
         /// <summary>
-        /// 发件箱组 id
+        /// 收件联系人组 id
         /// </summary>
-        public long OutboxGroupId { get; set; }
+        public long RecipientContactGroupId { get; set; }
     }
 }

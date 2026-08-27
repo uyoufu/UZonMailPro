@@ -66,9 +66,9 @@ namespace UzonMail.ProPlugin.Controllers.Api
                     SendingType = x.SendingType,
                     Status = x.Status,
                     Templates = x.Templates,
-                    Outboxes = x.Outboxes, // 兼容旧数据
-                    OutboxesCount = x.OutboxesCount,
-                    InboxesCount = x.InboxesCount,
+                    SenderAccounts = x.SenderAccounts,
+                    SenderAccountCount = x.SenderAccountCount,
+                    RecipientCount = x.RecipientCount,
                     SuccessCount = x.SuccessCount,
                     SentCount = x.SentCount,
                     CreateDate = x.CreateDate,

@@ -9,7 +9,7 @@ namespace UzonMail.ProPlugin.Controllers.Unsubscribes.ResponseModels
     public class UnsubscribePayloads(SendingItem sendingItem)
     {
         public long SendingItemId => sendingItem.Id;
-        public string? Email => sendingItem.ToEmails;
+        public string? Email => sendingItem.RecipientEmails;
         public long OrganizationId { get; set; }
     }
 }

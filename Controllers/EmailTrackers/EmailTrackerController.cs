@@ -190,7 +190,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailTracker
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x =>
-                    x.InboxEmails.Contains(filter) || x.OutboxEmail.Contains(filter)
+                    x.RecipientEmails.Contains(filter) || x.SenderEmail.Contains(filter)
                 );
             }
             var count = await dbSet.CountAsync();
@@ -214,7 +214,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailTracker
             if (!string.IsNullOrEmpty(filter))
             {
                 dbSet = dbSet.Where(x =>
-                    x.OutboxEmail.Contains(filter) || x.InboxEmails.Contains(filter)
+                    x.SenderEmail.Contains(filter) || x.RecipientEmails.Contains(filter)
                 );
             }
 

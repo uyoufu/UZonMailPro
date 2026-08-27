@@ -6,7 +6,7 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
     public class DailySendCountCalculator(
         DateTime startDate,
         DateTime endDate,
-        int totalInboxes,
+        int totalRecipientContacts,
         List<double[]> chartPoints
     )
     {
@@ -19,7 +19,7 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
             {
                 return 0;
             }
-            if (totalInboxes <= _minCountForToday)
+            if (totalRecipientContacts <= _minCountForToday)
                 return _minCountForToday;
 
             var totalDays = (endDate.Date - startDate.Date).TotalDays + 1;
@@ -32,8 +32,9 @@ namespace UzonMail.ProPlugin.Services.IpWarmUp
                     ? CalculateArctanPercent(percentToday)
                     : InterpolatePercent(percentToday);
 
-            var countForToday = (int)Math.Round(percent * (totalInboxes - _minCountForToday));
-            return Math.Min(countForToday, totalInboxes);
+            var countForToday = (int)
+                Math.Round(percent * (totalRecipientContacts - _minCountForToday));
+            return Math.Min(countForToday, totalRecipientContacts);
         }
 
         private double CalculateArctanPercent(double percentX)

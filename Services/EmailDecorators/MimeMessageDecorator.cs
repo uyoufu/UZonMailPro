@@ -53,7 +53,7 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
             }
             var unsubscribeHeader = UnsubscribeHeaderFactory.GetUnsubscribeHeader(
                 serviceProvider,
-                mimeParams.OutboxEmail
+                mimeParams.SenderEmail
             );
             unsubscribeHeader.SetHeader(mimeMessage, unsubscribeUrl);
 

@@ -27,23 +27,23 @@ namespace UzonMail.ProPlugin.Controllers.Api.Model
         /// <summary>
         /// 发件箱 id
         /// </summary>
-        public List<string> OutboxIds { get; set; } = [];
+        public List<string> SenderAccountIds { get; set; } = [];
 
         /// <summary>
         /// 发件箱组的 Id
         /// </summary>
-        public List<string> OutboxGroupIds { get; set; } = [];
+        public List<string> SenderAccountGroupIds { get; set; } = [];
 
         /// <summary>
         /// 收件邮箱
         /// 为邮箱地址
         /// </summary>
-        public List<string> InboxEmails { get; set; } = [];
+        public List<string> RecipientEmails { get; set; } = [];
 
         /// <summary>
         /// 收件箱组
         /// </summary>
-        public List<string>? InboxGroupIds { get; set; } = [];
+        public List<string>? RecipientContactGroupIds { get; set; } = [];
 
         /// <summary>
         /// 抄送箱
@@ -116,21 +116,21 @@ namespace UzonMail.ProPlugin.Controllers.Api.Model
             sendingGroup.Body = Body;
 
             // 发件箱
-            if (OutboxIds != null && OutboxIds.Count > 0)
+            if (SenderAccountIds != null && SenderAccountIds.Count > 0)
             {
-                var outboxes = await db
-                    .Outboxes.Where(x => OutboxIds.Contains(x.ObjectId))
+                var senderAccounts = await db
+                    .SenderAccounts.Where(x => SenderAccountIds.Contains(x.ObjectId))
                     .ToListAsync();
-                sendingGroup.Outboxes = outboxes;
+                sendingGroup.SenderAccounts = senderAccounts;
             }
 
             // 发件箱组
-            if (OutboxGroupIds != null && OutboxGroupIds.Count > 0)
+            if (SenderAccountGroupIds != null && SenderAccountGroupIds.Count > 0)
             {
-                var outboxGroups = await db
-                    .EmailGroups.Where(x => OutboxGroupIds.Contains(x.ObjectId))
+                var senderAccountGroups = await db
+                    .EmailGroups.Where(x => SenderAccountGroupIds.Contains(x.ObjectId))
                     .ToListAsync();
-                sendingGroup.OutboxGroups = outboxGroups
+                sendingGroup.SenderAccountGroups = senderAccountGroups
                     .Select(x => new IdAndName()
                     {
                         Id = x.Id,
@@ -142,20 +142,20 @@ namespace UzonMail.ProPlugin.Controllers.Api.Model
             }
 
             // 收件箱
-            if (InboxEmails != null && InboxEmails.Count > 0)
+            if (RecipientEmails != null && RecipientEmails.Count > 0)
             {
-                sendingGroup.Inboxes = InboxEmails
+                sendingGroup.Recipients = RecipientEmails
                     .Select(email => new EmailAddress { Email = email })
                     .ToList();
             }
 
             // 收件箱组
-            if (InboxGroupIds != null && InboxGroupIds.Count > 0)
+            if (RecipientContactGroupIds != null && RecipientContactGroupIds.Count > 0)
             {
-                var inboxGroups = await db
-                    .EmailGroups.Where(x => InboxGroupIds.Contains(x.ObjectId))
+                var recipientContactGroups = await db
+                    .EmailGroups.Where(x => RecipientContactGroupIds.Contains(x.ObjectId))
                     .ToListAsync();
-                sendingGroup.InboxGroups = inboxGroups
+                sendingGroup.RecipientContactGroups = recipientContactGroups
                     .Select(x => new IdAndName()
                     {
                         Id = x.Id,

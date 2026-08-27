@@ -28,8 +28,8 @@ namespace UzonMail.ProPlugin.Services.EmailBodyDecorators
                     UserId = sendingItem.UserId,
                     SendingItemId = sendingItem.Id,
                     SendingGroupId = sendingItem.SendingGroupId,
-                    InboxEmails = string.Join(",", sendingItem.Inboxes.Select(x => x.Email)),
-                    OutboxEmail = decoratorParams.OutboxEmail
+                    RecipientEmails = string.Join(",", sendingItem.Recipients.Select(x => x.Email)),
+                    SenderEmail = decoratorParams.SenderEmail
                 };
                 sqlContext.EmailAnchors.Add(emailAnchor);
                 await sqlContext.SaveChangesAsync();

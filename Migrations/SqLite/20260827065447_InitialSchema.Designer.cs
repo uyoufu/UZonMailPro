@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UzonMail.ProPlugin.SQL;
 
@@ -10,9 +11,11 @@ using UzonMail.ProPlugin.SQL;
 namespace UzonMail.ProPlugin.Migrations.SqLite
 {
     [DbContext(typeof(SqLiteContextPro))]
-    partial class SqLiteContextProModelSnapshot : ModelSnapshot
+    [Migration("20260827065447_InitialSchema")]
+    partial class InitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.10");
