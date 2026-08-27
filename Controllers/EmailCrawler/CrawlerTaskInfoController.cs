@@ -331,7 +331,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
                     UserId = crawlerTask.UserId,
                     Name = $"爬虫结果:{crawlerTask.Name}",
                     Description = $"来源于爬虫任务 {crawlerTask.Name}",
-                    Category = EmailGroupCategory.Recipient,
+                    Category = EmailGroupCategory.RecipientEmail,
                 };
                 await db.EmailGroups.AddAsync(recipientContactGroup);
                 await db.SaveChangesAsync();

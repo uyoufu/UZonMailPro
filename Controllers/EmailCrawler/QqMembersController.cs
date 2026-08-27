@@ -34,7 +34,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
             var existGroup = await db
                 .EmailGroups.Where(x =>
                     x.UserId == userId
-                    && x.Category == EmailGroupCategory.Recipient
+                    && x.Category == EmailGroupCategory.RecipientEmail
                     && x.Extra == data.Group.GroupId.ToString()
                 )
                 .FirstOrDefaultAsync();
@@ -44,7 +44,7 @@ namespace UzonMail.ProPlugin.Controllers.EmailCrawler
                 existGroup = new EmailGroup
                 {
                     UserId = userId,
-                    Category = EmailGroupCategory.Recipient,
+                    Category = EmailGroupCategory.RecipientEmail,
                     Name = data.Group.GroupName,
                     Extra = data.Group.GroupId.ToString(),
                     IsDefault = false,
