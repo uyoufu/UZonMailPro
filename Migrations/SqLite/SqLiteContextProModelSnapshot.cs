@@ -1687,9 +1687,6 @@ namespace UzonMail.ProPlugin.Migrations.SqLite
                     b.Property<string>("ValidationFailureReason")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Weight")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EmailAccountId")
